@@ -34,6 +34,12 @@ public class Company {
                 && Objects.equals(this.notificationsEnabled, other.notificationsEnabled);
     }
 
+    @Override
+    public int hashCode() {
+    	return Objects.hash(this.vatNumber, this.name, this.address, this.zipCode, this.city, this.country, this.gid, this.notificationsEnabled);
+    }
+    
+    
     public String getAddress() {
         return address;
     }
