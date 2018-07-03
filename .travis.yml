@@ -1,9 +1,8 @@
 sudo: false
 dist: trusty
 language: java
-before_script:
+before_install:
   - pip install --user codecov
-script: "mvn verify"
 jdk:
   - openjdk8
   - oraclejdk8
