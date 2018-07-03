@@ -31,6 +31,4 @@ hs_err_pid*
 /bin/
 
 **/.DS_STORE
-
-**/.*
-!**/.gitignore
+BADGES.md
