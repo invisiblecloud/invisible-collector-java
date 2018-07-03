@@ -4,4 +4,4 @@ Master: [![Build Status](https://travis-ci.org/invisiblecloud/invoice-capture-cl
 
 ## Dependencies
 
-Software built on java 8
+Software built using java 8
