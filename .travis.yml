@@ -1,9 +1,11 @@
 sudo: false
 dist: trusty
 language: java
+before_script:
+  - pip install --user codecov
 script: "mvn verify"
 jdk:
   - openjdk8
   - oraclejdk8
 after_success:
-  - bash <(curl -s https://codecov.io/bash)
+  - codecov
