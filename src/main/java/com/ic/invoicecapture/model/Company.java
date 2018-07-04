@@ -1,7 +1,8 @@
 package com.ic.invoicecapture.model;
 
-import java.util.Objects;
 import com.google.gson.Gson;
+
+import java.util.Objects;
 
 public class Company implements IJsonable {
 

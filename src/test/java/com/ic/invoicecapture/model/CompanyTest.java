@@ -30,8 +30,19 @@ public class CompanyTest {
     
     Assert.assertEquals(company1, company2);
     
-    company1.setName("some other name");
+    company1.setGid("12321");
     Assert.assertNotEquals(company1, company2);
+  }
+  
+  @Test
+  public void hashCode_correctness() {
+    Company company1 = new Company();
+    Company company2 = new Company();
+    
+    Assert.assertEquals(company1.hashCode(), company2.hashCode());
+    
+    company1.setName("some other name");
+    Assert.assertNotEquals(company1.hashCode(), company2.hashCode());
   }
   
   @Test 
