@@ -3,6 +3,12 @@
 Master:
 [![Build Status](https://travis-ci.org/invisiblecloud/invoice-capture-client.svg?branch=master)](https://travis-ci.org/invisiblecloud/invoice-capture-client)
 
-## Dependencies
 
-Software built using java 8
+## Contributions
+
+This library follows the [google java style guide](https://google.github.io/styleguide/javaguide.html) which is checked at compile time. 
+
+
+## Notes
+
+You can check out the API documentation which this library wraps [here](https://www.invisiblecollector.com/docs/).

@@ -1,8 +1,10 @@
 package com.ic.invoicecapture.model;
 
+import com.google.gson.Gson;
+
 import java.util.Objects;
 
-public class Company {
+public class Company implements IJsonable {
 
   private String name;
   private String gid;
@@ -30,6 +32,12 @@ public class Company {
         && Objects.equals(this.zipCode, other.zipCode) && Objects.equals(this.city, other.city)
         && Objects.equals(this.country, other.country) && Objects.equals(this.gid, other.gid)
         && Objects.equals(this.notificationsEnabled, other.notificationsEnabled);
+  }
+  
+  @Override
+  public String asJsonString() {
+    final Gson gson = new Gson();
+    return gson.toJson(this);
   }
 
   @Override
