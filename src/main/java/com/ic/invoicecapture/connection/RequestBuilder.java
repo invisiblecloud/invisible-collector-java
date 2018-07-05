@@ -8,6 +8,7 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
+
 public class RequestBuilder {
 
   public enum RequestTypes {
@@ -42,6 +43,10 @@ public class RequestBuilder {
       case GET:
         request = new HttpGet(this.url);
         break;
+      case POST:
+      case PUT:
+        throw new UnsupportedOperationException("PUT, POST not implemented yet");
+        
       default:
         return null;
     }
@@ -62,7 +67,6 @@ public class RequestBuilder {
     
     CloseableHttpClient httpClient = HttpClients.createMinimal();
     HttpUriRequest request = buildRequest();
-
     return new CloseableRequest(httpClient, request);
   }
 }

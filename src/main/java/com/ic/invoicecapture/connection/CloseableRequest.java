@@ -6,10 +6,13 @@ import java.nio.charset.StandardCharsets;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpRequest;
 import org.apache.http.ParseException;
+import org.apache.http.StatusLine;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.util.EntityUtils;
+import org.javatuples.Pair;
 
 public class CloseableRequest implements IRequest {
   private CloseableHttpClient httpClient;
@@ -20,15 +23,16 @@ public class CloseableRequest implements IRequest {
     this.request = request;
   }
 
-  public String sendRequest() throws ParseException, IOException {
+  public Pair<StatusLine, HttpEntity> exchangeMessages() throws IOException, ClientProtocolException {
     CloseableHttpResponse response = this.httpClient.execute(this.request);
-    String body = null;
-    Pair<String, String> pair ;
+    
+    HttpEntity body = null;
+    StatusLine statusLine = null;
     try {
-      System.out.println(response.getStatusLine());
-      HttpEntity entity = response.getEntity();
+      statusLine = response.getStatusLine();
+      body = response.getEntity();
 
-      body = EntityUtils.toString(entity, StandardCharsets.UTF_8);
+      EntityUtils.consume(body);
     } catch (Exception e) {
       response.close(); //close connection
       throw e;
@@ -36,7 +40,7 @@ public class CloseableRequest implements IRequest {
       response.close();
     }
     
-    return body;
+    return Pair.with(statusLine, body);
   }
 
 }

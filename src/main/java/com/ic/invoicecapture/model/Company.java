@@ -46,7 +46,6 @@ public class Company implements IJsonable {
         this.country, this.gid, this.notificationsEnabled);
   }
 
-
   public String getAddress() {
     return address;
   }
