@@ -1,7 +1,7 @@
 package com.ic.invoicecapture.model;
 
 import com.google.gson.Gson;
-
+import com.ic.invoicecapture.json.GsonSingleton;
 import java.util.Objects;
 
 public class Company implements IJsonable {
@@ -29,14 +29,16 @@ public class Company implements IJsonable {
     return Objects.equals(this.vatNumber, other.vatNumber)
         && Objects.equals(this.name, other.name)
         && Objects.equals(this.address, other.address)
-        && Objects.equals(this.zipCode, other.zipCode) && Objects.equals(this.city, other.city)
-        && Objects.equals(this.country, other.country) && Objects.equals(this.gid, other.gid)
+        && Objects.equals(this.zipCode, other.zipCode) 
+        && Objects.equals(this.city, other.city)
+        && Objects.equals(this.country, other.country) 
+        && Objects.equals(this.gid, other.gid)
         && Objects.equals(this.notificationsEnabled, other.notificationsEnabled);
   }
   
   @Override
   public String asJsonString() {
-    final Gson gson = new Gson();
+    final Gson gson = GsonSingleton.getInstance();
     return gson.toJson(this);
   }
 

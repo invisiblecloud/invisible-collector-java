@@ -39,7 +39,7 @@ public class CompanyBuilder {
     this.notificationsEnabled = notificationsEnabled;
     this.vatNumber = vatNumber;
     this.zipCode = zipCode;
-         
+
   }
 
   public JsonObject buildJsonObject() {
