@@ -75,7 +75,7 @@
 				</configuration>
 				<executions>
 					<execution>
-						<id>findbugs analyze</id>
+						<id>findbugs</id>
 						<phase>verify</phase>
 						<goals>
 							<goal>check</goal>
@@ -90,7 +90,7 @@
 				<version>${checkstyle-plugin.version}</version>
 				<executions>
 					<execution>
-						<id>checkstyle verify code style (${checkstyle-plugin.ruleset-file})</id>
+						<id>checkstyle-plugin</id>
 						<phase>verify</phase>
 						<configuration>
 							<configLocation>${checkstyle-plugin.ruleset-file}</configLocation>

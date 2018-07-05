@@ -1,11 +1,11 @@
 package com.ic.invoicecapture.model;
 
-import org.junit.Assert;
-import org.junit.Test;
 import com.google.gson.JsonObject;
 import com.ic.invoicecapture.json.JsonConversion;
 import com.ic.invoicecapture.model.Company;
 import com.ic.invoicecapture.model.builder.CompanyBuilder;
+import org.junit.Assert;
+import org.junit.Test;
 
 public class CompanyTest {
   
