@@ -1,5 +1,7 @@
 package com.ic.invoicecapture.connection.request;
 
+import com.ic.invoicecapture.connection.response.ServerResponse;
+import com.ic.invoicecapture.exceptions.ICIOxception;
 import java.io.IOException;
 import org.apache.http.HttpEntity;
 import org.apache.http.StatusLine;
@@ -9,15 +11,12 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.javatuples.Pair;
-import com.ic.invoicecapture.connection.response.ServerResponse;
-import com.ic.invoicecapture.exceptions.ICIOxception;
 
-public class CloseableExchanger implements IMessageExchanger {
+public class ClosingExchanger implements IMessageExchanger {
   private CloseableHttpClient httpClient;
   private HttpUriRequest request;
 
-  public CloseableExchanger(CloseableHttpClient httpClient, HttpUriRequest request) {
+  public ClosingExchanger(CloseableHttpClient httpClient, HttpUriRequest request) {
     this.httpClient = httpClient;
     this.request = request;
   }
@@ -47,9 +46,9 @@ public class CloseableExchanger implements IMessageExchanger {
     return new ServerResponse(statusLine, bodyEntity);
   }
 
-  public static CloseableExchanger buildExchanger(HttpUriRequest request) {
+  public static ClosingExchanger buildExchanger(HttpUriRequest request) {
     CloseableHttpClient httpClient = HttpClients.createMinimal();
-    return new CloseableExchanger(httpClient, request);
+    return new ClosingExchanger(httpClient, request);
   }
   
 }

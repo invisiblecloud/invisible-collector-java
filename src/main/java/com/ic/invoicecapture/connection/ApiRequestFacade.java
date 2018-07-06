@@ -1,20 +1,16 @@
 package com.ic.invoicecapture.connection;
 
-import java.io.IOException;
-import java.io.InputStream;
-import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.javatuples.Pair;
-import com.google.gson.JsonObject;
-import com.ic.invoicecapture.connection.request.CloseableExchanger;
+import com.ic.invoicecapture.connection.request.ClosingExchanger;
 import com.ic.invoicecapture.connection.request.HttpUriRequestBuilder;
 import com.ic.invoicecapture.connection.request.IExchangerBuilder;
 import com.ic.invoicecapture.connection.request.IMessageExchanger;
 import com.ic.invoicecapture.connection.response.ServerResponse;
 import com.ic.invoicecapture.connection.response.validators.StatusCodeValidator;
 import com.ic.invoicecapture.exceptions.RequestStatusException;
-import com.ic.invoicecapture.json.JsonConversion;
+import java.io.IOException;
+import java.io.InputStream;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.javatuples.Pair;
 
 public class ApiRequestFacade {
   
@@ -30,7 +26,7 @@ public class ApiRequestFacade {
     this.xApiToken = xApiToken;
     this.baseUrl = baseUrl;
     this.requestBuilder = new HttpUriRequestBuilder();
-    this.exchangerBuilder = (request) -> CloseableExchanger.buildExchanger(request);
+    this.exchangerBuilder = (request) -> ClosingExchanger.buildExchanger(request);
     
     this.initHeaders();
   }
@@ -52,6 +48,8 @@ public class ApiRequestFacade {
 
     return responsePair.getBodyEntity().getContent();
   }
+  
+  // TODO add try throw method
 
 
   private IMessageExchanger buildExchanger(String urlEndpoint, RequestType requestType) {

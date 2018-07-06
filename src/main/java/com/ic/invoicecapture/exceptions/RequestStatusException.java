@@ -1,7 +1,5 @@
 package com.ic.invoicecapture.exceptions;
 
-import java.io.IOException;
-
 public class RequestStatusException extends ICIOxception {
   private int statusCode;
   private String statusMessage;

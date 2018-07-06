@@ -1,17 +1,15 @@
 package com.ic.invoicecapture.connection.request;
 
+import com.ic.invoicecapture.connection.RequestType;
 import java.util.Map;
 import java.util.TreeMap;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import com.ic.invoicecapture.connection.RequestType;
 
 
 public class HttpUriRequestBuilder {
 
-  private String body = null;
+//  private String body = null;
   private Map<String, String> headers = new TreeMap<>();
   private RequestType requestType = null;
   private String url = null;
@@ -20,9 +18,9 @@ public class HttpUriRequestBuilder {
     headers.put(key, value);
   }
 
-  public void setBody(String body) {
-    this.body = body;
-  }
+//  public void setBody(String body) {
+//    this.body = body;
+//  }
 
   public void setRequestType(RequestType requestType) {
     this.requestType = requestType;
@@ -41,6 +39,7 @@ public class HttpUriRequestBuilder {
         break;
       case POST:
       case PUT:
+        
         throw new UnsupportedOperationException("PUT, POST not implemented yet");
 
       default:

@@ -9,7 +9,7 @@ import com.ic.invoicecapture.model.Company;
 
 public class IcFacade {
 
-  private static final String PRODUCTION_BASE_URL = "https://api.invisiblecloud.com";
+  private static final String PRODUCTION_BASE_URL = "https://api.invisiblecollector.com";
   private static final String COMPANIES_ENDPOINT = "companies";
   
   private ApiRequestFacade apiFacade;

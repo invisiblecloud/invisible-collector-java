@@ -1,12 +1,10 @@
 package com.ic.invoicecapture.connection.response.validators;
 
-import java.io.IOException;
-import org.apache.http.ParseException;
+import com.ic.invoicecapture.connection.response.ServerResponse;
+import com.ic.invoicecapture.exceptions.RequestStatusException;
 import org.apache.http.StatusLine;
 import org.apache.http.util.EntityUtils;
 import org.javatuples.Pair;
-import com.ic.invoicecapture.connection.response.ServerResponse;
-import com.ic.invoicecapture.exceptions.RequestStatusException;
 
 public class StatusCodeValidator implements IResponseValidator {
 
@@ -28,6 +26,7 @@ public class StatusCodeValidator implements IResponseValidator {
         final String body = EntityUtils.toString(this.responsePair.getBodyEntity());
         statusException.setDescription(body);
       } catch (Exception e) {
+        statusException.setDescription("error parsing server message response");
       }
       return Pair.with(false, statusException);
     } else {

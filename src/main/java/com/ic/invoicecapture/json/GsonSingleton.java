@@ -6,11 +6,11 @@ public class GsonSingleton {
 
   private static Gson instance = null;
 
-  private GsonSingleton() {
-    instance = new Gson();
-  }
-
   public static Gson getInstance() {
+    if(instance == null) {
+      instance = new Gson();
+    }
+    
     return instance;
   }
 }
