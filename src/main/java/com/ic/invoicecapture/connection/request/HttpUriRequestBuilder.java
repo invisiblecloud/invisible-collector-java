@@ -1,23 +1,19 @@
-package com.ic.invoicecapture.connection;
+package com.ic.invoicecapture.connection.request;
 
 import java.util.Map;
 import java.util.TreeMap;
-import org.apache.http.HttpRequest;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import com.ic.invoicecapture.connection.RequestType;
 
 
-public class RequestBuilder {
-
-  public enum RequestTypes {
-    GET, POST, PUT
-  }
+public class HttpUriRequestBuilder {
 
   private String body = null;
   private Map<String, String> headers = new TreeMap<>();
-  private RequestTypes requestType = null;
+  private RequestType requestType = null;
   private String url = null;
 
   public void addHeader(String key, String value) {
@@ -28,7 +24,7 @@ public class RequestBuilder {
     this.body = body;
   }
 
-  public void setRequestType(RequestTypes requestType) {
+  public void setRequestType(RequestType requestType) {
     this.requestType = requestType;
   }
 
@@ -46,7 +42,7 @@ public class RequestBuilder {
       case POST:
       case PUT:
         throw new UnsupportedOperationException("PUT, POST not implemented yet");
-        
+
       default:
         return null;
     }
@@ -58,15 +54,15 @@ public class RequestBuilder {
     return request;
   }
 
-  public IRequest build() throws IllegalArgumentException {
+  public HttpUriRequest build() throws IllegalArgumentException {
     if (requestType == null) {
       throw new IllegalArgumentException("No Http Request Type set");
     } else if (url == null) {
       throw new IllegalArgumentException("No URL set");
     }
-    
-    CloseableHttpClient httpClient = HttpClients.createMinimal();
+
+
     HttpUriRequest request = buildRequest();
-    return new CloseableRequest(httpClient, request);
+    return request;
   }
 }

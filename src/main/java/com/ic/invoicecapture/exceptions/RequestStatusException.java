@@ -1,13 +1,13 @@
-package com.ic.invoicecapture.exception;
+package com.ic.invoicecapture.exceptions;
 
 import java.io.IOException;
 
-public class RequestException extends ICException {
+public class RequestStatusException extends ICIOxception {
   private int statusCode;
   private String statusMessage;
   private String description;
 
-  public RequestException(int statusCode, String statusMessage) {
+  public RequestStatusException(int statusCode, String statusMessage) {
     this.statusCode = statusCode;
     this.statusMessage = statusMessage;
 
