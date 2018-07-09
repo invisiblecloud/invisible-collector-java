@@ -6,13 +6,13 @@ import org.javatuples.Pair;
 
 public class JsonValidator implements IResponseValidator {
 
+  private static final String JSON_CONTENT_TYPE = "application/json";
+  
   private HttpEntity bodyEntity;
 
   public JsonValidator(HttpEntity bodyEntity) {
     this.bodyEntity = bodyEntity;
   }
-
-  private static final String JSON_CONTENT_TYPE = "application/json";
 
   @Override
   public Pair<Boolean, BadContentTypeException> validate() {

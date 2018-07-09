@@ -21,15 +21,7 @@ public class HttpUriRequestBuilder {
   // public void setBody(String body) {
   // this.body = body;
   // }
-
-  public void setRequestType(RequestType requestType) {
-    this.requestType = requestType;
-  }
-
-  public void setUrl(String url) {
-    this.url = url;
-  }
-
+  
   private HttpUriRequest buildRequest() {
     HttpUriRequest request = null;
 
@@ -64,4 +56,14 @@ public class HttpUriRequestBuilder {
     HttpUriRequest request = buildRequest();
     return request;
   }
+
+  public void setRequestType(RequestType requestType) {
+    this.requestType = requestType;
+  }
+
+  public void setUrl(String url) {
+    this.url = url;
+  }
+
+  
 }

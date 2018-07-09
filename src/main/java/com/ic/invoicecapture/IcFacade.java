@@ -7,6 +7,11 @@ import com.ic.invoicecapture.model.Company;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * Thread safe.
+ * @author ros
+ *
+ */
 public class IcFacade {
 
   private static final String PRODUCTION_BASE_URL = "https://api.invisiblecollector.com";

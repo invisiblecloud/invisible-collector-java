@@ -9,12 +9,13 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 
 public class JsonConversion {
+  
+  private static final String STRING_ENCODING = "UTF-8";
+  
   public static final JsonObject jsonStringAsJsonObject(String json) {
     JsonParser parser = new JsonParser();
     return parser.parse(json).getAsJsonObject();
   }
-
-  private static final String STRING_ENCODING = "UTF-8";
 
   public static final <T> T stringStreamToJsonObject(InputStream inputStream, Class<T> classType)
       throws UnsupportedEncodingException {

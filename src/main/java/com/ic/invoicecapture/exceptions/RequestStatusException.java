@@ -11,10 +11,6 @@ public class RequestStatusException extends IcIoException {
 
   }
 
-  public void setDescription(String description) {
-    this.description = description;
-  }
-
   @Override
   public String getMessage() {
     String message = "Status code returned: " + this.statusCode + " " + this.statusMessage;
@@ -23,6 +19,10 @@ public class RequestStatusException extends IcIoException {
     }
 
     return message;
+  }
+  
+  public void setDescription(String description) {
+    this.description = description;
   }
 
   @Override

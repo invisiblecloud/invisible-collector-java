@@ -16,6 +16,12 @@ public class Company implements IJsonable {
   private Boolean notificationsEnabled;
 
   @Override
+  public String asJsonString() {
+    final Gson gson = GsonSingleton.getInstance();
+    return gson.toJson(this);
+  }
+  
+  @Override
   public boolean equals(Object obj) {
     if (!(obj instanceof Company)) {
       return false;
@@ -34,18 +40,6 @@ public class Company implements IJsonable {
         && Objects.equals(this.country, other.country) 
         && Objects.equals(this.gid, other.gid)
         && Objects.equals(this.notificationsEnabled, other.notificationsEnabled);
-  }
-  
-  @Override
-  public String asJsonString() {
-    final Gson gson = GsonSingleton.getInstance();
-    return gson.toJson(this);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(this.vatNumber, this.name, this.address, this.zipCode, this.city,
-        this.country, this.gid, this.notificationsEnabled);
   }
 
   public String getAddress() {
@@ -76,6 +70,12 @@ public class Company implements IJsonable {
     return zipCode;
   }
 
+  @Override
+  public int hashCode() {
+    return Objects.hash(this.vatNumber, this.name, this.address, this.zipCode, this.city,
+        this.country, this.gid, this.notificationsEnabled);
+  }
+  
   public Boolean isNotificationsEnabled() {
     return notificationsEnabled;
   }
