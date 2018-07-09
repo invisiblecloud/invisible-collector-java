@@ -1,9 +1,9 @@
 package com.ic.invoicecapture.connection.response.validators;
 
-import com.ic.invoicecapture.exceptions.IcIoException;
 import java.util.ArrayList;
 import java.util.List;
 import org.javatuples.Pair;
+import com.ic.invoicecapture.exceptions.IcException;
 
 /**
  * IResponseValidator order matters.
@@ -11,23 +11,23 @@ import org.javatuples.Pair;
  * @author ros
  *
  */
-public class ValidatorComposite implements IResponseValidator {
-  private List<IResponseValidator> validators = new ArrayList<>();
+public class ValidatorComposite implements IValidator {
+  private List<IValidator> validators = new ArrayList<>();
 
-  public void addValidator(IResponseValidator validator) {
+  public void addValidator(IValidator validator) {
     this.validators.add(validator);
   }
 
   @Override
-  public Pair<Boolean, ? extends IcIoException> validate() {
-    for (IResponseValidator validator : this.validators) {
-      Pair<Boolean, ? extends IcIoException> validationPair = validator.validate();
-      if (!validationPair.getValue0()) {
-        return validationPair;
+  public ValidationResult validate() {
+    for (IValidator validator : this.validators) {
+      ValidationResult validationResult = validator.validate();
+      if (!validationResult.isValid()) {
+        return validationResult;
       }
     }
 
-    return Pair.with(false, null);
+    return ValidationResult.buildPassing();
   }
 
 }

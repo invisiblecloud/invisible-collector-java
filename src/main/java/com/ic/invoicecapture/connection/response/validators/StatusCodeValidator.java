@@ -1,12 +1,10 @@
 package com.ic.invoicecapture.connection.response.validators;
 
 import com.ic.invoicecapture.connection.response.ServerResponse;
-import com.ic.invoicecapture.exceptions.RequestStatusException;
+import com.ic.invoicecapture.exceptions.IcException;
 import org.apache.http.StatusLine;
-import org.apache.http.util.EntityUtils;
-import org.javatuples.Pair;
 
-public class StatusCodeValidator implements IResponseValidator {
+public class StatusCodeValidator implements IValidator {
 
   private ServerResponse responsePair;
 
@@ -15,22 +13,21 @@ public class StatusCodeValidator implements IResponseValidator {
   }
 
   @Override
-  public Pair<Boolean, RequestStatusException> validate() {
+  public ValidationResult validate() {
     StatusLine statusLine = responsePair.getStatusLine();
     final int statusCode = statusLine.getStatusCode();
     final int statusFamily = statusCode / 100;
     if (statusFamily != 2) {
-      RequestStatusException statusException =
-          new RequestStatusException(statusCode, statusLine.getReasonPhrase());
+      String exceptionMsg =
+          "Status code returned: " + statusCode + " " + statusLine.getReasonPhrase();
       try {
-        final String body = EntityUtils.toString(this.responsePair.getBodyEntity());
-        statusException.setDescription(body);
-      } catch (Exception e) {
-        statusException.setDescription("error parsing server message response");
+        exceptionMsg += "\n" + this.responsePair.getBodyAsString();
+      } catch (IcException e) {
+        exceptionMsg += "\n" + e.getMessage();
       }
-      return Pair.with(false, statusException);
+      return new ValidationResult(false, new IcException(exceptionMsg));
     } else {
-      return Pair.with(true, null);
+      return ValidationResult.buildPassing();
     }
   }
 }

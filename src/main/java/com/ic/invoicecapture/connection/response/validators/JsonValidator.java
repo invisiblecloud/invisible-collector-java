@@ -1,28 +1,31 @@
 package com.ic.invoicecapture.connection.response.validators;
 
-import com.ic.invoicecapture.exceptions.BadContentTypeException;
+import com.ic.invoicecapture.exceptions.IcException;
 import org.apache.http.HttpEntity;
-import org.javatuples.Pair;
 
-public class JsonValidator implements IResponseValidator {
+public class JsonValidator implements IValidator {
 
   private static final String JSON_CONTENT_TYPE = "application/json";
-  
-  private HttpEntity bodyEntity;
+
+  private String contentType;
 
   public JsonValidator(HttpEntity bodyEntity) {
-    this.bodyEntity = bodyEntity;
+    this.contentType = bodyEntity.getContentType().getValue();
+  }
+
+  public JsonValidator(String contentType) {
+    this.contentType = contentType;
   }
 
   @Override
-  public Pair<Boolean, BadContentTypeException> validate() {
-    final String contentType = this.bodyEntity.getContentType().getValue();
-
-    if (!contentType.contains(JSON_CONTENT_TYPE)) {
-      return Pair.with(true, null);
+  public ValidationResult validate() {
+    if (this.contentType.contains(JSON_CONTENT_TYPE)) {
+      return ValidationResult.buildPassing();
     } else {
-      BadContentTypeException e = new BadContentTypeException(contentType, JSON_CONTENT_TYPE);
-      return Pair.with(false, e);
+      final String exceptionMessage = "Wrong content-type received, expected: " + this.contentType
+          + ", received: " + JSON_CONTENT_TYPE;
+      IcException e = new IcException(exceptionMessage);
+      return new ValidationResult(false, e);
     }
   }
 }

@@ -1,7 +1,7 @@
 package com.ic.invoicecapture;
 
 import com.ic.invoicecapture.connection.ApiRequestFacade;
-import com.ic.invoicecapture.exceptions.RequestStatusException;
+import com.ic.invoicecapture.exceptions.IcException;
 import com.ic.invoicecapture.json.JsonFacade;
 import com.ic.invoicecapture.model.Company;
 import java.io.IOException;
@@ -32,7 +32,7 @@ public class IcFacade {
     this.jsonFacade = jsonFacade;
   }
 
-  public Company requestCompanyInfo() throws RequestStatusException, IOException, URISyntaxException {
+  public Company requestCompanyInfo() throws IOException, URISyntaxException, IcException {
     InputStream inputStream = apiFacade.getRequest(COMPANIES_ENDPOINT);
 
     return this.jsonFacade.stringStreamToJsonObject(inputStream, Company.class);

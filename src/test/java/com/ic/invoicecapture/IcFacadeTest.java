@@ -10,7 +10,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import com.ic.invoicecapture.connection.ApiRequestFacade;
-import com.ic.invoicecapture.exceptions.RequestStatusException;
+import com.ic.invoicecapture.exceptions.IcException;
 import com.ic.invoicecapture.json.JsonFacade;
 import com.ic.invoicecapture.model.Company;
 import com.ic.invoicecapture.model.builder.CompanyBuilder;
@@ -32,7 +32,7 @@ public class IcFacadeTest {
   }
 
   @Test
-  public void requestCompanyInfo_correctness() throws RequestStatusException, IOException, URISyntaxException {
+  public void requestCompanyInfo_correctness() throws IcException, IOException, URISyntaxException {
     CompanyBuilder companyBuilder = CompanyBuilder.buildTestCompanyBuilder();
     Company correctCompany = companyBuilder.buildCompany();
 

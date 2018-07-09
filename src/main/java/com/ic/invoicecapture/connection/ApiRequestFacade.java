@@ -6,7 +6,8 @@ import com.ic.invoicecapture.connection.request.IExchangerBuilder;
 import com.ic.invoicecapture.connection.request.IMessageExchanger;
 import com.ic.invoicecapture.connection.response.ServerResponse;
 import com.ic.invoicecapture.connection.response.validators.StatusCodeValidator;
-import com.ic.invoicecapture.exceptions.RequestStatusException;
+import com.ic.invoicecapture.connection.response.validators.ValidationResult;
+import com.ic.invoicecapture.exceptions.IcException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -38,12 +39,7 @@ public class ApiRequestFacade {
     HttpUriRequest request = requestBuilder.build();
     return this.exchangerBuilder.build(request);
   }
-
-  private URI joinUris(URI baseUri, String uriEndpoint) throws URISyntaxException {
-    URI url = new URI(baseUri.toString() + "/" + uriEndpoint);
-    return url.normalize();
-  }
-
+  
   private HttpUriRequestBuilder buildRequestBuilder() {
     HttpUriRequestBuilder requestBuilder = new HttpUriRequestBuilder();
 
@@ -54,16 +50,20 @@ public class ApiRequestFacade {
     return requestBuilder;
   }
 
-  public InputStream getRequest(String urlEndpoint) throws IOException, RequestStatusException, URISyntaxException {
+  public InputStream getRequest(String urlEndpoint) throws IOException, URISyntaxException, IcException {
     IMessageExchanger exchanger = buildExchanger(urlEndpoint, RequestType.GET);
     ServerResponse responsePair = exchanger.exchangeMessages();
+    
     StatusCodeValidator validator = new StatusCodeValidator(responsePair);
-    Pair<Boolean, RequestStatusException> validationResult = validator.validate();
-    if (!validationResult.getValue0()) {
-      throw validationResult.getValue1();
-    }
+    ValidationResult validationResult = validator.validate();
+    validationResult.tryThrowException(); //can throw exception
 
     return responsePair.getBodyEntity().getContent();
+  }
+  
+  private URI joinUris(URI baseUri, String uriEndpoint) throws URISyntaxException {
+    URI url = new URI(baseUri.toString() + "/" + uriEndpoint);
+    return url.normalize();
   }
 
   // TODO add try throw method
