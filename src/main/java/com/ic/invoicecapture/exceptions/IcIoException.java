@@ -2,12 +2,12 @@ package com.ic.invoicecapture.exceptions;
 
 import java.io.IOException;
 
-public class ICIOxception extends IOException {
-  public ICIOxception(String msg) {
+public class IcIoException extends IOException {
+  public IcIoException(String msg) {
     super(msg);
   }
 
-  public ICIOxception() {
+  public IcIoException() {
     super();
   }
 

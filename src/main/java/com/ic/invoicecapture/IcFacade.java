@@ -1,11 +1,11 @@
 package com.ic.invoicecapture;
 
-import java.io.IOException;
-import java.io.InputStream;
 import com.ic.invoicecapture.connection.ApiRequestFacade;
 import com.ic.invoicecapture.exceptions.RequestStatusException;
 import com.ic.invoicecapture.json.JsonConversion;
 import com.ic.invoicecapture.model.Company;
+import java.io.IOException;
+import java.io.InputStream;
 
 public class IcFacade {
 
@@ -14,8 +14,8 @@ public class IcFacade {
   
   private ApiRequestFacade apiFacade;
 
-  public IcFacade(String xApiKey) {
-    this.apiFacade = new ApiRequestFacade(xApiKey, PRODUCTION_BASE_URL);
+  public IcFacade(String apiToken) {
+    this.apiFacade = new ApiRequestFacade(apiToken, PRODUCTION_BASE_URL);
   }
 
   public Company requestCompanyInfo() throws RequestStatusException, IOException {

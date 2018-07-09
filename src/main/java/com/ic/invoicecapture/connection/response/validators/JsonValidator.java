@@ -1,8 +1,8 @@
 package com.ic.invoicecapture.connection.response.validators;
 
+import com.ic.invoicecapture.exceptions.BadContentTypeException;
 import org.apache.http.HttpEntity;
 import org.javatuples.Pair;
-import com.ic.invoicecapture.exceptions.BadContentTypeException;
 
 public class JsonValidator implements IResponseValidator {
 

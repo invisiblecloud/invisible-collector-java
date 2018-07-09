@@ -1,7 +1,7 @@
 package com.ic.invoicecapture.connection.request;
 
 import com.ic.invoicecapture.connection.response.ServerResponse;
-import com.ic.invoicecapture.exceptions.ICIOxception;
+import com.ic.invoicecapture.exceptions.IcIoException;
 import java.io.IOException;
 import org.apache.http.HttpEntity;
 import org.apache.http.StatusLine;
@@ -26,7 +26,7 @@ public class ClosingExchanger implements IMessageExchanger {
     try {
       response = this.httpClient.execute(this.request);
     } catch (ClientProtocolException e) {
-      throw new ICIOxception("HTTP protocol error: " + e.getMessage());
+      throw new IcIoException("HTTP protocol error: " + e.getMessage());
     }
 
     HttpEntity bodyEntity = null;

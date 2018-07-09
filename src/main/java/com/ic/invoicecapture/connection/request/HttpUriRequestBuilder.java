@@ -9,7 +9,7 @@ import org.apache.http.client.methods.HttpUriRequest;
 
 public class HttpUriRequestBuilder {
 
-//  private String body = null;
+  // private String body = null;
   private Map<String, String> headers = new TreeMap<>();
   private RequestType requestType = null;
   private String url = null;
@@ -18,9 +18,9 @@ public class HttpUriRequestBuilder {
     headers.put(key, value);
   }
 
-//  public void setBody(String body) {
-//    this.body = body;
-//  }
+  // public void setBody(String body) {
+  // this.body = body;
+  // }
 
   public void setRequestType(RequestType requestType) {
     this.requestType = requestType;
@@ -39,7 +39,7 @@ public class HttpUriRequestBuilder {
         break;
       case POST:
       case PUT:
-        
+
         throw new UnsupportedOperationException("PUT, POST not implemented yet");
 
       default:

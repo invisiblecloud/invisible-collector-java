@@ -7,7 +7,7 @@ public class GsonSingleton {
   private static Gson instance = null;
 
   public static Gson getInstance() {
-    if(instance == null) {
+    if (instance == null) {
       instance = new Gson();
     }
     
