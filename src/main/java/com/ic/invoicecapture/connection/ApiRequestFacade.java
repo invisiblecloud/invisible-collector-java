@@ -13,7 +13,6 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import org.apache.http.client.methods.HttpUriRequest;
-import org.javatuples.Pair;
 
 public class ApiRequestFacade {
 
@@ -65,9 +64,4 @@ public class ApiRequestFacade {
     URI url = new URI(baseUri.toString() + "/" + uriEndpoint);
     return url.normalize();
   }
-
-  // TODO add try throw method
-
-
-
 }

@@ -1,13 +1,11 @@
 package com.ic.invoicecapture.response.validators;
 
-import javax.xml.validation.Validator;
 import org.easymock.EasyMock;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import com.ic.invoicecapture.connection.response.validators.IValidator;
 import com.ic.invoicecapture.connection.response.validators.ValidationResult;
 import com.ic.invoicecapture.connection.response.validators.ValidatorComposite;
-import com.ic.invoicecapture.exceptions.IcException;
 
 public class ValidatorCompositeTest extends ValidationBase {
   
@@ -17,7 +15,6 @@ public class ValidatorCompositeTest extends ValidationBase {
     Assertions.assertThrows(IllegalArgumentException.class, composite::validate);
   }
   
-  private static final String EXCEPTION_MESSAGE = "test exception";
   private ValidationResult prepareValidationResultMock(boolean isValid) {
     ValidationResult validationResult = EasyMock.createNiceMock(ValidationResult.class);
     EasyMock.expect(validationResult.isValid()).andReturn(isValid);
