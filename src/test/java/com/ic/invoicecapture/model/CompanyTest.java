@@ -1,18 +1,13 @@
 package com.ic.invoicecapture.model;
 
 import com.google.gson.JsonObject;
-import com.ic.invoicecapture.json.JsonConversion;
+import com.ic.invoicecapture.json.JsonConverter;
 import com.ic.invoicecapture.model.Company;
 import com.ic.invoicecapture.model.builder.CompanyBuilder;
 import org.junit.Assert;
 import org.junit.Test;
 
 public class CompanyTest {
-
-  private static CompanyBuilder buildTestCompanyBuilder() {
-    return new CompanyBuilder("testAdress", "testCity", "testCountry", "testGid", "testName", false,
-        "testVatNumber", "testZipCode");
-  }
 
   @Test
   public void equals_empty() {
@@ -39,18 +34,18 @@ public class CompanyTest {
 
   @Test
   public void toJson_jsonCorrectness() {
-    CompanyBuilder companyBuilder = CompanyTest.buildTestCompanyBuilder();
+    CompanyBuilder companyBuilder = CompanyBuilder.buildTestCompanyBuilder();
 
     Company company = companyBuilder.buildCompany();
     String generatedJsonString = company.asJsonString();
-    JsonObject generatedJson = JsonConversion.jsonStringAsJsonObject(generatedJsonString);
+    JsonObject generatedJson = JsonConverter.jsonStringAsJsonObject(generatedJsonString);
     JsonObject correctJson = companyBuilder.buildJsonObject();
 
     Assert.assertEquals(generatedJson, correctJson);
 
     company.setCity("newCity");
     generatedJsonString = company.asJsonString();
-    generatedJson = JsonConversion.jsonStringAsJsonObject(generatedJsonString);
+    generatedJson = JsonConverter.jsonStringAsJsonObject(generatedJsonString);
     Assert.assertNotEquals(generatedJson, correctJson);
   }
 }

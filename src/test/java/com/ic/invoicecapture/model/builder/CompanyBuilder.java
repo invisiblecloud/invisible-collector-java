@@ -14,6 +14,19 @@ public class CompanyBuilder {
   private String vatNumber = null;
   private String zipCode = null;
 
+  public CompanyBuilder(String address, String city, String country, String gid, String name,
+      Boolean notificationsEnabled, String vatNumber, String zipCode) {
+    this.address = address;
+    this.city = city;
+    this.country = country;
+    this.gid = gid;
+    this.name = name;
+    this.notificationsEnabled = notificationsEnabled;
+    this.vatNumber = vatNumber;
+    this.zipCode = zipCode;
+
+  }
+  
   public Company buildCompany() {
     Company company = new Company();
 
@@ -28,18 +41,10 @@ public class CompanyBuilder {
 
     return company;
   }
-
-  public CompanyBuilder(String address, String city, String country, String gid, String name,
-      Boolean notificationsEnabled, String vatNumber, String zipCode) {
-    this.address = address;
-    this.city = city;
-    this.country = country;
-    this.gid = gid;
-    this.name = name;
-    this.notificationsEnabled = notificationsEnabled;
-    this.vatNumber = vatNumber;
-    this.zipCode = zipCode;
-
+  
+  public static CompanyBuilder buildTestCompanyBuilder() {
+    return new CompanyBuilder("testAdress", "testCity", "testCountry", "testGid", "testName", false,
+        "testVatNumber", "testZipCode");
   }
 
   public JsonObject buildJsonObject() {
@@ -96,7 +101,5 @@ public class CompanyBuilder {
     this.zipCode = zipCode;
     return this;
   }
-
-
 
 }
