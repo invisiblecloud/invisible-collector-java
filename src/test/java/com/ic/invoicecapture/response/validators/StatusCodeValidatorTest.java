@@ -1,11 +1,8 @@
 package com.ic.invoicecapture.response.validators;
 
-import java.io.IOException;
 import org.apache.http.HttpEntity;
-import org.apache.http.ParseException;
 import org.apache.http.StatusLine;
 import org.easymock.EasyMock;
-import org.javatuples.Pair;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,18 +11,17 @@ import com.ic.invoicecapture.connection.response.validators.StatusCodeValidator;
 import com.ic.invoicecapture.connection.response.validators.ValidationResult;
 import com.ic.invoicecapture.exceptions.IcException;
 
-public class StatusCodeValidatorTest {
+public class StatusCodeValidatorTest extends ValidationBase {
 
 
   private StatusLine statusLineMock;
-  private HttpEntity bodyEntity;
   private ServerResponse serverResponseMock;
 
 
   @Before
   public void init() {
     this.statusLineMock = EasyMock.createNiceMock(StatusLine.class);
-    this.bodyEntity = EasyMock.createNiceMock(HttpEntity.class);
+    EasyMock.createNiceMock(HttpEntity.class);
     this.serverResponseMock = EasyMock.createNiceMock(ServerResponse.class);
   }
 
@@ -41,8 +37,7 @@ public class StatusCodeValidatorTest {
 
     ValidationResult validationResult = statusCodeValidator.validate();
 
-    Assert.assertEquals(validationResult.isValid(), true);
-    Assert.assertEquals(validationResult.getException(), null);
+    this.assertValid(validationResult);
     EasyMock.verify(this.statusLineMock);
     EasyMock.verify(this.serverResponseMock);
   }
@@ -63,8 +58,7 @@ public class StatusCodeValidatorTest {
     ValidationResult validationResult = jsonValidator.validate();
 
     IcException exception = validationResult.getException();
-    Assert.assertEquals(validationResult.isValid(), false);
-    Assert.assertNotEquals(exception, null);
+    this.assertNotValid(validationResult);
     EasyMock.verify(this.statusLineMock);
     EasyMock.verify(this.serverResponseMock);
     

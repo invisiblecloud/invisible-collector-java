@@ -20,6 +20,11 @@ public class ValidatorComposite implements IValidator {
 
   @Override
   public ValidationResult validate() {
+    
+    if (this.validators.isEmpty()) {
+      throw new IllegalArgumentException("No validators added");
+    }
+    
     for (IValidator validator : this.validators) {
       ValidationResult validationResult = validator.validate();
       if (!validationResult.isValid()) {

@@ -6,7 +6,7 @@ import com.ic.invoicecapture.connection.response.validators.JsonValidator;
 import com.ic.invoicecapture.connection.response.validators.ValidationResult;
 import com.ic.invoicecapture.exceptions.IcException;
 
-public class JsonValidatorTest {
+public class JsonValidatorTest extends ValidationBase {
 
   @Test
   public void validate_pass() {
@@ -14,8 +14,7 @@ public class JsonValidatorTest {
     
     ValidationResult validationResult = jsonValidator.validate();
     
-    Assert.assertEquals(validationResult.isValid(), true);
-    Assert.assertEquals(validationResult.getException(), null);
+    this.assertValid(validationResult);
   }
   
   @Test
@@ -27,8 +26,7 @@ public class JsonValidatorTest {
     ValidationResult validationResult = jsonValidator.validate();
     
     IcException exception = validationResult.getException();
-    Assert.assertEquals(validationResult.isValid(), false);
-    Assert.assertNotEquals(exception, null);
+    this.assertNotValid(validationResult);
     
     String exceptionMessage = exception.getMessage();
     Assert.assertTrue(exceptionMessage.contains(BODY_STRING));
