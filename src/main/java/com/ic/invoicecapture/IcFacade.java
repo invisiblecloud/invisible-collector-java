@@ -6,6 +6,8 @@ import com.ic.invoicecapture.json.JsonFacade;
 import com.ic.invoicecapture.model.Company;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 /**
  * Thread safe.
@@ -14,7 +16,7 @@ import java.io.InputStream;
  */
 public class IcFacade {
 
-  private static final String PRODUCTION_BASE_URL = "https://api.invisiblecollector.com";
+  private static final URI PRODUCTION_BASE_URL = URI.create("https://api.invisiblecollector.com");
   private static final String COMPANIES_ENDPOINT = "companies";
   
   private ApiRequestFacade apiFacade;
@@ -30,7 +32,7 @@ public class IcFacade {
     this.jsonFacade = jsonFacade;
   }
 
-  public Company requestCompanyInfo() throws RequestStatusException, IOException {
+  public Company requestCompanyInfo() throws RequestStatusException, IOException, URISyntaxException {
     InputStream inputStream = apiFacade.getRequest(COMPANIES_ENDPOINT);
 
     return this.jsonFacade.stringStreamToJsonObject(inputStream, Company.class);

@@ -3,6 +3,7 @@ package com.ic.invoicecapture;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import org.easymock.EasyMock;
 import org.junit.Assert;
@@ -31,7 +32,7 @@ public class IcFacadeTest {
   }
 
   @Test
-  public void requestCompanyInfo_correctness() throws RequestStatusException, IOException {
+  public void requestCompanyInfo_correctness() throws RequestStatusException, IOException, URISyntaxException {
     CompanyBuilder companyBuilder = CompanyBuilder.buildTestCompanyBuilder();
     Company correctCompany = companyBuilder.buildCompany();
 
@@ -50,7 +51,5 @@ public class IcFacadeTest {
     EasyMock.verify(this.apiMock);
     EasyMock.verify(this.jsonMock);
   }
-
-
 
 }

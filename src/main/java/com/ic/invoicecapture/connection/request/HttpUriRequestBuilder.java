@@ -1,6 +1,7 @@
 package com.ic.invoicecapture.connection.request;
 
 import com.ic.invoicecapture.connection.RequestType;
+import java.net.URI;
 import java.util.Map;
 import java.util.TreeMap;
 import org.apache.http.client.methods.HttpGet;
@@ -12,7 +13,7 @@ public class HttpUriRequestBuilder {
   // private String body = null;
   private Map<String, String> headers = new TreeMap<>();
   private RequestType requestType = null;
-  private String url = null;
+  private URI url = null;
 
   public void addHeader(String key, String value) {
     headers.put(key, value);
@@ -61,7 +62,7 @@ public class HttpUriRequestBuilder {
     this.requestType = requestType;
   }
 
-  public void setUrl(String url) {
+  public void setUrl(URI url) {
     this.url = url;
   }
 

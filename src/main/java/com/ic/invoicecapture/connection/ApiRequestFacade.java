@@ -9,6 +9,8 @@ import com.ic.invoicecapture.connection.response.validators.StatusCodeValidator;
 import com.ic.invoicecapture.exceptions.RequestStatusException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.javatuples.Pair;
 
@@ -18,36 +20,41 @@ public class ApiRequestFacade {
   private static final String CONTENT_TYPE = "application/json";
 
   private final String apiToken;
-  private final String baseUrl;
-  private final IExchangerBuilder exchangerBuilder; //must be thread-safe
-  
-  public ApiRequestFacade(String apiToken, String baseUrl) {
+  private final URI baseUrl;
+  private final IExchangerBuilder exchangerBuilder; // must be thread-safe
+
+  public ApiRequestFacade(String apiToken, URI baseUrl) {
     this.apiToken = apiToken;
     this.baseUrl = baseUrl;
     this.exchangerBuilder = (request) -> ClosingExchanger.buildExchanger(request);
   }
 
-  private IMessageExchanger buildExchanger(String urlEndpoint, RequestType requestType) {
+  private IMessageExchanger buildExchanger(String urlEndpoint, RequestType requestType) throws URISyntaxException {
     HttpUriRequestBuilder requestBuilder = this.buildRequestBuilder();
     requestBuilder.setRequestType(requestType);
-    String url = UrlOperations.joinUrls(this.baseUrl, urlEndpoint);
+    URI url = joinUris(this.baseUrl, urlEndpoint);
     requestBuilder.setUrl(url);
 
     HttpUriRequest request = requestBuilder.build();
     return this.exchangerBuilder.build(request);
   }
-  
+
+  private URI joinUris(URI baseUri, String uriEndpoint) throws URISyntaxException {
+    URI url = new URI(baseUri.toString() + "/" + uriEndpoint);
+    return url.normalize();
+  }
+
   private HttpUriRequestBuilder buildRequestBuilder() {
     HttpUriRequestBuilder requestBuilder = new HttpUriRequestBuilder();
-    
+
     requestBuilder.addHeader(X_API_TOKEN_NAME, this.apiToken);
     requestBuilder.addHeader("Content-Type", CONTENT_TYPE);
     requestBuilder.addHeader("Accept", CONTENT_TYPE);
-    
+
     return requestBuilder;
   }
 
-  public InputStream getRequest(String urlEndpoint) throws IOException, RequestStatusException {
+  public InputStream getRequest(String urlEndpoint) throws IOException, RequestStatusException, URISyntaxException {
     IMessageExchanger exchanger = buildExchanger(urlEndpoint, RequestType.GET);
     ServerResponse responsePair = exchanger.exchangeMessages();
     StatusCodeValidator validator = new StatusCodeValidator(responsePair);
