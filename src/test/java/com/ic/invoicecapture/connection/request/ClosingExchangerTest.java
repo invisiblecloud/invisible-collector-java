@@ -19,6 +19,7 @@ public class ClosingExchangerTest {
   private HttpEntity bodyEntity;
   private IEntityConsumer consumer;
   private CloseableHttpClient client;
+  
 
   public void initMocks() {
     this.request = EasyMock.createNiceMock(HttpUriRequest.class);

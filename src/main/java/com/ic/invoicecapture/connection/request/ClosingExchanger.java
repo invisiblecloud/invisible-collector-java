@@ -13,7 +13,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
 public class ClosingExchanger implements IMessageExchanger {
-  
+
   private CloseableHttpClient httpClient;
   private HttpUriRequest request;
   private IEntityConsumer entityConsumer;
@@ -23,8 +23,9 @@ public class ClosingExchanger implements IMessageExchanger {
     this.request = request;
     this.entityConsumer = entity -> EntityUtils.consume(entity);
   }
-  
-  public ClosingExchanger(CloseableHttpClient httpClient, HttpUriRequest request, IEntityConsumer entityConsumer) {
+
+  public ClosingExchanger(CloseableHttpClient httpClient, HttpUriRequest request,
+      IEntityConsumer entityConsumer) {
     this.httpClient = httpClient;
     this.request = request;
     this.entityConsumer = entityConsumer;
@@ -34,8 +35,8 @@ public class ClosingExchanger implements IMessageExchanger {
     CloseableHttpClient httpClient = HttpClients.createMinimal();
     return new ClosingExchanger(httpClient, request);
   }
-  
-  public ServerResponse exchangeMessages() throws IOException, IcException  {
+
+  public ServerResponse exchangeMessages() throws IOException, IcException {
     CloseableHttpResponse response = null;
     try {
       response = this.httpClient.execute(this.request);

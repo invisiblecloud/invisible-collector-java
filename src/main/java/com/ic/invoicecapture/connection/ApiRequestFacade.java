@@ -1,8 +1,8 @@
 package com.ic.invoicecapture.connection;
 
+import com.ic.invoicecapture.IBuilder;
 import com.ic.invoicecapture.connection.request.ClosingExchanger;
 import com.ic.invoicecapture.connection.request.HttpUriRequestBuilder;
-import com.ic.invoicecapture.connection.request.IExchangerBuilder;
 import com.ic.invoicecapture.connection.request.IMessageExchanger;
 import com.ic.invoicecapture.connection.response.ServerResponse;
 import com.ic.invoicecapture.connection.response.validators.StatusCodeValidator;
@@ -21,7 +21,7 @@ public class ApiRequestFacade {
 
   private final String apiToken;
   private final URI baseUrl;
-  private final IExchangerBuilder exchangerBuilder; // must be thread-safe
+  private final IBuilder<IMessageExchanger, HttpUriRequest> exchangerBuilder; // must be thread-safe
 
   public ApiRequestFacade(String apiToken, URI baseUrl) {
     this.apiToken = apiToken;
@@ -32,6 +32,9 @@ public class ApiRequestFacade {
   private IMessageExchanger buildExchanger(String urlEndpoint, RequestType requestType)
       throws URISyntaxException {
     HttpUriRequestBuilder requestBuilder = this.buildRequestBuilder();
+    requestBuilder.addHeader(X_API_TOKEN_NAME, this.apiToken);
+    requestBuilder.addHeader("Content-Type", CONTENT_TYPE);
+    requestBuilder.addHeader("Accept", CONTENT_TYPE);
     requestBuilder.setRequestType(requestType);
     URI url = joinUris(this.baseUrl, urlEndpoint);
     requestBuilder.setUrl(url);
@@ -42,11 +45,6 @@ public class ApiRequestFacade {
 
   private HttpUriRequestBuilder buildRequestBuilder() {
     HttpUriRequestBuilder requestBuilder = new HttpUriRequestBuilder();
-
-    requestBuilder.addHeader(X_API_TOKEN_NAME, this.apiToken);
-    requestBuilder.addHeader("Content-Type", CONTENT_TYPE);
-    requestBuilder.addHeader("Accept", CONTENT_TYPE);
-
     return requestBuilder;
   }
 
