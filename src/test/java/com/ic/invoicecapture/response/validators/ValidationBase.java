@@ -7,13 +7,13 @@ import com.ic.invoicecapture.connection.response.validators.ValidationResult;
 public class ValidationBase {
   
   public void assertValid(ValidationResult validationResult) {
-    Assertions.assertEquals(validationResult.isValid(), true);
-    Assertions.assertEquals(validationResult.getException(), null);
+    Assertions.assertEquals(true, validationResult.isValid());
+    Assertions.assertEquals(null, validationResult.getException());
   }
   
   public void assertNotValid(ValidationResult validationResult) {
-    Assertions.assertEquals(validationResult.isValid(), false);
-    Assertions.assertNotEquals(validationResult.getException(), null);
+    Assertions.assertEquals(false, validationResult.isValid());
+    Assertions.assertNotEquals(null, validationResult.getException());
   }
 
 }
