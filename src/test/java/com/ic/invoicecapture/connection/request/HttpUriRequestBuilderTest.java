@@ -25,4 +25,10 @@ public class HttpUriRequestBuilderTest {
 //    EasyMock.verify(headersMock);
 //  }
   
+  @Test
+  public void build_requestTypeNull() {
+    
+  }
+  
+  
 }
