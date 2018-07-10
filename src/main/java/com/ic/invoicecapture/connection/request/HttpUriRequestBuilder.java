@@ -8,19 +8,25 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
 
 
-public class HttpUriRequestBuilder {
+public class HttpUriRequestBuilder implements Cloneable {
 
   // private String body = null;
-  private Map<String, String> headers;
+  private final Map<String, String> headers;
   private RequestType requestType = null;
   private URI url = null;
-  
+
   public HttpUriRequestBuilder() {
     this.headers = new TreeMap<>();
   }
-  
+
   public HttpUriRequestBuilder(Map<String, String> headers) {
     this.headers = headers;
+  }
+
+  public HttpUriRequestBuilder(HttpUriRequestBuilder other) {
+    this.requestType = other.requestType;
+    this.url = other.url;
+    this.headers = new TreeMap<String, String>(other.headers);
   }
 
   public void addHeader(String key, String value) {
@@ -30,7 +36,7 @@ public class HttpUriRequestBuilder {
   // public void setBody(String body) {
   // this.body = body;
   // }
-  
+
   private HttpUriRequest buildRequest() {
     HttpUriRequest request = null;
 
@@ -66,11 +72,15 @@ public class HttpUriRequestBuilder {
     return request;
   }
 
+  public HttpUriRequestBuilder clone() {
+    return new HttpUriRequestBuilder(this);
+  }
+
   public void setRequestType(RequestType requestType) {
     this.requestType = requestType;
   }
 
-  public void setUrl(URI url) {
+  public void setUri(URI url) {
     this.url = url;
-  } 
+  }
 }

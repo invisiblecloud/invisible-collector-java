@@ -1,4 +1,4 @@
-package com.ic.invoicecapture;
+package com.ic.invoicecapture.builders;
 
 public interface IBuilder<ReturnT, ArgumentT> {
   ReturnT build(ArgumentT arg);

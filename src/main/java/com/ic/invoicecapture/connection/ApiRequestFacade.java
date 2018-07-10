@@ -1,12 +1,12 @@
 package com.ic.invoicecapture.connection;
 
-import com.ic.invoicecapture.IBuilder;
+import com.ic.invoicecapture.builders.IBuilder;
 import com.ic.invoicecapture.connection.request.ClosingExchanger;
 import com.ic.invoicecapture.connection.request.HttpUriRequestBuilder;
 import com.ic.invoicecapture.connection.request.IMessageExchanger;
 import com.ic.invoicecapture.connection.response.ServerResponse;
-import com.ic.invoicecapture.connection.response.validators.StatusCodeValidator;
-import com.ic.invoicecapture.connection.response.validators.ValidationResult;
+import com.ic.invoicecapture.connection.response.validators.IValidator;
+import com.ic.invoicecapture.connection.response.validators.ValidatorFactory;
 import com.ic.invoicecapture.exceptions.IcException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,45 +22,63 @@ public class ApiRequestFacade {
   private final String apiToken;
   private final URI baseUrl;
   private final IBuilder<IMessageExchanger, HttpUriRequest> exchangerBuilder; // must be thread-safe
+  private HttpUriRequestBuilder requestBuilder;
+  private ValidatorFactory validatorFactory;
 
   public ApiRequestFacade(String apiToken, URI baseUrl) {
     this.apiToken = apiToken;
     this.baseUrl = baseUrl;
+    this.requestBuilder = new HttpUriRequestBuilder();
     this.exchangerBuilder = (request) -> ClosingExchanger.buildExchanger(request);
+    this.validatorFactory = new ValidatorFactory();
+
+    this.addRequestBuilderHeaders(this.requestBuilder);
   }
 
-  private IMessageExchanger buildExchanger(String urlEndpoint, RequestType requestType)
-      throws URISyntaxException {
-    HttpUriRequestBuilder requestBuilder = this.buildRequestBuilder();
+  public ApiRequestFacade(String apiToken, URI baseUrl,
+      IBuilder<IMessageExchanger, HttpUriRequest> exchangerBuilder,
+      HttpUriRequestBuilder requestBuilder, ValidatorFactory validatorFactory) {
+    this.apiToken = apiToken;
+    this.baseUrl = baseUrl;
+    this.requestBuilder = requestBuilder;
+    this.exchangerBuilder = exchangerBuilder;
+    this.validatorFactory = validatorFactory;
+
+    this.addRequestBuilderHeaders(this.requestBuilder);
+  }
+
+  private void addRequestBuilderHeaders(HttpUriRequestBuilder requestBuilder) {
     requestBuilder.addHeader(X_API_TOKEN_NAME, this.apiToken);
     requestBuilder.addHeader("Content-Type", CONTENT_TYPE);
     requestBuilder.addHeader("Accept", CONTENT_TYPE);
-    requestBuilder.setRequestType(requestType);
-    URI url = joinUris(this.baseUrl, urlEndpoint);
-    requestBuilder.setUrl(url);
+  }
 
+  private IMessageExchanger buildExchanger(String urlEndpoint, RequestType requestType,
+      HttpUriRequestBuilder requestBuilder) throws URISyntaxException {
+    URI url = ApiRequestFacade.joinUris(this.baseUrl, urlEndpoint);
+
+    requestBuilder.setRequestType(requestType);
+    requestBuilder.setUri(url);
     HttpUriRequest request = requestBuilder.build();
     return this.exchangerBuilder.build(request);
   }
-
-  private HttpUriRequestBuilder buildRequestBuilder() {
-    HttpUriRequestBuilder requestBuilder = new HttpUriRequestBuilder();
-    return requestBuilder;
-  }
-
+ 
   public InputStream getRequest(String urlEndpoint)
       throws IOException, URISyntaxException, IcException {
-    IMessageExchanger exchanger = buildExchanger(urlEndpoint, RequestType.GET);
+    HttpUriRequestBuilder requestBuilder = this.requestBuilder.clone();
+    IMessageExchanger exchanger = buildExchanger(urlEndpoint, RequestType.GET, requestBuilder);
     ServerResponse responsePair = exchanger.exchangeMessages();
 
-    StatusCodeValidator validator = new StatusCodeValidator(responsePair);
-    ValidationResult validationResult = validator.validate();
-    validationResult.tryThrowException(); // can throw exception
+    IValidator validator = this.validatorFactory.build(RequestType.GET, responsePair);
+    validator.validateAndTryThrowException(); // can throw exception
 
     return responsePair.getBodyEntity().getContent();
   }
 
-  private URI joinUris(URI baseUri, String uriEndpoint) throws URISyntaxException {
+  public static URI joinUris(URI baseUri, String uriEndpoint) throws URISyntaxException {
+    if (uriEndpoint == null || uriEndpoint.equals("")) {
+      return baseUri.normalize();
+    }
     URI url = new URI(baseUri.toString() + "/" + uriEndpoint);
     return url.normalize();
   }

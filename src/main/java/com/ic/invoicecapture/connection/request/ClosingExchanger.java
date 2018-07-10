@@ -30,7 +30,7 @@ public class ClosingExchanger implements IMessageExchanger {
     this.request = request;
     this.entityConsumer = entityConsumer;
   }
-
+  
   public static ClosingExchanger buildExchanger(HttpUriRequest request) {
     CloseableHttpClient httpClient = HttpClients.createMinimal();
     return new ClosingExchanger(httpClient, request);

@@ -4,18 +4,16 @@ package com.ic.invoicecapture.response.validators;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import com.ic.invoicecapture.connection.response.validators.JsonValidator;
-import com.ic.invoicecapture.connection.response.validators.ValidationResult;
+
 import com.ic.invoicecapture.exceptions.IcException;
 
-public class JsonValidatorTest extends ValidationBase {
+public class JsonValidatorTest {
 
   @Test
-  public void validate_pass() {
+  public void validate_pass() throws IcException {
     JsonValidator jsonValidator = new JsonValidator("text/plain, application/json");
     
-    ValidationResult validationResult = jsonValidator.validate();
-    
-    this.assertValid(validationResult);
+    jsonValidator.validateAndTryThrowException();
   }
   
   @Test
@@ -23,11 +21,7 @@ public class JsonValidatorTest extends ValidationBase {
     final String BODY_STRING = "abcde";
     
     JsonValidator jsonValidator = new JsonValidator(BODY_STRING);
-    
-    ValidationResult validationResult = jsonValidator.validate();
-    
-    IcException exception = validationResult.getException();
-    this.assertNotValid(validationResult);
+    IcException exception = Assertions.assertThrows(IcException.class, jsonValidator::validateAndTryThrowException);
     
     String exceptionMessage = exception.getMessage();
     Assertions.assertTrue(exceptionMessage.contains(BODY_STRING));

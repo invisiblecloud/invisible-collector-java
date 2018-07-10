@@ -13,7 +13,7 @@ public class StatusCodeValidator implements IValidator {
   }
 
   @Override
-  public ValidationResult validate() {
+  public void validateAndTryThrowException() throws IcException {
     StatusLine statusLine = responsePair.getStatusLine();
     final int statusCode = statusLine.getStatusCode();
     final int statusFamily = statusCode / 100;
@@ -25,9 +25,7 @@ public class StatusCodeValidator implements IValidator {
       } catch (IcException e) {
         exceptionMsg += "\n" + e.getMessage();
       }
-      return new ValidationResult(false, new IcException(exceptionMsg));
-    } else {
-      return ValidationResult.buildPassing();
-    }
+      throw new IcException(exceptionMsg);
+    } 
   }
 }

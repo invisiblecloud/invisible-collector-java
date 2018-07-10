@@ -19,7 +19,7 @@ public class HttpUriRequestBuilderTest {
   @Test
   public void build_requestTypeNull() {
     HttpUriRequestBuilder requestBuilder = new HttpUriRequestBuilder();
-    requestBuilder.setUrl(TEST_URI);
+    requestBuilder.setUri(TEST_URI);
     Assertions.assertThrows(IllegalArgumentException.class, requestBuilder::build);
   }
   
@@ -34,7 +34,7 @@ public class HttpUriRequestBuilderTest {
   public void build_get() {
     HttpUriRequestBuilder requestBuilder = new HttpUriRequestBuilder();
     requestBuilder.setRequestType(RequestType.GET);
-    requestBuilder.setUrl(TEST_URI);
+    requestBuilder.setUri(TEST_URI);
     HttpUriRequest request = requestBuilder.build();
     Assertions.assertNotEquals(null, request);
     Assertions.assertTrue(request instanceof HttpGet);
@@ -44,7 +44,7 @@ public class HttpUriRequestBuilderTest {
   public void build_noHeaders() {
     HttpUriRequestBuilder requestBuilder = new HttpUriRequestBuilder();
     requestBuilder.setRequestType(RequestType.GET);
-    requestBuilder.setUrl(TEST_URI);
+    requestBuilder.setUri(TEST_URI);
     
     HttpUriRequest request = requestBuilder.build();
     Assertions.assertNotEquals(request, null);
@@ -56,7 +56,7 @@ public class HttpUriRequestBuilderTest {
   public void build_oneHeader() {
     HttpUriRequestBuilder requestBuilder = new HttpUriRequestBuilder();
     requestBuilder.setRequestType(RequestType.GET);
-    requestBuilder.setUrl(TEST_URI);
+    requestBuilder.setUri(TEST_URI);
     requestBuilder.addHeader(HEADER_NAME, HEADER_VALUE);
     
     HttpUriRequest request = requestBuilder.build();
@@ -70,7 +70,7 @@ public class HttpUriRequestBuilderTest {
   public void build_headers() {
     HttpUriRequestBuilder requestBuilder = new HttpUriRequestBuilder();
     requestBuilder.setRequestType(RequestType.GET);
-    requestBuilder.setUrl(TEST_URI);
+    requestBuilder.setUri(TEST_URI);
     requestBuilder.addHeader(HEADER_NAME, HEADER_VALUE);
     requestBuilder.addHeader(HEADER_NAME2, HEADER_VALUE2);
     
@@ -90,7 +90,7 @@ public class HttpUriRequestBuilderTest {
   public void build_headersDuplicateKey() {
     HttpUriRequestBuilder requestBuilder = new HttpUriRequestBuilder();
     requestBuilder.setRequestType(RequestType.GET);
-    requestBuilder.setUrl(TEST_URI);
+    requestBuilder.setUri(TEST_URI);
     requestBuilder.addHeader(HEADER_NAME, HEADER_VALUE);
     requestBuilder.addHeader(HEADER_NAME, HEADER_VALUE2);
     
