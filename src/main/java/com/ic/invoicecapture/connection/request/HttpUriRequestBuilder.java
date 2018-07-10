@@ -1,6 +1,7 @@
 package com.ic.invoicecapture.connection.request;
 
 import com.ic.invoicecapture.connection.RequestType;
+import com.ic.invoicecapture.exceptions.IcRuntimeException;
 import java.net.URI;
 import java.util.Map;
 import java.util.TreeMap;
@@ -11,9 +12,9 @@ import org.apache.http.client.methods.HttpUriRequest;
 public class HttpUriRequestBuilder implements Cloneable {
 
   // private String body = null;
-  private final Map<String, String> headers;
+  private Map<String, String> headers;
   private RequestType requestType = null;
-  private URI url = null;
+  private URI uri = null;
 
   public HttpUriRequestBuilder() {
     this.headers = new TreeMap<>();
@@ -25,7 +26,7 @@ public class HttpUriRequestBuilder implements Cloneable {
 
   public HttpUriRequestBuilder(HttpUriRequestBuilder other) {
     this.requestType = other.requestType;
-    this.url = other.url;
+    this.uri = other.uri;
     this.headers = new TreeMap<String, String>(other.headers);
   }
 
@@ -42,7 +43,7 @@ public class HttpUriRequestBuilder implements Cloneable {
 
     switch (requestType) {
       case GET:
-        request = new HttpGet(this.url);
+        request = new HttpGet(this.uri);
         break;
       case POST:
       case PUT:
@@ -63,7 +64,7 @@ public class HttpUriRequestBuilder implements Cloneable {
   public HttpUriRequest build() throws IllegalArgumentException {
     if (requestType == null) {
       throw new IllegalArgumentException("No Http Request Type set");
-    } else if (url == null) {
+    } else if (uri == null) {
       throw new IllegalArgumentException("No URL set");
     }
 
@@ -73,14 +74,32 @@ public class HttpUriRequestBuilder implements Cloneable {
   }
 
   public HttpUriRequestBuilder clone() {
-    return new HttpUriRequestBuilder(this);
+    try {
+      HttpUriRequestBuilder clone = (HttpUriRequestBuilder) super.clone();
+      clone.headers = new TreeMap(this.headers);
+      return clone;
+    } catch (CloneNotSupportedException e) {
+      throw new IcRuntimeException("OO gone wrong");
+    }
   }
 
+  public RequestType getRequestType() {
+    return this.requestType;
+  }
+  
+  public URI getUri() {
+    return this.uri;
+  }
+  
+  public Map<String, String> getHeaders() {
+    return new TreeMap<String, String>(this.headers);
+  }
+  
   public void setRequestType(RequestType requestType) {
     this.requestType = requestType;
   }
 
   public void setUri(URI url) {
-    this.url = url;
+    this.uri = url;
   }
 }

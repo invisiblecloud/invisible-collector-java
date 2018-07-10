@@ -101,4 +101,18 @@ public class HttpUriRequestBuilderTest {
     Assertions.assertEquals(HEADER_VALUE2, headers[0].getValue());
   }
   
+  @Test
+  public void clone_equalCopy() {
+    HttpUriRequestBuilder requestBuilder = new HttpUriRequestBuilder();
+    requestBuilder.setRequestType(RequestType.GET);
+    requestBuilder.setUri(TEST_URI);
+    requestBuilder.addHeader(HEADER_NAME, HEADER_VALUE);
+    requestBuilder.addHeader(HEADER_NAME, HEADER_VALUE2);
+    HttpUriRequestBuilder clone = requestBuilder.clone();
+    
+    Assertions.assertEquals(requestBuilder.getUri(), clone.getUri());
+    Assertions.assertEquals(requestBuilder.getRequestType(), clone.getRequestType());
+    Assertions.assertEquals(requestBuilder.getHeaders(), clone.getHeaders());
+  }
+  
 }
