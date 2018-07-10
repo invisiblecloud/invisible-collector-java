@@ -102,6 +102,11 @@
 						<artifactId>junit-jupiter-engine</artifactId>
 						<version>${junit.version}</version>
 					</dependency>
+					<dependency>
+						<groupId>org.junit.vintage</groupId>
+						<artifactId>junit-vintage-engine</artifactId>
+						<version>${junit.version}</version>
+					</dependency>
 				</dependencies>
 			</plugin>
 		</plugins>
@@ -148,7 +153,6 @@
 			<version>${junit.platform.version}</version>
 			<scope>test</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>

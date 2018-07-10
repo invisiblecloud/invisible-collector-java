@@ -28,7 +28,7 @@ public class ValidationResult {
   }
 
   public void tryThrowException() throws IcException {
-    if(! this.isValid()) {
+    if (! this.isValid()) {
       throw this.exception;
     }
   }

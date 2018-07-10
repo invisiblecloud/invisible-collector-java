@@ -29,7 +29,8 @@ public class ApiRequestFacade {
     this.exchangerBuilder = (request) -> ClosingExchanger.buildExchanger(request);
   }
 
-  private IMessageExchanger buildExchanger(String urlEndpoint, RequestType requestType) throws URISyntaxException {
+  private IMessageExchanger buildExchanger(String urlEndpoint, RequestType requestType)
+      throws URISyntaxException {
     HttpUriRequestBuilder requestBuilder = this.buildRequestBuilder();
     requestBuilder.setRequestType(requestType);
     URI url = joinUris(this.baseUrl, urlEndpoint);
@@ -38,7 +39,7 @@ public class ApiRequestFacade {
     HttpUriRequest request = requestBuilder.build();
     return this.exchangerBuilder.build(request);
   }
-  
+
   private HttpUriRequestBuilder buildRequestBuilder() {
     HttpUriRequestBuilder requestBuilder = new HttpUriRequestBuilder();
 
@@ -49,17 +50,18 @@ public class ApiRequestFacade {
     return requestBuilder;
   }
 
-  public InputStream getRequest(String urlEndpoint) throws IOException, URISyntaxException, IcException {
+  public InputStream getRequest(String urlEndpoint)
+      throws IOException, URISyntaxException, IcException {
     IMessageExchanger exchanger = buildExchanger(urlEndpoint, RequestType.GET);
     ServerResponse responsePair = exchanger.exchangeMessages();
-    
+
     StatusCodeValidator validator = new StatusCodeValidator(responsePair);
     ValidationResult validationResult = validator.validate();
-    validationResult.tryThrowException(); //can throw exception
+    validationResult.tryThrowException(); // can throw exception
 
     return responsePair.getBodyEntity().getContent();
   }
-  
+
   private URI joinUris(URI baseUri, String uriEndpoint) throws URISyntaxException {
     URI url = new URI(baseUri.toString() + "/" + uriEndpoint);
     return url.normalize();

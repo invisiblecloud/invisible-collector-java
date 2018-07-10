@@ -16,10 +16,18 @@ public class ClosingExchanger implements IMessageExchanger {
   
   private CloseableHttpClient httpClient;
   private HttpUriRequest request;
+  private IEntityConsumer entityConsumer;
 
   public ClosingExchanger(CloseableHttpClient httpClient, HttpUriRequest request) {
     this.httpClient = httpClient;
     this.request = request;
+    this.entityConsumer = entity -> EntityUtils.consume(entity);
+  }
+  
+  public ClosingExchanger(CloseableHttpClient httpClient, HttpUriRequest request, IEntityConsumer entityConsumer) {
+    this.httpClient = httpClient;
+    this.request = request;
+    this.entityConsumer = entityConsumer;
   }
 
   public static ClosingExchanger buildExchanger(HttpUriRequest request) {
@@ -41,8 +49,8 @@ public class ClosingExchanger implements IMessageExchanger {
       statusLine = response.getStatusLine();
       bodyEntity = response.getEntity();
 
-      EntityUtils.consume(bodyEntity);
-    } catch (Exception e) {
+      this.entityConsumer.consume(bodyEntity);
+    } catch (IOException e) {
       response.close(); // close connection
       throw e;
     } finally {

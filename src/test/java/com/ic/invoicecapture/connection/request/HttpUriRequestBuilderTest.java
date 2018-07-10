@@ -1,12 +1,9 @@
 package com.ic.invoicecapture.connection.request;
 
 import java.net.URI;
-import java.util.Map;
-import java.util.TreeMap;
 import org.apache.http.Header;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
-import org.easymock.EasyMock;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import com.ic.invoicecapture.connection.RequestType;
@@ -18,24 +15,6 @@ public class HttpUriRequestBuilderTest {
   private static final String HEADER_NAME2 = "test-header-name2";
   private static final String HEADER_VALUE = "test-header-value";
   private static final String HEADER_VALUE2 = "test-header-value2";
-//  
-//  @Test
-//  public void addHeader_correctness() {
-//    final String KEY = "test_key";
-//    final String VALUE = "test_value";
-//    
-//    Map<String, String> headersMock = new TreeMap<>();
-//    headersMock = EasyMock.createNiceMock(TreeMap.class);
-//    headersMock.put(EasyMock.anyString(), EasyMock.anyString());
-//    EasyMock.expectLastCall();
-//    EasyMock.replay(headersMock);
-//    
-//    HttpUriRequestBuilder requestBuilder = new HttpUriRequestBuilder(headersMock);
-//    requestBuilder.addHeader(KEY, VALUE);
-//    
-//    EasyMock.verify(headersMock);
-//  }
-  
   
   @Test
   public void build_requestTypeNull() {
