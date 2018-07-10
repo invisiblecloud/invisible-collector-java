@@ -1,8 +1,9 @@
 package com.ic.invoicecapture.json;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import com.google.gson.Gson;
-import org.junit.Assert;
+
 
 public class GsonSingletonTest {
 
@@ -11,6 +12,6 @@ public class GsonSingletonTest {
     Gson gson1 = GsonSingleton.getInstance();
     Gson gson2 = GsonSingleton.getInstance();
     
-    Assert.assertEquals(gson1, gson2);
+    Assertions.assertEquals(gson1, gson2);
   }
 }

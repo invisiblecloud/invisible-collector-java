@@ -3,9 +3,9 @@ package com.ic.invoicecapture.response.validators;
 import org.apache.http.HttpEntity;
 import org.apache.http.StatusLine;
 import org.easymock.EasyMock;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import com.ic.invoicecapture.connection.response.ServerResponse;
 import com.ic.invoicecapture.connection.response.validators.StatusCodeValidator;
 import com.ic.invoicecapture.connection.response.validators.ValidationResult;
@@ -18,7 +18,7 @@ public class StatusCodeValidatorTest extends ValidationBase {
   private ServerResponse serverResponseMock;
 
 
-  @Before
+  @BeforeEach
   public void init() {
     this.statusLineMock = EasyMock.createNiceMock(StatusLine.class);
     EasyMock.createNiceMock(HttpEntity.class);
@@ -63,8 +63,8 @@ public class StatusCodeValidatorTest extends ValidationBase {
     EasyMock.verify(this.serverResponseMock);
     
     String exceptionMessage = exception.getMessage();
-    Assert.assertTrue(exceptionMessage.contains("" + STATUS_CODE));
-    Assert.assertTrue(exceptionMessage.contains(BODY_STRING));
+    Assertions.assertTrue(exceptionMessage.contains("" + STATUS_CODE));
+    Assertions.assertTrue(exceptionMessage.contains(BODY_STRING));
     
   }
 

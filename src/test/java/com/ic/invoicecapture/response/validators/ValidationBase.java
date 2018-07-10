@@ -1,18 +1,19 @@
 package com.ic.invoicecapture.response.validators;
 
-import org.junit.Assert;
+
+import org.junit.jupiter.api.Assertions;
 import com.ic.invoicecapture.connection.response.validators.ValidationResult;
 
 public class ValidationBase {
   
   public void assertValid(ValidationResult validationResult) {
-    Assert.assertEquals(validationResult.isValid(), true);
-    Assert.assertEquals(validationResult.getException(), null);
+    Assertions.assertEquals(validationResult.isValid(), true);
+    Assertions.assertEquals(validationResult.getException(), null);
   }
   
   public void assertNotValid(ValidationResult validationResult) {
-    Assert.assertEquals(validationResult.isValid(), false);
-    Assert.assertNotEquals(validationResult.getException(), null);
+    Assertions.assertEquals(validationResult.isValid(), false);
+    Assertions.assertNotEquals(validationResult.getException(), null);
   }
 
 }

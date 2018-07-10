@@ -4,8 +4,8 @@ import com.google.gson.JsonObject;
 import com.ic.invoicecapture.json.JsonConverter;
 import com.ic.invoicecapture.model.Company;
 import com.ic.invoicecapture.model.builder.CompanyBuilder;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class CompanyTest {
 
@@ -15,10 +15,10 @@ public class CompanyTest {
     Company company1 = new Company();
     Company company2 = new Company();
 
-    Assert.assertEquals(company1, company2);
+    Assertions.assertEquals(company1, company2);
 
     company1.setGid("12321");
-    Assert.assertNotEquals(company1, company2);
+    Assertions.assertNotEquals(company1, company2);
   }
 
   @Test
@@ -26,10 +26,10 @@ public class CompanyTest {
     Company company1 = new Company();
     Company company2 = new Company();
 
-    Assert.assertEquals(company1.hashCode(), company2.hashCode());
+    Assertions.assertEquals(company1.hashCode(), company2.hashCode());
 
     company1.setName("some other name");
-    Assert.assertNotEquals(company1.hashCode(), company2.hashCode());
+    Assertions.assertNotEquals(company1.hashCode(), company2.hashCode());
   }
 
   @Test
@@ -41,11 +41,11 @@ public class CompanyTest {
     JsonObject generatedJson = JsonConverter.jsonStringAsJsonObject(generatedJsonString);
     JsonObject correctJson = companyBuilder.buildJsonObject();
 
-    Assert.assertEquals(generatedJson, correctJson);
+    Assertions.assertEquals(generatedJson, correctJson);
 
     company.setCity("newCity");
     generatedJsonString = company.asJsonString();
     generatedJson = JsonConverter.jsonStringAsJsonObject(generatedJsonString);
-    Assert.assertNotEquals(generatedJson, correctJson);
+    Assertions.assertNotEquals(generatedJson, correctJson);
   }
 }

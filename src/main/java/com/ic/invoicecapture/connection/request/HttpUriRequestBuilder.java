@@ -11,9 +11,17 @@ import org.apache.http.client.methods.HttpUriRequest;
 public class HttpUriRequestBuilder {
 
   // private String body = null;
-  private Map<String, String> headers = new TreeMap<>();
+  private Map<String, String> headers;
   private RequestType requestType = null;
   private URI url = null;
+  
+  public HttpUriRequestBuilder() {
+    this.headers = new TreeMap<>();
+  }
+  
+  public HttpUriRequestBuilder(Map<String, String> headers) {
+    this.headers = headers;
+  }
 
   public void addHeader(String key, String value) {
     headers.put(key, value);
@@ -64,7 +72,5 @@ public class HttpUriRequestBuilder {
 
   public void setUrl(URI url) {
     this.url = url;
-  }
-
-  
+  } 
 }

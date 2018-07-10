@@ -4,8 +4,8 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import com.ic.invoicecapture.model.Company;
 import com.ic.invoicecapture.model.builder.CompanyBuilder;
 
@@ -22,6 +22,6 @@ public class JsonFacadeTest {
     
     Company returnedCompany = jsonFacade.stringStreamToJsonObject(inputStream, Company.class);
     
-    Assert.assertEquals(correctCompany, returnedCompany);
+    Assertions.assertEquals(correctCompany, returnedCompany);
   }
 }

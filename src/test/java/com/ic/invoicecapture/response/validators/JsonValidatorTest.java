@@ -1,7 +1,8 @@
 package com.ic.invoicecapture.response.validators;
 
-import org.junit.Assert;
-import org.junit.Test;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import com.ic.invoicecapture.connection.response.validators.JsonValidator;
 import com.ic.invoicecapture.connection.response.validators.ValidationResult;
 import com.ic.invoicecapture.exceptions.IcException;
@@ -29,6 +30,6 @@ public class JsonValidatorTest extends ValidationBase {
     this.assertNotValid(validationResult);
     
     String exceptionMessage = exception.getMessage();
-    Assert.assertTrue(exceptionMessage.contains(BODY_STRING));
+    Assertions.assertTrue(exceptionMessage.contains(BODY_STRING));
   }
 }

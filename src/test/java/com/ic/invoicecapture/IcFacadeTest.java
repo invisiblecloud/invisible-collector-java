@@ -6,9 +6,9 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import org.easymock.EasyMock;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import com.ic.invoicecapture.connection.ApiRequestFacade;
 import com.ic.invoicecapture.exceptions.IcException;
 import com.ic.invoicecapture.json.JsonFacade;
@@ -23,7 +23,7 @@ public class IcFacadeTest {
   private InputStream inputStream;
 
 
-  @Before
+  @BeforeEach
   public void init() {
     this.apiMock = EasyMock.createNiceMock(ApiRequestFacade.class);
     this.jsonMock = EasyMock.createNiceMock(JsonFacade.class);
@@ -46,7 +46,7 @@ public class IcFacadeTest {
     
     Company returnedCompany = this.icFacade.requestCompanyInfo();
     
-    Assert.assertEquals(correctCompany, returnedCompany);
+    Assertions.assertEquals(correctCompany, returnedCompany);
     
     EasyMock.verify(this.apiMock);
     EasyMock.verify(this.jsonMock);

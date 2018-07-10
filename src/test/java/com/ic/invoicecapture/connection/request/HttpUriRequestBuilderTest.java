@@ -3,7 +3,7 @@ package com.ic.invoicecapture.connection.request;
 import java.util.Map;
 import java.util.TreeMap;
 import org.easymock.EasyMock;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class HttpUriRequestBuilderTest {
 

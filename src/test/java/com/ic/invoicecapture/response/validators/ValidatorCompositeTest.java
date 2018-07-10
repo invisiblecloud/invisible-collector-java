@@ -1,7 +1,7 @@
 package com.ic.invoicecapture.response.validators;
 
 import org.easymock.EasyMock;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
 import com.ic.invoicecapture.connection.response.validators.IValidator;
 import com.ic.invoicecapture.connection.response.validators.ValidationResult;
