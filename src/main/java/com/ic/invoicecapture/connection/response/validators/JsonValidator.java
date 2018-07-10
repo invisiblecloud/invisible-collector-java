@@ -18,14 +18,11 @@ public class JsonValidator implements IValidator {
   }
 
   @Override
-  public ValidationResult validate() {
-    if (this.contentType.contains(JSON_CONTENT_TYPE)) {
-      return ValidationResult.buildPassing();
-    } else {
+  public void validateAndTryThrowException() throws IcException {
+    if (! this.contentType.contains(JSON_CONTENT_TYPE)) {
       final String exceptionMessage = "Wrong content-type received, expected: " + this.contentType
           + ", received: " + JSON_CONTENT_TYPE;
-      IcException e = new IcException(exceptionMessage);
-      return new ValidationResult(false, e);
+      throw new IcException(exceptionMessage);
     }
   }
 }

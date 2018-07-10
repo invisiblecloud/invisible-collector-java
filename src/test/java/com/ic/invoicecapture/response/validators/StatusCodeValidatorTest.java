@@ -8,10 +8,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import com.ic.invoicecapture.connection.response.ServerResponse;
 import com.ic.invoicecapture.connection.response.validators.StatusCodeValidator;
-import com.ic.invoicecapture.connection.response.validators.ValidationResult;
 import com.ic.invoicecapture.exceptions.IcException;
 
-public class StatusCodeValidatorTest extends ValidationBase {
+public class StatusCodeValidatorTest {
 
 
   private StatusLine statusLineMock;
@@ -27,7 +26,7 @@ public class StatusCodeValidatorTest extends ValidationBase {
 
 
   @Test
-  public void validate_pass() {
+  public void validate_pass() throws IcException {
     EasyMock.expect(this.serverResponseMock.getStatusLine()).andReturn(this.statusLineMock);
     EasyMock.expect(this.statusLineMock.getStatusCode()).andReturn(200);
     EasyMock.replay(this.serverResponseMock);
@@ -35,9 +34,8 @@ public class StatusCodeValidatorTest extends ValidationBase {
 
     StatusCodeValidator statusCodeValidator = new StatusCodeValidator(this.serverResponseMock);
 
-    ValidationResult validationResult = statusCodeValidator.validate();
+    statusCodeValidator.validateAndTryThrowException();
 
-    this.assertValid(validationResult);
     EasyMock.verify(this.statusLineMock);
     EasyMock.verify(this.serverResponseMock);
   }
@@ -53,19 +51,17 @@ public class StatusCodeValidatorTest extends ValidationBase {
     EasyMock.replay(this.serverResponseMock);
     EasyMock.replay(this.statusLineMock);
 
-    StatusCodeValidator jsonValidator = new StatusCodeValidator(this.serverResponseMock);
+    StatusCodeValidator statusCodeValidator = new StatusCodeValidator(this.serverResponseMock);
 
-    ValidationResult validationResult = jsonValidator.validate();
-
-    IcException exception = validationResult.getException();
-    this.assertNotValid(validationResult);
+    IcException exception =
+        Assertions.assertThrows(IcException.class, statusCodeValidator::validateAndTryThrowException);
     EasyMock.verify(this.statusLineMock);
     EasyMock.verify(this.serverResponseMock);
-    
+
     String exceptionMessage = exception.getMessage();
     Assertions.assertTrue(exceptionMessage.contains("" + STATUS_CODE));
     Assertions.assertTrue(exceptionMessage.contains(BODY_STRING));
-    
+
   }
 
 }

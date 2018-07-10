@@ -4,69 +4,57 @@ import org.easymock.EasyMock;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
 import com.ic.invoicecapture.connection.response.validators.IValidator;
-import com.ic.invoicecapture.connection.response.validators.ValidationResult;
-import com.ic.invoicecapture.connection.response.validators.ValidatorComposite;
 
-public class ValidatorCompositeTest extends ValidationBase {
+import com.ic.invoicecapture.connection.response.validators.ValidatorComposite;
+import com.ic.invoicecapture.exceptions.IcException;
+
+public class ValidatorCompositeTest {
   
   @Test
   public void validate_empty() {
     ValidatorComposite composite = new ValidatorComposite();
-    Assertions.assertThrows(IllegalArgumentException.class, composite::validate);
+    Assertions.assertThrows(IllegalArgumentException.class, composite::validateAndTryThrowException);
   }
   
-  private ValidationResult prepareValidationResultMock(boolean isValid) {
-    ValidationResult validationResult = EasyMock.createNiceMock(ValidationResult.class);
-    EasyMock.expect(validationResult.isValid()).andReturn(isValid);
-    EasyMock.replay(validationResult);
-    return validationResult;
-  }
-  
-  private IValidator prepareValidatorMock(ValidationResult validationResult) {
+  private IValidator prepareValidatorMock(boolean isValid) throws IcException {
     IValidator validator = EasyMock.createNiceMock(IValidator.class);
-    EasyMock.expect(validator.validate()).andReturn(validationResult);
-    EasyMock.replay(validator);
+    validator.validateAndTryThrowException();
+    if(isValid) {
+      EasyMock.expectLastCall().once();
+    } else {
+      IcException exception = new IcException();
+      EasyMock.expectLastCall().andThrow(exception);
+    }
     
+    EasyMock.replay(validator);
     return validator;
   }
   
   @Test
-  public void validate_passing() {
+  public void validate_passing() throws IcException {
     ValidatorComposite composite = new ValidatorComposite();
-    ValidationResult validResult = this.prepareValidationResultMock(true);
-    IValidator validValidator = this.prepareValidatorMock(validResult);
-    ValidationResult validResult2 = this.prepareValidationResultMock(true);
-    IValidator validValidator2 = this.prepareValidatorMock(validResult2);
+    IValidator validValidator = this.prepareValidatorMock(true);
+    IValidator validValidator2 = this.prepareValidatorMock(true);
     composite.addValidator(validValidator);
     composite.addValidator(validValidator2);
     
-    ValidationResult returnedValidation = composite.validate();
+    composite.validateAndTryThrowException();
     
-    this.assertValid(returnedValidation);
-    
-    EasyMock.verify(validResult);
     EasyMock.verify(validValidator);
-    EasyMock.verify(validResult2);
     EasyMock.verify(validValidator2);
   }
   
   @Test
-  public void validate_failingCorrectOrder() {
+  public void validate_failingCorrectOrder() throws IcException {
     ValidatorComposite composite = new ValidatorComposite();
-    ValidationResult validResult = this.prepareValidationResultMock(true);
-    IValidator validValidator = this.prepareValidatorMock(validResult);
-    ValidationResult failingResult = this.prepareValidationResultMock(false);
-    IValidator failingValidator = this.prepareValidatorMock(failingResult);
+    IValidator validValidator = this.prepareValidatorMock(true);
+    IValidator failingValidator = this.prepareValidatorMock(false);
     composite.addValidator(validValidator);
     composite.addValidator(failingValidator);
     
-    ValidationResult returnedValidation = composite.validate();
+    Assertions.assertThrows(IcException.class, composite::validateAndTryThrowException);
     
-    Assertions.assertEquals(failingResult, returnedValidation);
-    
-    EasyMock.verify(validResult);
     EasyMock.verify(validValidator);
-    EasyMock.verify(failingResult);
     EasyMock.verify(failingValidator);
   }
   
