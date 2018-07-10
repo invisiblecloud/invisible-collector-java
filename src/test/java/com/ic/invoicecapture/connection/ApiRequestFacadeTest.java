@@ -3,7 +3,9 @@ package com.ic.invoicecapture.connection;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.entity.StringEntity;
 import org.easymock.EasyMock;
 import org.javatuples.Pair;
 import org.junit.jupiter.api.Assertions;
@@ -11,6 +13,8 @@ import org.junit.jupiter.api.Test;
 import com.ic.invoicecapture.builders.IBuilder;
 import com.ic.invoicecapture.connection.request.HttpUriRequestBuilder;
 import com.ic.invoicecapture.connection.request.IMessageExchanger;
+import com.ic.invoicecapture.connection.response.ServerResponse;
+import com.ic.invoicecapture.connection.response.validators.IValidator;
 import com.ic.invoicecapture.connection.response.validators.ValidatorFactory;
 import com.ic.invoicecapture.exceptions.IcException;
 
@@ -20,10 +24,18 @@ public class ApiRequestFacadeTest {
   private final String TEST_URL_STRING = "http://test.test";
   private final URI TEST_URL = URI.create(TEST_URL_STRING);
   private final String TEST_ENDPOINT = "endpoint";
+  private final String ENTITY_MESSAGE = "message";
 
-  private Pair<IMessageExchanger, IBuilder<IMessageExchanger, HttpUriRequest>> buildMessageExchangerMock() {
+  private Pair<IMessageExchanger, IBuilder<IMessageExchanger, HttpUriRequest>> buildMessageExchangerMock()
+      throws IOException, IcException {
 
     IMessageExchanger exchanger = EasyMock.createNiceMock(IMessageExchanger.class);
+    ServerResponse serverResponse = EasyMock.createNiceMock(ServerResponse.class);
+    EasyMock.expect(exchanger.exchangeMessages()).andReturn(serverResponse);
+    EasyMock.replay(exchanger);
+    HttpEntity entity = new StringEntity(ENTITY_MESSAGE);
+    EasyMock.expect(serverResponse.getBodyEntity()).andReturn(entity);
+    EasyMock.replay(serverResponse);
     IBuilder<IMessageExchanger, HttpUriRequest> exchangerBuilder = (_unused) -> exchanger;
 
     return Pair.with(exchanger, exchangerBuilder);
@@ -34,6 +46,17 @@ public class ApiRequestFacadeTest {
     EasyMock.expect(requestBuilder.clone()).andReturn(requestBuilder);
 
     return requestBuilder;
+  }
+
+  private Pair<IValidator, ValidatorFactory> buildValidatorFactoryMock() {
+    ValidatorFactory validatorFactory = EasyMock.createNiceMock(ValidatorFactory.class);
+    IValidator validator = EasyMock.createNiceMock(IValidator.class);
+    EasyMock.expect(
+        validatorFactory.build(EasyMock.isA(RequestType.class), EasyMock.isA(ServerResponse.class)))
+        .andReturn(validator);
+    EasyMock.replay(validatorFactory);
+    
+    return Pair.with(validator, validatorFactory);
   }
 
   @Test
@@ -78,9 +101,9 @@ public class ApiRequestFacadeTest {
   }
 
   @Test
-  public void buildExchanger_getRequest() throws IOException, URISyntaxException, IcException {
+  public void buildExchanger_get() throws IOException, IcException {
     HttpUriRequestBuilder requestBuilder = this.buildRequestBuilderMock();
-    ValidatorFactory validatorFactory = EasyMock.createNiceMock(ValidatorFactory.class);
+    ValidatorFactory validatorFactory = this.buildValidatorFactoryMock().getValue1();
 
     URI url = URI.create(TEST_URL_STRING + "/" + TEST_ENDPOINT);
     requestBuilder.setRequestType(RequestType.GET);
@@ -95,10 +118,31 @@ public class ApiRequestFacadeTest {
 
     ApiRequestFacade apiFacade = new ApiRequestFacade(TEST_API_TOKEN, TEST_URL,
         exchangerPair.getValue1(), requestBuilder, validatorFactory);
-    apiFacade.getRequest(TEST_ENDPOINT);
+    Assertions.assertNotEquals(null, apiFacade.getRequest(TEST_ENDPOINT));
     EasyMock.verify(requestBuilder);
   }
+  
+  @Test
+  public void getRequest_get() throws IOException, IcException {
+    HttpUriRequestBuilder requestBuilder = this.buildRequestBuilderMock();
+    EasyMock.replay(requestBuilder);
+    Pair<IValidator, ValidatorFactory> validationPair = this.buildValidatorFactoryMock();
+    ValidatorFactory validatorFactory = validationPair.getValue1();
+    IValidator validator = validationPair.getValue0();
+    validator.validateAndTryThrowException();
+    EasyMock.expectLastCall();
+    EasyMock.replay(validator);
 
+    Pair<IMessageExchanger, IBuilder<IMessageExchanger, HttpUriRequest>> exchangerPair =
+        this.buildMessageExchangerMock();
 
-
+    ApiRequestFacade apiFacade = new ApiRequestFacade(TEST_API_TOKEN, TEST_URL,
+        exchangerPair.getValue1(), requestBuilder, validatorFactory);
+    Assertions.assertNotEquals(null, apiFacade.getRequest(TEST_ENDPOINT));
+    EasyMock.verify(exchangerPair.getValue0());
+    EasyMock.verify(validatorFactory);
+    EasyMock.verify(validator);
+  }
+  
+  
 }

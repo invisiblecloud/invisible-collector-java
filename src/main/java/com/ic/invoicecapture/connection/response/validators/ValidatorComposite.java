@@ -1,8 +1,8 @@
 package com.ic.invoicecapture.connection.response.validators;
 
+import com.ic.invoicecapture.exceptions.IcException;
 import java.util.ArrayList;
 import java.util.List;
-import com.ic.invoicecapture.exceptions.IcException;
 
 /**
  * IResponseValidator order matters.

@@ -8,6 +8,7 @@ import com.ic.invoicecapture.connection.response.ServerResponse;
 import com.ic.invoicecapture.connection.response.validators.IValidator;
 import com.ic.invoicecapture.connection.response.validators.ValidatorFactory;
 import com.ic.invoicecapture.exceptions.IcException;
+import com.ic.invoicecapture.exceptions.IcRuntimeException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -54,7 +55,7 @@ public class ApiRequestFacade {
   }
 
   private IMessageExchanger buildExchanger(String urlEndpoint, RequestType requestType,
-      HttpUriRequestBuilder requestBuilder) throws URISyntaxException {
+      HttpUriRequestBuilder requestBuilder) {
     URI url = ApiRequestFacade.joinUris(this.baseUrl, urlEndpoint);
 
     requestBuilder.setRequestType(requestType);
@@ -62,9 +63,9 @@ public class ApiRequestFacade {
     HttpUriRequest request = requestBuilder.build();
     return this.exchangerBuilder.build(request);
   }
- 
+
   public InputStream getRequest(String urlEndpoint)
-      throws IOException, URISyntaxException, IcException {
+      throws IOException, IcException {
     HttpUriRequestBuilder requestBuilder = this.requestBuilder.clone();
     IMessageExchanger exchanger = buildExchanger(urlEndpoint, RequestType.GET, requestBuilder);
     ServerResponse responsePair = exchanger.exchangeMessages();
@@ -75,11 +76,15 @@ public class ApiRequestFacade {
     return responsePair.getBodyEntity().getContent();
   }
 
-  public static URI joinUris(URI baseUri, String uriEndpoint) throws URISyntaxException {
+  public static URI joinUris(URI baseUri, String uriEndpoint) {
     if (uriEndpoint == null || uriEndpoint.equals("")) {
       return baseUri.normalize();
     }
-    URI url = new URI(baseUri.toString() + "/" + uriEndpoint);
-    return url.normalize();
+    try {
+      URI url = new URI(baseUri.toString() + "/" + uriEndpoint);
+      return url.normalize();
+    } catch (URISyntaxException exception) {
+      throw new IcRuntimeException(exception.getMessage());
+    }
   }
 }
