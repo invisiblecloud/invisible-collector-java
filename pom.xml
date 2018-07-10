@@ -10,13 +10,16 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>1.8</java.version>
-		<junit.version>4.12</junit.version>
+		<junit.version>5.1.0</junit.version>
+		<junit.platform.version>1.1.0</junit.platform.version>
+		<maven-surefire-plugin.version>2.19.1</maven-surefire-plugin.version>
 		<jacoco-plugin.version>0.8.1</jacoco-plugin.version>
 		<pmd-plugin.version>3.10.0</pmd-plugin.version>
 		<findbugs-plugin.version>3.0.1</findbugs-plugin.version>
-		<checkstyle-plugin.version>3.0.0</checkstyle-plugin.version>
-		<checkstyle-plugin.ruleset-file>google_checks.xml</checkstyle-plugin.ruleset-file>
 		<gson.version>2.8.5</gson.version>
+		<apache-http-client.version>4.5.5</apache-http-client.version>
+		<javatuples.version>1.2</javatuples.version>
+		<easymock.version>3.6</easymock.version>
 	</properties>
 
 	<build>
@@ -58,7 +61,7 @@
 				</configuration>
 				<executions>
 					<execution>
-						<id>pdm verify code</id>
+						<id>pmd-verify-code</id>
 						<phase>verify</phase>
 						<goals>
 							<goal>check</goal>
@@ -75,7 +78,7 @@
 				</configuration>
 				<executions>
 					<execution>
-						<id>findbugs analyze</id>
+						<id>findbugs</id>
 						<phase>verify</phase>
 						<goals>
 							<goal>check</goal>
@@ -86,25 +89,20 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-checkstyle-plugin</artifactId>
-				<version>${checkstyle-plugin.version}</version>
-				<executions>
-					<execution>
-						<id>checkstyle verify code style (${checkstyle-plugin.ruleset-file})</id>
-						<phase>verify</phase>
-						<configuration>
-							<configLocation>${checkstyle-plugin.ruleset-file}</configLocation>
-							<encoding>UTF-8</encoding>
-							<violationSeverity>warning</violationSeverity>
-							<consoleOutput>true</consoleOutput>
-							<failsOnError>true</failsOnError>
-							<linkXRef>false</linkXRef>
-						</configuration>
-						<goals>
-							<goal>check</goal>
-						</goals>
-					</execution>
-				</executions>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>${maven-surefire-plugin.version}</version>
+				<dependencies>
+					<dependency>
+						<groupId>org.junit.platform</groupId>
+						<artifactId>junit-platform-surefire-provider</artifactId>
+						<version>${junit.platform.version}</version>
+					</dependency>
+					<dependency>
+						<groupId>org.junit.jupiter</groupId>
+						<artifactId>junit-jupiter-engine</artifactId>
+						<version>${junit.version}</version>
+					</dependency>
+				</dependencies>
 			</plugin>
 		</plugins>
 	</build>
@@ -121,15 +119,57 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
 			<version>${junit.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.vintage</groupId>
+			<artifactId>junit-vintage-engine</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.platform</groupId>
+			<artifactId>junit-platform-launcher</artifactId>
+			<version>${junit.platform.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.platform</groupId>
+			<artifactId>junit-platform-runner</artifactId>
+			<version>${junit.platform.version}</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
 			<version>${gson.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>${apache-http-client.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.javatuples</groupId>
+			<artifactId>javatuples</artifactId>
+			<version>${javatuples.version}</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.easymock</groupId>
+			<artifactId>easymock</artifactId>
+			<version>${easymock.version}</version>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 

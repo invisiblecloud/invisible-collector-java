@@ -1,7 +1,7 @@
 package com.ic.invoicecapture.model;
 
 import com.google.gson.Gson;
-
+import com.ic.invoicecapture.json.GsonSingleton;
 import java.util.Objects;
 
 public class Company implements IJsonable {
@@ -16,6 +16,12 @@ public class Company implements IJsonable {
   private Boolean notificationsEnabled;
 
   @Override
+  public String asJsonString() {
+    final Gson gson = GsonSingleton.getInstance();
+    return gson.toJson(this);
+  }
+  
+  @Override
   public boolean equals(Object obj) {
     if (!(obj instanceof Company)) {
       return false;
@@ -29,23 +35,12 @@ public class Company implements IJsonable {
     return Objects.equals(this.vatNumber, other.vatNumber)
         && Objects.equals(this.name, other.name)
         && Objects.equals(this.address, other.address)
-        && Objects.equals(this.zipCode, other.zipCode) && Objects.equals(this.city, other.city)
-        && Objects.equals(this.country, other.country) && Objects.equals(this.gid, other.gid)
+        && Objects.equals(this.zipCode, other.zipCode) 
+        && Objects.equals(this.city, other.city)
+        && Objects.equals(this.country, other.country) 
+        && Objects.equals(this.gid, other.gid)
         && Objects.equals(this.notificationsEnabled, other.notificationsEnabled);
   }
-  
-  @Override
-  public String asJsonString() {
-    final Gson gson = new Gson();
-    return gson.toJson(this);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(this.vatNumber, this.name, this.address, this.zipCode, this.city,
-        this.country, this.gid, this.notificationsEnabled);
-  }
-
 
   public String getAddress() {
     return address;
@@ -75,6 +70,12 @@ public class Company implements IJsonable {
     return zipCode;
   }
 
+  @Override
+  public int hashCode() {
+    return Objects.hash(this.vatNumber, this.name, this.address, this.zipCode, this.city,
+        this.country, this.gid, this.notificationsEnabled);
+  }
+  
   public Boolean isNotificationsEnabled() {
     return notificationsEnabled;
   }
