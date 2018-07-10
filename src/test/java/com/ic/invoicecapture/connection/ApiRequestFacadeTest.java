@@ -34,7 +34,7 @@ public class ApiRequestFacadeTest {
     EasyMock.expect(exchanger.exchangeMessages()).andReturn(serverResponse);
     EasyMock.replay(exchanger);
     HttpEntity entity = new StringEntity(ENTITY_MESSAGE);
-    EasyMock.expect(serverResponse.getBodyEntity()).andReturn(entity);
+    EasyMock.expect(serverResponse.getBodyEntityContent()).andReturn(entity.getContent());
     EasyMock.replay(serverResponse);
     IBuilder<IMessageExchanger, HttpUriRequest> exchangerBuilder = (_unused) -> exchanger;
 

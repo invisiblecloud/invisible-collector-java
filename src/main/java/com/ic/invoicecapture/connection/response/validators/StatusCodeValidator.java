@@ -22,10 +22,10 @@ public class StatusCodeValidator implements IValidator {
           "Status code returned: " + statusCode + " " + statusLine.getReasonPhrase();
       try {
         exceptionMsg += "\n" + this.responsePair.getBodyAsString();
+        throw new IcException(exceptionMsg);
       } catch (IcException e) {
-        exceptionMsg += "\n" + e.getMessage();
+        throw new IcException(exceptionMsg, e);
       }
-      throw new IcException(exceptionMsg);
     } 
   }
 }

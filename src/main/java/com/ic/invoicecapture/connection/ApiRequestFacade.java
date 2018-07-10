@@ -9,7 +9,6 @@ import com.ic.invoicecapture.connection.response.validators.IValidator;
 import com.ic.invoicecapture.connection.response.validators.ValidatorFactory;
 import com.ic.invoicecapture.exceptions.IcException;
 import com.ic.invoicecapture.exceptions.IcRuntimeException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -65,7 +64,7 @@ public class ApiRequestFacade {
   }
 
   public InputStream getRequest(String urlEndpoint)
-      throws IOException, IcException {
+      throws IcException {
     HttpUriRequestBuilder requestBuilder = this.requestBuilder.clone();
     IMessageExchanger exchanger = buildExchanger(urlEndpoint, RequestType.GET, requestBuilder);
     ServerResponse responsePair = exchanger.exchangeMessages();
@@ -73,7 +72,7 @@ public class ApiRequestFacade {
     IValidator validator = this.validatorFactory.build(RequestType.GET, responsePair);
     validator.validateAndTryThrowException(); // can throw exception
 
-    return responsePair.getBodyEntity().getContent();
+    return responsePair.getBodyEntityContent();
   }
 
   public static URI joinUris(URI baseUri, String uriEndpoint) {
@@ -84,7 +83,7 @@ public class ApiRequestFacade {
       URI url = new URI(baseUri.toString() + "/" + uriEndpoint);
       return url.normalize();
     } catch (URISyntaxException exception) {
-      throw new IcRuntimeException(exception.getMessage());
+      throw new IcRuntimeException(exception.getMessage(), exception);
     }
   }
 }

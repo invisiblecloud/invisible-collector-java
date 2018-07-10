@@ -76,7 +76,7 @@ public class HttpUriRequestBuilder implements Cloneable {
   public HttpUriRequestBuilder clone() {
     try {
       HttpUriRequestBuilder clone = (HttpUriRequestBuilder) super.clone();
-      clone.headers = new TreeMap(this.headers);
+      clone.headers = new TreeMap<String, String>(this.headers);
       return clone;
     } catch (CloneNotSupportedException e) {
       throw new IcRuntimeException("OO gone wrong");

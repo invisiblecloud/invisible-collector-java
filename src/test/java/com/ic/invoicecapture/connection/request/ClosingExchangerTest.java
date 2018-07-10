@@ -93,9 +93,8 @@ public class ClosingExchangerTest {
     EasyMock.replay(this.client);
 
     ClosingExchanger exchanger = new ClosingExchanger(this.client, this.request, this.consumer);
-    Assertions.assertThrows(IOException.class, exchanger::exchangeMessages);
+    Assertions.assertThrows(IcException.class, exchanger::exchangeMessages);
 
-    EasyMock.verify(this.response);
     EasyMock.verify(this.consumer);
     EasyMock.verify(this.client);
   }
