@@ -3,9 +3,11 @@ package com.ic.invoicecapture.json;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonReader;
 import com.ic.invoicecapture.exceptions.IcException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Thread-safe.
@@ -15,19 +17,19 @@ import java.io.UnsupportedEncodingException;
  */
 public class JsonFacade {
 
-  private static final String STRING_ENCODING = "UTF-8";
-
   public <T> T stringStreamToJsonObject(InputStream inputStream, Class<T> classType)
       throws IcException {
 
-    InputStreamReader inputStreamReader;
-    try {
-      inputStreamReader = new InputStreamReader(inputStream, STRING_ENCODING);
-    } catch (UnsupportedEncodingException e) {
-      throw new IcException(e);
-    }
+    InputStreamReader inputStreamReader =
+        new InputStreamReader(inputStream, StandardCharsets.UTF_8);
     JsonReader reader = new JsonReader(inputStreamReader);
     Gson gson = GsonSingleton.getInstance();
-    return gson.fromJson(reader, classType);
+    T value = gson.fromJson(reader, classType);
+    try {
+      reader.close();
+    } catch (IOException e) {
+      throw new IcException(e);
+    }
+    return value;
   }
 }

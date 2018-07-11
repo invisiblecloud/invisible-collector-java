@@ -11,31 +11,18 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
-public class MessageExchanger implements IMessageExchanger {
+public class MessageExchanger {
 
   private CloseableHttpClient httpClient;
-  private HttpUriRequest request;
 
-  public MessageExchanger(CloseableHttpClient httpClient, HttpUriRequest request) {
-    this.httpClient = httpClient;
-    this.request = request;
+  public MessageExchanger() {
+    this.httpClient = HttpClients.createMinimal();
   }
 
-  public MessageExchanger(CloseableHttpClient httpClient, HttpUriRequest request,
-      IEntityConsumer entityConsumer) {
-    this.httpClient = httpClient;
-    this.request = request;
-  }
-
-  public static MessageExchanger buildExchanger(HttpUriRequest request) {
-    CloseableHttpClient httpClient = HttpClients.createMinimal();
-    return new MessageExchanger(httpClient, request);
-  }
-
-  public ServerResponseFacade exchangeMessages() throws IcException {
+  public ServerResponseFacade exchangeMessages(HttpUriRequest request) throws IcException {
     CloseableHttpResponse response = null;
     try {
-      response = this.httpClient.execute(this.request);
+      response = this.httpClient.execute(request);
     } catch (IOException e) {
       throw new IcException("HTTP protocol error", e);
     }

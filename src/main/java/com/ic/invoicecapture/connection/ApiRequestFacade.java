@@ -1,9 +1,7 @@
 package com.ic.invoicecapture.connection;
 
-import com.ic.invoicecapture.builders.IBuilder;
-import com.ic.invoicecapture.connection.request.MessageExchanger;
 import com.ic.invoicecapture.connection.request.HttpUriRequestBuilder;
-import com.ic.invoicecapture.connection.request.IMessageExchanger;
+import com.ic.invoicecapture.connection.request.MessageExchanger;
 import com.ic.invoicecapture.connection.response.ServerResponseFacade;
 import com.ic.invoicecapture.connection.response.validators.IValidator;
 import com.ic.invoicecapture.connection.response.validators.ValidatorFactory;
@@ -21,7 +19,7 @@ public class ApiRequestFacade {
 
   private final String apiToken;
   private final URI baseUrl;
-  private final IBuilder<IMessageExchanger, HttpUriRequest> exchangerBuilder; // must be thread-safe
+  private final MessageExchanger exchanger; // must be thread-safe
   private HttpUriRequestBuilder requestBuilder;
   private ValidatorFactory validatorFactory;
 
@@ -29,19 +27,19 @@ public class ApiRequestFacade {
     this.apiToken = apiToken;
     this.baseUrl = baseUrl;
     this.requestBuilder = new HttpUriRequestBuilder();
-    this.exchangerBuilder = (request) -> MessageExchanger.buildExchanger(request);
+    this.exchanger = new MessageExchanger();
     this.validatorFactory = new ValidatorFactory();
 
     this.addRequestBuilderHeaders(this.requestBuilder);
   }
 
   public ApiRequestFacade(String apiToken, URI baseUrl,
-      IBuilder<IMessageExchanger, HttpUriRequest> exchangerBuilder,
+      MessageExchanger exchangerBuilder,
       HttpUriRequestBuilder requestBuilder, ValidatorFactory validatorFactory) {
     this.apiToken = apiToken;
     this.baseUrl = baseUrl;
     this.requestBuilder = requestBuilder;
-    this.exchangerBuilder = exchangerBuilder;
+    this.exchanger = exchangerBuilder;
     this.validatorFactory = validatorFactory;
 
     this.addRequestBuilderHeaders(this.requestBuilder);
@@ -53,21 +51,21 @@ public class ApiRequestFacade {
     requestBuilder.addHeader("Accept", CONTENT_TYPE);
   }
 
-  private IMessageExchanger buildExchanger(String urlEndpoint, RequestType requestType,
-      HttpUriRequestBuilder requestBuilder) {
+  private HttpUriRequest buildUriRequest(String urlEndpoint, RequestType requestType) {
     URI url = ApiRequestFacade.joinUris(this.baseUrl, urlEndpoint);
 
+    HttpUriRequestBuilder requestBuilder = this.requestBuilder.clone();
     requestBuilder.setRequestType(requestType);
     requestBuilder.setUri(url);
     HttpUriRequest request = requestBuilder.build();
-    return this.exchangerBuilder.build(request);
+    return request;
   }
 
   public InputStream getRequest(String urlEndpoint)
       throws IcException {
-    HttpUriRequestBuilder requestBuilder = this.requestBuilder.clone();
-    IMessageExchanger exchanger = buildExchanger(urlEndpoint, RequestType.GET, requestBuilder);
-    ServerResponseFacade responsePair = exchanger.exchangeMessages();
+    
+    HttpUriRequest request = buildUriRequest(urlEndpoint, RequestType.GET);
+    ServerResponseFacade responsePair = exchanger.exchangeMessages(request);
 
     IValidator validator = this.validatorFactory.build(RequestType.GET, responsePair);
     validator.validateAndTryThrowException(); // can throw exception
