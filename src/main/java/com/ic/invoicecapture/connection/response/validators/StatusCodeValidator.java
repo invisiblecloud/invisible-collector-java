@@ -1,14 +1,14 @@
 package com.ic.invoicecapture.connection.response.validators;
 
-import com.ic.invoicecapture.connection.response.ServerResponse;
+import com.ic.invoicecapture.connection.response.ServerResponseFacade;
 import com.ic.invoicecapture.exceptions.IcException;
 import org.apache.http.StatusLine;
 
 public class StatusCodeValidator implements IValidator {
 
-  private ServerResponse responsePair;
+  private ServerResponseFacade responsePair;
 
-  public StatusCodeValidator(ServerResponse responsePair) {
+  public StatusCodeValidator(ServerResponseFacade responsePair) {
     this.responsePair = responsePair;
   }
 

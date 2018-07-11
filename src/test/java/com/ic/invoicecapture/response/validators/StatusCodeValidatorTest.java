@@ -6,7 +6,7 @@ import org.easymock.EasyMock;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import com.ic.invoicecapture.connection.response.ServerResponse;
+import com.ic.invoicecapture.connection.response.ServerResponseFacade;
 import com.ic.invoicecapture.connection.response.validators.StatusCodeValidator;
 import com.ic.invoicecapture.exceptions.IcException;
 
@@ -14,14 +14,14 @@ public class StatusCodeValidatorTest {
 
 
   private StatusLine statusLineMock;
-  private ServerResponse serverResponseMock;
+  private ServerResponseFacade serverResponseMock;
 
 
   @BeforeEach
   public void init() {
     this.statusLineMock = EasyMock.createNiceMock(StatusLine.class);
     EasyMock.createNiceMock(HttpEntity.class);
-    this.serverResponseMock = EasyMock.createNiceMock(ServerResponse.class);
+    this.serverResponseMock = EasyMock.createNiceMock(ServerResponseFacade.class);
   }
 
 

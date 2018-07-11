@@ -1,6 +1,6 @@
 package com.ic.invoicecapture.connection.request;
 
-import com.ic.invoicecapture.connection.response.ServerResponse;
+import com.ic.invoicecapture.connection.response.ServerResponseFacade;
 import com.ic.invoicecapture.exceptions.IcException;
 import java.io.IOException;
 import org.apache.http.HttpEntity;
@@ -35,7 +35,7 @@ public class ClosingExchanger implements IMessageExchanger {
     return new ClosingExchanger(httpClient, request);
   }
 
-  public ServerResponse exchangeMessages() throws IcException {
+  public ServerResponseFacade exchangeMessages() throws IcException {
     CloseableHttpResponse response = null;
     try {
       response = this.httpClient.execute(this.request);
@@ -43,12 +43,8 @@ public class ClosingExchanger implements IMessageExchanger {
       throw new IcException("HTTP protocol error", e);
     }
 
-    HttpEntity bodyEntity = null;
-    StatusLine statusLine = null;
     try {
-      statusLine = response.getStatusLine();
-      bodyEntity = response.getEntity();
-
+      HttpEntity bodyEntity = response.getEntity();
       this.entityConsumer.consume(bodyEntity);
     } catch (IOException e) {
       throw new IcException(e);
@@ -59,7 +55,7 @@ public class ClosingExchanger implements IMessageExchanger {
     } catch (IOException e) {
       throw new IcException(e);
     }
-    return new ServerResponse(statusLine, bodyEntity);
+    return new ServerResponseFacade(response);
   }
 
 }

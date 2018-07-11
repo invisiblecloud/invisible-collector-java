@@ -4,7 +4,7 @@ import com.ic.invoicecapture.builders.IBuilder;
 import com.ic.invoicecapture.connection.request.ClosingExchanger;
 import com.ic.invoicecapture.connection.request.HttpUriRequestBuilder;
 import com.ic.invoicecapture.connection.request.IMessageExchanger;
-import com.ic.invoicecapture.connection.response.ServerResponse;
+import com.ic.invoicecapture.connection.response.ServerResponseFacade;
 import com.ic.invoicecapture.connection.response.validators.IValidator;
 import com.ic.invoicecapture.connection.response.validators.ValidatorFactory;
 import com.ic.invoicecapture.exceptions.IcException;
@@ -67,7 +67,7 @@ public class ApiRequestFacade {
       throws IcException {
     HttpUriRequestBuilder requestBuilder = this.requestBuilder.clone();
     IMessageExchanger exchanger = buildExchanger(urlEndpoint, RequestType.GET, requestBuilder);
-    ServerResponse responsePair = exchanger.exchangeMessages();
+    ServerResponseFacade responsePair = exchanger.exchangeMessages();
 
     IValidator validator = this.validatorFactory.build(RequestType.GET, responsePair);
     validator.validateAndTryThrowException(); // can throw exception

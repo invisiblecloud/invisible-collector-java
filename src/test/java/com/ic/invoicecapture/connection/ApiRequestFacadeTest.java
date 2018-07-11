@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import com.ic.invoicecapture.builders.IBuilder;
 import com.ic.invoicecapture.connection.request.HttpUriRequestBuilder;
 import com.ic.invoicecapture.connection.request.IMessageExchanger;
-import com.ic.invoicecapture.connection.response.ServerResponse;
+import com.ic.invoicecapture.connection.response.ServerResponseFacade;
 import com.ic.invoicecapture.connection.response.validators.IValidator;
 import com.ic.invoicecapture.connection.response.validators.ValidatorFactory;
 import com.ic.invoicecapture.exceptions.IcException;
@@ -30,7 +30,7 @@ public class ApiRequestFacadeTest {
       throws IOException, IcException {
 
     IMessageExchanger exchanger = EasyMock.createNiceMock(IMessageExchanger.class);
-    ServerResponse serverResponse = EasyMock.createNiceMock(ServerResponse.class);
+    ServerResponseFacade serverResponse = EasyMock.createNiceMock(ServerResponseFacade.class);
     EasyMock.expect(exchanger.exchangeMessages()).andReturn(serverResponse);
     EasyMock.replay(exchanger);
     HttpEntity entity = new StringEntity(ENTITY_MESSAGE);
@@ -52,7 +52,7 @@ public class ApiRequestFacadeTest {
     ValidatorFactory validatorFactory = EasyMock.createNiceMock(ValidatorFactory.class);
     IValidator validator = EasyMock.createNiceMock(IValidator.class);
     EasyMock.expect(
-        validatorFactory.build(EasyMock.isA(RequestType.class), EasyMock.isA(ServerResponse.class)))
+        validatorFactory.build(EasyMock.isA(RequestType.class), EasyMock.isA(ServerResponseFacade.class)))
         .andReturn(validator);
     EasyMock.replay(validatorFactory);
     
