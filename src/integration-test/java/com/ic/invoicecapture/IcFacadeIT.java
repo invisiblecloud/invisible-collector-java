@@ -1,9 +1,9 @@
-package com.ic.invoicecapture.model;
+package com.ic.invoicecapture;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class CompanyIT {
+class IcFacadeIT {
   
   @Test
   public void correctDeserialization() {
