@@ -11,50 +11,35 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 
-public class ClosingExchanger implements IMessageExchanger {
+public class MessageExchanger implements IMessageExchanger {
 
   private CloseableHttpClient httpClient;
   private HttpUriRequest request;
-  private IEntityConsumer entityConsumer;
 
-  public ClosingExchanger(CloseableHttpClient httpClient, HttpUriRequest request) {
+  public MessageExchanger(CloseableHttpClient httpClient, HttpUriRequest request) {
     this.httpClient = httpClient;
     this.request = request;
-    this.entityConsumer = entity -> EntityUtils.consume(entity);
   }
 
-  public ClosingExchanger(CloseableHttpClient httpClient, HttpUriRequest request,
+  public MessageExchanger(CloseableHttpClient httpClient, HttpUriRequest request,
       IEntityConsumer entityConsumer) {
     this.httpClient = httpClient;
     this.request = request;
-    this.entityConsumer = entityConsumer;
   }
 
-  public static ClosingExchanger buildExchanger(HttpUriRequest request) {
+  public static MessageExchanger buildExchanger(HttpUriRequest request) {
     CloseableHttpClient httpClient = HttpClients.createMinimal();
-    return new ClosingExchanger(httpClient, request);
+    return new MessageExchanger(httpClient, request);
   }
 
   public ServerResponseFacade exchangeMessages() throws IcException {
     CloseableHttpResponse response = null;
     try {
       response = this.httpClient.execute(this.request);
-    } catch (Exception e) {
+    } catch (IOException e) {
       throw new IcException("HTTP protocol error", e);
     }
 
-    try {
-      HttpEntity bodyEntity = response.getEntity();
-      this.entityConsumer.consume(bodyEntity);
-    } catch (IOException e) {
-      throw new IcException(e);
-    }
-
-    try {
-      response.close();
-    } catch (IOException e) {
-      throw new IcException(e);
-    }
     return new ServerResponseFacade(response);
   }
 

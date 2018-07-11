@@ -1,7 +1,7 @@
 package com.ic.invoicecapture.connection;
 
 import com.ic.invoicecapture.builders.IBuilder;
-import com.ic.invoicecapture.connection.request.ClosingExchanger;
+import com.ic.invoicecapture.connection.request.MessageExchanger;
 import com.ic.invoicecapture.connection.request.HttpUriRequestBuilder;
 import com.ic.invoicecapture.connection.request.IMessageExchanger;
 import com.ic.invoicecapture.connection.response.ServerResponseFacade;
@@ -29,7 +29,7 @@ public class ApiRequestFacade {
     this.apiToken = apiToken;
     this.baseUrl = baseUrl;
     this.requestBuilder = new HttpUriRequestBuilder();
-    this.exchangerBuilder = (request) -> ClosingExchanger.buildExchanger(request);
+    this.exchangerBuilder = (request) -> MessageExchanger.buildExchanger(request);
     this.validatorFactory = new ValidatorFactory();
 
     this.addRequestBuilderHeaders(this.requestBuilder);
@@ -72,7 +72,7 @@ public class ApiRequestFacade {
     IValidator validator = this.validatorFactory.build(RequestType.GET, responsePair);
     validator.validateAndTryThrowException(); // can throw exception
 
-    return responsePair.getBodyEntityContent();
+    return responsePair.getConnectionStream();
   }
 
   public static URI joinUris(URI baseUri, String uriEndpoint) {

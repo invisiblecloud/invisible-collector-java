@@ -89,7 +89,7 @@ public class ServerResponseFacadeTest {
     builder.setBody(TEST_STRING);
     ServerResponseFacade response = builder.buildResponseFacade();
    
-    InputStream inputStream = response.getBodyEntityContent();
+    InputStream inputStream = response.getConnectionStream();
     String bodyString = StringUtils.inputStreamToString(inputStream); 
     Assertions.assertTrue(bodyString.contains(TEST_STRING));
   }
@@ -101,7 +101,7 @@ public class ServerResponseFacadeTest {
     
     ServerResponseFacade response = builder.buildResponseFacade();
    
-    InputStream inputStream = response.getBodyEntityContent();
+    InputStream inputStream = response.getConnectionStream();
     String bodyString = StringUtils.inputStreamToString(inputStream); 
     Assertions.assertTrue(bodyString.contains(TEST_STRING));
   }

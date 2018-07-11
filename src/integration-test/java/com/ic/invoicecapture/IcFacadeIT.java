@@ -1,6 +1,7 @@
 package com.ic.invoicecapture;
 
 import com.ic.invoicecapture.exceptions.IcException;
+import com.ic.invoicecapture.model.Company;
 import com.ic.invoicecapture.model.builder.CompanyBuilder;
 import java.io.IOException;
 import java.net.URI;
@@ -15,14 +16,16 @@ class IcFacadeIT {
   private static final String TEST_API_TOKEN = "1234567890abcdef";
 
   @Test
-  public void requestCompanyInfo_passNormalConditions() throws IOException {
+  public void requestCompanyInfo_passNormalConditions() throws IOException, InterruptedException {
     MockWebServer server = new MockWebServer();
 
     CompanyBuilder companyBuilder = CompanyBuilder.buildTestCompanyBuilder();
     String companyJson = companyBuilder.buildJsonObject().toString();
 
-    MockResponse mockResponse = new MockResponse();
-    mockResponse.setBody(companyJson);
+
+    MockResponse mockResponse =
+        new MockResponse().setHeader("Content-Type", "application/json").setBody(companyJson);
+
     server.enqueue(mockResponse);
 
     server.start();
@@ -30,27 +33,22 @@ class IcFacadeIT {
     URI baseUrl = server.url("").uri();
 
     IcFacade icFacade = new IcFacade(TEST_API_TOKEN, baseUrl);
+    Company returnedCompany;
 
     try {
-      icFacade.requestCompanyInfo();
+      returnedCompany = icFacade.requestCompanyInfo();
     } catch (IcException e) {
       server.shutdown();
       Assertions.fail(e);
+      return; // redundant
     }
 
+    Company correctCompany = companyBuilder.buildCompany();
+    Assertions.assertEquals(correctCompany, returnedCompany);
 
-    // Optional: confirm that your app made the HTTP requests you were expecting.
-    // RecordedRequest request1 = server.takeRequest();
-    // assertEquals("/v1/chat/messages/", request1.getPath());
-    // assertNotNull(request1.getHeader("Authorization"));
-    //
-    // RecordedRequest request2 = server.takeRequest();
-    // assertEquals("/v1/chat/messages/2", request2.getPath());
-    //
-    // RecordedRequest request3 = server.takeRequest();
-    // assertEquals("/v1/chat/messages/3", request3.getPath());
-    //
-
+    RecordedRequest request = server.takeRequest();
+    Assertions.assertEquals("/" + IcFacade.COMPANIES_ENDPOINT, request.getPath());
+    
     server.shutdown();
   }
 }

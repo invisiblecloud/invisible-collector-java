@@ -26,8 +26,9 @@ public class JsonValidator implements IValidator {
     }
 
     if (!this.contentType.contains(JSON_CONTENT_TYPE)) {
-      final String exceptionMessage = "Wrong content-type received, expected: " + this.contentType
-          + ", received: " + JSON_CONTENT_TYPE;
+      final String exceptionMessage =
+          String.format("Wrong content-type received, expected: '%s', received: '%s'",
+              JSON_CONTENT_TYPE, this.contentType);
       throw new IcException(exceptionMessage);
     }
   }

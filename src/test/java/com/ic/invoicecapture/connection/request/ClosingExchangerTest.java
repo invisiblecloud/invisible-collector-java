@@ -50,7 +50,7 @@ public class ClosingExchangerTest {
     EasyMock.expect(this.client.execute(this.request)).andReturn(this.response);
     EasyMock.replay(this.client);
 
-    ClosingExchanger exchanger = new ClosingExchanger(this.client, this.request, this.consumer);
+    MessageExchanger exchanger = new MessageExchanger(this.client, this.request, this.consumer);
     Assertions.assertNotEquals(null, exchanger.exchangeMessages());
 
 //    EasyMock.verify(this.response);
@@ -69,7 +69,7 @@ public class ClosingExchangerTest {
     EasyMock.expect(client.execute(request)).andThrow(clientException);
     EasyMock.replay(client);
 
-    ClosingExchanger exchanger = new ClosingExchanger(client, request);
+    MessageExchanger exchanger = new MessageExchanger(client, request);
     Assertions.assertThrows(IcException.class, exchanger::exchangeMessages);
 
     EasyMock.verify(client);
@@ -93,7 +93,7 @@ public class ClosingExchangerTest {
     EasyMock.expect(this.client.execute(this.request)).andReturn(this.response);
     EasyMock.replay(this.client);
 
-    ClosingExchanger exchanger = new ClosingExchanger(this.client, this.request, this.consumer);
+    MessageExchanger exchanger = new MessageExchanger(this.client, this.request, this.consumer);
     Assertions.assertThrows(IcException.class, exchanger::exchangeMessages);
 
     EasyMock.verify(this.consumer);
@@ -103,7 +103,7 @@ public class ClosingExchangerTest {
   @Test
   public void buildExchanger_correctness() {
     this.request = EasyMock.createNiceMock(HttpUriRequest.class);
-    Assertions.assertNotEquals(null, ClosingExchanger.buildExchanger(this.request));
+    Assertions.assertNotEquals(null, MessageExchanger.buildExchanger(this.request));
   }
   
 }

@@ -21,7 +21,7 @@ public class StatusCodeValidator implements IValidator {
       String exceptionMsg =
           "Status code returned: " + statusCode + " " + statusLine.getReasonPhrase();
       try {
-        exceptionMsg += "\n" + this.responsePair.getBodyAsString();
+        exceptionMsg += "\n" + this.responsePair.consumeConnectionAsString();
         throw new IcException(exceptionMsg);
       } catch (IcException e) {
         throw new IcException(exceptionMsg, e);

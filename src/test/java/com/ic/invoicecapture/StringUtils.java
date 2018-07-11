@@ -2,6 +2,7 @@ package com.ic.invoicecapture;
 
 import java.io.InputStream;
 import java.util.Scanner;
+import org.apache.http.util.EntityUtils;
 
 public final class StringUtils {
   private StringUtils() {}
