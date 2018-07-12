@@ -64,7 +64,7 @@ public class ApiRequestFacade {
     this.validatorFactory.build(RequestType.GET, responseFacade)
         .validateAndTryThrowException(); // can throw exception
 
-    return responseFacade.getConnectionStream();
+    return responseFacade.getResponseBodyStream();
   }
   
 }

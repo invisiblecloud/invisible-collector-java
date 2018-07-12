@@ -1,6 +1,6 @@
 package com.ic.invoicecapture.connection.response;
 
-import com.ic.invoicecapture.connection.BufferedInputStreamCloseableDecorator;
+import com.ic.invoicecapture.connection.CloseableBufferedInputStream;
 import com.ic.invoicecapture.exceptions.IcException;
 import java.io.Closeable;
 import java.io.IOException;
@@ -61,7 +61,7 @@ public class ServerResponseFacade implements IResponseStatus, IResponseHeaders {
     return entity;
   }
   
-  public InputStream getConnectionStream() throws IcException {
+  public InputStream getResponseBodyStream() throws IcException {
     InputStream is;
     try {
       is = this.getBodyEntity().getContent();
@@ -77,7 +77,7 @@ public class ServerResponseFacade implements IResponseStatus, IResponseHeaders {
       }
     };
 
-    return new BufferedInputStreamCloseableDecorator(is, closeable);
+    return new CloseableBufferedInputStream(is, closeable);
   }
 
   /**

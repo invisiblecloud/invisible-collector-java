@@ -1,15 +1,11 @@
 package com.ic.invoicecapture.response.validators;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.StatusLine;
-import org.easymock.EasyMock;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import com.ic.invoicecapture.connection.response.IResponseStatus;
-import com.ic.invoicecapture.connection.response.ServerResponseFacade;
 import com.ic.invoicecapture.connection.response.validators.StatusCodeValidator;
 import com.ic.invoicecapture.exceptions.IcException;
+import org.easymock.EasyMock;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class StatusCodeValidatorTest {
 

@@ -5,13 +5,18 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class BufferedInputStreamCloseableDecorator extends BufferedInputStream {
+/**
+ * Follows Decorator pattern.
+ * @author ros
+ *
+ */
+public class CloseableBufferedInputStream extends BufferedInputStream {
 
   private Closeable closeable;
   private InputStream inputStream;
 
 
-  public BufferedInputStreamCloseableDecorator(InputStream inputStream, Closeable closeable) {
+  public CloseableBufferedInputStream(InputStream inputStream, Closeable closeable) {
     super(inputStream);
     this.inputStream = inputStream;
     this.closeable = closeable;

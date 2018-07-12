@@ -1,10 +1,14 @@
 package com.ic.invoicecapture.connection.request;
 
+import com.ic.invoicecapture.builders.IBuilder;
+import com.ic.invoicecapture.connection.response.ServerResponseFacade;
+import com.ic.invoicecapture.exceptions.IcException;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.MockWebServer;
 import org.apache.http.HttpEntity;
-import org.apache.http.StatusLine;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -15,11 +19,6 @@ import org.apache.http.util.EntityUtils;
 import org.easymock.EasyMock;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import com.ic.invoicecapture.builders.IBuilder;
-import com.ic.invoicecapture.connection.response.ServerResponseFacade;
-import com.ic.invoicecapture.exceptions.IcException;
-import okhttp3.mockwebserver.MockResponse;
-import okhttp3.mockwebserver.MockWebServer;
 
 public class MessageExchangerTest {
 

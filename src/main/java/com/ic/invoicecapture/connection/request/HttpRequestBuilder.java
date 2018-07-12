@@ -31,8 +31,9 @@ public class HttpRequestBuilder implements Cloneable, IRequestBuilder {
     this.headers = headers;
   }
 
-  public void addHeader(String key, String value) {
+  public HttpRequestBuilder addHeader(String key, String value) {
     headers.put(key, value);
+    return this;
   }
 
   // public void setBody(String body) {
@@ -47,8 +48,7 @@ public class HttpRequestBuilder implements Cloneable, IRequestBuilder {
     }
 
 
-    HttpUriRequest request = buildRequest();
-    return request;
+    return buildRequest();
   }
 
   private HttpUriRequest buildRequest() {
@@ -60,9 +60,7 @@ public class HttpRequestBuilder implements Cloneable, IRequestBuilder {
         break;
       case POST:
       case PUT:
-
         throw new UnsupportedOperationException("PUT, POST not implemented yet");
-
       default:
         return null;
     }
@@ -96,7 +94,7 @@ public class HttpRequestBuilder implements Cloneable, IRequestBuilder {
     return this.uri;
   }
   
-  private URI joinUris(URI baseUri, String uriEndpoint) {
+  private static URI joinUris(URI baseUri, String uriEndpoint) {
     if (uriEndpoint == null || uriEndpoint.equals("")) {
       return baseUri.normalize();
     }
@@ -104,19 +102,22 @@ public class HttpRequestBuilder implements Cloneable, IRequestBuilder {
       URI url = new URI(baseUri.toString() + "/" + uriEndpoint);
       return url.normalize();
     } catch (URISyntaxException exception) {
-      throw new IcRuntimeException(exception.getMessage(), exception);
+      throw new IllegalArgumentException("Invalid url", exception);
     }
   }
 
-  public void setRequestType(RequestType requestType) {
+  public HttpRequestBuilder setRequestType(RequestType requestType) {
     this.requestType = requestType;
+    return this;
   }
   
-  public void setUri(URI url) {
+  public HttpRequestBuilder setUri(URI url) {
     this.uri = url;
+    return this;
   }
   
-  public void setUri(URI url, String urlEndpoint) {
-    this.uri = this.joinUris(url, urlEndpoint);
+  public HttpRequestBuilder setUri(URI url, String urlEndpoint) {
+    this.uri = joinUris(url, urlEndpoint);
+    return this;
   }
 }
