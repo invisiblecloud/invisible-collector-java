@@ -11,7 +11,7 @@ import org.javatuples.Pair;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import com.ic.invoicecapture.builders.IBuilder;
-import com.ic.invoicecapture.connection.request.HttpUriRequestBuilder;
+import com.ic.invoicecapture.connection.request.HttpRequestBuilder;
 import com.ic.invoicecapture.connection.request.IMessageExchanger;
 import com.ic.invoicecapture.connection.response.ServerResponseFacade;
 import com.ic.invoicecapture.connection.response.validators.IValidator;
@@ -41,8 +41,8 @@ public class ApiRequestFacadeTest {
     return Pair.with(exchanger, exchangerBuilder);
   }
 
-  private HttpUriRequestBuilder buildRequestBuilderMock() {
-    HttpUriRequestBuilder requestBuilder = EasyMock.createNiceMock(HttpUriRequestBuilder.class);
+  private HttpRequestBuilder buildRequestBuilderMock() {
+    HttpRequestBuilder requestBuilder = EasyMock.createNiceMock(HttpRequestBuilder.class);
     EasyMock.expect(requestBuilder.clone()).andReturn(requestBuilder);
 
     return requestBuilder;
@@ -82,7 +82,7 @@ public class ApiRequestFacadeTest {
 
   @Test
   public void addRequestBuilderHeaders_correctness() {
-    HttpUriRequestBuilder requestBuilder = EasyMock.createNiceMock(HttpUriRequestBuilder.class);
+    HttpRequestBuilder requestBuilder = EasyMock.createNiceMock(HttpRequestBuilder.class);
     ValidatorFactory validatorFactory = EasyMock.createNiceMock(ValidatorFactory.class);
 
     requestBuilder.addHeader(EasyMock.eq("Content-Type"), EasyMock.anyString());
@@ -102,7 +102,7 @@ public class ApiRequestFacadeTest {
 
   @Test
   public void buildExchanger_get() throws IOException, IcException {
-    HttpUriRequestBuilder requestBuilder = this.buildRequestBuilderMock();
+    HttpRequestBuilder requestBuilder = this.buildRequestBuilderMock();
     ValidatorFactory validatorFactory = this.buildValidatorFactoryMock().getValue1();
 
     URI url = URI.create(TEST_URL_STRING + "/" + TEST_ENDPOINT);
@@ -124,7 +124,7 @@ public class ApiRequestFacadeTest {
   
   @Test
   public void getRequest_get() throws IOException, IcException {
-    HttpUriRequestBuilder requestBuilder = this.buildRequestBuilderMock();
+    HttpRequestBuilder requestBuilder = this.buildRequestBuilderMock();
     EasyMock.replay(requestBuilder);
     Pair<IValidator, ValidatorFactory> validationPair = this.buildValidatorFactoryMock();
     ValidatorFactory validatorFactory = validationPair.getValue1();

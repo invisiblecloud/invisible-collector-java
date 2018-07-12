@@ -65,7 +65,7 @@ public class ServerResponseFacadeTest {
   }
   
   @Test
-  public void getBodyAsString_pass() throws UnsupportedEncodingException, IcException {
+  public void getBodyAsString_success() throws UnsupportedEncodingException, IcException {
     HttpResponseBuilder builder = new HttpResponseBuilder();
     builder.setBody(TEST_STRING);
     ServerResponseFacade response = builder.buildResponseFacade();
@@ -84,7 +84,7 @@ public class ServerResponseFacadeTest {
   }
   
   @Test
-  public void getBodyEntityContent_pass() throws UnsupportedEncodingException, IcException {
+  public void getBodyEntityContent_success() throws UnsupportedEncodingException, IcException {
     HttpResponseBuilder builder = new HttpResponseBuilder();
     builder.setBody(TEST_STRING);
     ServerResponseFacade response = builder.buildResponseFacade();
@@ -95,7 +95,7 @@ public class ServerResponseFacadeTest {
   }
   
   @Test
-  public void checkContainsHeaderValue_pass() throws UnsupportedEncodingException, IcException {
+  public void checkContainsHeaderValue_success() throws UnsupportedEncodingException, IcException {
     HttpResponseBuilder builder = new HttpResponseBuilder();
     builder.setBody(TEST_STRING);
     

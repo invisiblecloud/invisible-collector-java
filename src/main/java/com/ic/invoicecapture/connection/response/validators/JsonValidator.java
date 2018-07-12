@@ -1,8 +1,7 @@
 package com.ic.invoicecapture.connection.response.validators;
 
-import com.ic.invoicecapture.connection.response.ServerResponseFacade;
+import com.ic.invoicecapture.connection.response.IResponseHeaders;
 import com.ic.invoicecapture.exceptions.IcException;
-import org.apache.http.HttpEntity;
 
 public class JsonValidator implements IValidator {
 
@@ -11,7 +10,7 @@ public class JsonValidator implements IValidator {
 
   private String contentType;
 
-  public JsonValidator(ServerResponseFacade serverResponse) {
+  public JsonValidator(IResponseHeaders serverResponse) {
     this.contentType = serverResponse.getHeaderValues(HEADER_NAME);
   }
 

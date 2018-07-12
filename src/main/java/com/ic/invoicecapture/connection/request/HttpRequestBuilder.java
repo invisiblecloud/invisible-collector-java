@@ -3,31 +3,32 @@ package com.ic.invoicecapture.connection.request;
 import com.ic.invoicecapture.connection.RequestType;
 import com.ic.invoicecapture.exceptions.IcRuntimeException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Map;
 import java.util.TreeMap;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
 
 
-public class HttpUriRequestBuilder implements Cloneable {
+public class HttpRequestBuilder implements Cloneable, IRequestBuilder {
 
   // private String body = null;
   private Map<String, String> headers;
   private RequestType requestType = null;
   private URI uri = null;
 
-  public HttpUriRequestBuilder() {
+  public HttpRequestBuilder() {
     this.headers = new TreeMap<>();
   }
 
-  public HttpUriRequestBuilder(Map<String, String> headers) {
-    this.headers = headers;
-  }
-
-  public HttpUriRequestBuilder(HttpUriRequestBuilder other) {
+  public HttpRequestBuilder(HttpRequestBuilder other) {
     this.requestType = other.requestType;
     this.uri = other.uri;
     this.headers = new TreeMap<String, String>(other.headers);
+  }
+
+  public HttpRequestBuilder(Map<String, String> headers) {
+    this.headers = headers;
   }
 
   public void addHeader(String key, String value) {
@@ -37,6 +38,18 @@ public class HttpUriRequestBuilder implements Cloneable {
   // public void setBody(String body) {
   // this.body = body;
   // }
+
+  public HttpUriRequest build()  {
+    if (requestType == null) {
+      throw new IllegalArgumentException("No Http Request Type set");
+    } else if (uri == null) {
+      throw new IllegalArgumentException("No URL set");
+    }
+
+
+    HttpUriRequest request = buildRequest();
+    return request;
+  }
 
   private HttpUriRequest buildRequest() {
     HttpUriRequest request = null;
@@ -61,21 +74,9 @@ public class HttpUriRequestBuilder implements Cloneable {
     return request;
   }
 
-  public HttpUriRequest build() throws IllegalArgumentException {
-    if (requestType == null) {
-      throw new IllegalArgumentException("No Http Request Type set");
-    } else if (uri == null) {
-      throw new IllegalArgumentException("No URL set");
-    }
-
-
-    HttpUriRequest request = buildRequest();
-    return request;
-  }
-
-  public HttpUriRequestBuilder clone() {
+  public HttpRequestBuilder clone() {
     try {
-      HttpUriRequestBuilder clone = (HttpUriRequestBuilder) super.clone();
+      HttpRequestBuilder clone = (HttpRequestBuilder) super.clone();
       clone.headers = new TreeMap<String, String>(this.headers);
       return clone;
     } catch (CloneNotSupportedException e) {
@@ -83,6 +84,10 @@ public class HttpUriRequestBuilder implements Cloneable {
     }
   }
 
+  public Map<String, String> getHeaders() {
+    return new TreeMap<String, String>(this.headers);
+  }
+  
   public RequestType getRequestType() {
     return this.requestType;
   }
@@ -91,15 +96,27 @@ public class HttpUriRequestBuilder implements Cloneable {
     return this.uri;
   }
   
-  public Map<String, String> getHeaders() {
-    return new TreeMap<String, String>(this.headers);
+  private URI joinUris(URI baseUri, String uriEndpoint) {
+    if (uriEndpoint == null || uriEndpoint.equals("")) {
+      return baseUri.normalize();
+    }
+    try {
+      URI url = new URI(baseUri.toString() + "/" + uriEndpoint);
+      return url.normalize();
+    } catch (URISyntaxException exception) {
+      throw new IcRuntimeException(exception.getMessage(), exception);
+    }
   }
-  
+
   public void setRequestType(RequestType requestType) {
     this.requestType = requestType;
   }
-
+  
   public void setUri(URI url) {
     this.uri = url;
+  }
+  
+  public void setUri(URI url, String urlEndpoint) {
+    this.uri = this.joinUris(url, urlEndpoint);
   }
 }

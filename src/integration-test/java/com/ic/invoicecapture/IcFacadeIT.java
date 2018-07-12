@@ -16,15 +16,16 @@ class IcFacadeIT {
   private static final String TEST_API_TOKEN = "1234567890abcdef";
 
   @Test
-  public void requestCompanyInfo_passNormalConditions() throws IOException, InterruptedException {
+  public void requestCompanyInfo_successNormalConditions() throws IOException, InterruptedException {
     MockWebServer server = new MockWebServer();
 
     CompanyBuilder companyBuilder = CompanyBuilder.buildTestCompanyBuilder();
     String companyJson = companyBuilder.buildJsonObject().toString();
 
 
-    MockResponse mockResponse =
-        new MockResponse().setHeader("Content-Type", "application/json").setBody(companyJson);
+    MockResponse mockResponse = new MockResponse()
+        .setHeader("Content-Type", "application/json")
+        .setBody(companyJson);
 
     server.enqueue(mockResponse);
 
