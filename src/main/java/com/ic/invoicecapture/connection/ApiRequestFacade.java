@@ -12,6 +12,7 @@ public class ApiRequestFacade {
 
   private static final String X_API_TOKEN_NAME = "X-Api-Token";
   private static final String CONTENT_TYPE = "application/json";
+  private static final String SENT_CONTENT_TYPE = CONTENT_TYPE + "; charset=utf-8";
 
   private final String apiToken;
   private final URI baseUrl;
@@ -43,7 +44,7 @@ public class ApiRequestFacade {
 
   private void addRequestBuilderHeaders(HttpRequestBuilder requestBuilder) {
     requestBuilder.addHeader(X_API_TOKEN_NAME, this.apiToken);
-    requestBuilder.addHeader("Content-Type", CONTENT_TYPE);
+    requestBuilder.addHeader("Content-Type", SENT_CONTENT_TYPE);
     requestBuilder.addHeader("Accept", CONTENT_TYPE);
   }
 
