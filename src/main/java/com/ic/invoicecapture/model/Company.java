@@ -1,10 +1,8 @@
 package com.ic.invoicecapture.model;
 
-import com.google.gson.Gson;
-import com.ic.invoicecapture.json.GsonSingleton;
 import java.util.Objects;
 
-public class Company implements IJsonable {
+public class Company implements IModel, ICompanyUpdate {
 
   private String name;
   private String gid;
@@ -14,12 +12,6 @@ public class Company implements IJsonable {
   private String city;
   private String country;
   private Boolean notificationsEnabled;
-
-  @Override
-  public String asJsonString() {
-    final Gson gson = GsonSingleton.getInstance();
-    return gson.toJson(this);
-  }
   
   @Override
   public boolean equals(Object obj) {

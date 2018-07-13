@@ -1,6 +1,6 @@
 package com.ic.invoicecapture.connection.request;
 
-import com.ic.invoicecapture.builders.IBuilder;
+import com.ic.invoicecapture.connection.builders.IBuilder;
 import com.ic.invoicecapture.connection.response.ServerResponseFacade;
 import com.ic.invoicecapture.exceptions.IcException;
 import java.io.IOException;

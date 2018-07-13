@@ -1,4 +1,4 @@
-package com.ic.invoicecapture.json;
+package com.ic.invoicecapture.model.json;
 
 import com.google.gson.Gson;
 

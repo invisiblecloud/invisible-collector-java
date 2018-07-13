@@ -29,12 +29,11 @@ public class MockServerFacade implements Closeable {
   }
 
   public MockResponse addMockResponse(String headerName, String headervalue, String body) {
-    MockResponse mockResponse =
-        new MockResponse().setHeader(headerName, headervalue).setBody(body);
+    MockResponse mockResponse = new MockResponse().setHeader(headerName, headervalue).setBody(body);
     server.enqueue(mockResponse);
     return mockResponse;
   }
-  
+
   public void addMockResponse(MockResponse mockResponse) {
     server.enqueue(mockResponse);
   }
@@ -54,8 +53,13 @@ public class MockServerFacade implements Closeable {
 
   public static void assertHeaderContainsValue(RecordedRequest request, String headerName,
       String headerValue) {
+    Assertions.assertNotNull(request.getHeader(headerName));
     Assertions.assertTrue(request.getHeader(headerName).contains(headerValue));
   }
 
-  
+  public static void assertHasHeader(RecordedRequest request, String headerName) {
+    Assertions.assertNotNull(request.getHeader(headerName));
+  }
+
+
 }

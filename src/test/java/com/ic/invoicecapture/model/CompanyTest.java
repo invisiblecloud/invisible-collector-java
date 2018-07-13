@@ -32,20 +32,21 @@ public class CompanyTest {
     Assertions.assertNotEquals(company1.hashCode(), company2.hashCode());
   }
 
-  @Test
-  public void toJson_jsonCorrectness() {
-    CompanyBuilder companyBuilder = CompanyBuilder.buildTestCompanyBuilder();
-
-    Company company = companyBuilder.buildCompany();
-    String generatedJsonString = company.asJsonString();
-    JsonObject generatedJson = JsonConverter.jsonStringAsJsonObject(generatedJsonString);
-    JsonObject correctJson = companyBuilder.buildJsonObject();
-
-    Assertions.assertEquals(generatedJson, correctJson);
-
-    company.setCity("newCity");
-    generatedJsonString = company.asJsonString();
-    generatedJson = JsonConverter.jsonStringAsJsonObject(generatedJsonString);
-    Assertions.assertNotEquals(generatedJson, correctJson);
-  }
+  // TODO: move to JsonFacade
+//  @Test
+//  public void toJson_jsonCorrectness() {
+//    CompanyBuilder companyBuilder = CompanyBuilder.buildTestCompanyBuilder();
+//
+//    Company company = companyBuilder.buildCompany();
+//    String generatedJsonString = company.asJsonString();
+//    JsonObject generatedJson = JsonConverter.jsonStringAsJsonObject(generatedJsonString);
+//    JsonObject correctJson = companyBuilder.buildJsonObject();
+//
+//    Assertions.assertEquals(generatedJson, correctJson);
+//
+//    company.setCity("newCity");
+//    generatedJsonString = company.asJsonString();
+//    generatedJson = JsonConverter.jsonStringAsJsonObject(generatedJsonString);
+//    Assertions.assertNotEquals(generatedJson, correctJson);
+//  }
 }

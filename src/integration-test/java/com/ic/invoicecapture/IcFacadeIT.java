@@ -1,8 +1,9 @@
 package com.ic.invoicecapture;
 
-import com.ic.invoicecapture.builders.IBuilder;
+import com.ic.invoicecapture.connection.builders.IBuilder;
 import com.ic.invoicecapture.exceptions.IcException;
 import com.ic.invoicecapture.model.Company;
+import com.ic.invoicecapture.model.ICompanyUpdate;
 import com.ic.invoicecapture.model.builder.CompanyBuilder;
 import java.io.IOException;
 import java.net.URI;
@@ -51,20 +52,20 @@ class IcFacadeIT {
     return this.buildCompanyConfiguration(mockBuilder);
   }
 
-  private void assertSentCorrectGet(String endpoint) throws InterruptedException {
+  private void assertSentCorrectGet(String endpoint, URI baseUrl) throws InterruptedException {
 
     RecordedRequest request = this.mockServer.getRequest();
     MockServerFacade.assertApiEndpointHit(request, endpoint);
     MockServerFacade.assertRequestLineContains(request, "GET");
     MockServerFacade.assertHeaderContainsValue(request, "X-Api-Token", TEST_API_TOKEN);
-    MockServerFacade.assertHeaderContainsValue(request, "Content-Type", "application/json");
+    // MockServerFacade.assertHeaderContainsValue(request, "Content-Type", "application/json");
+    // MockServerFacade.assertHeaderContainsValue(request, "Content-Type", "utf-8");
     MockServerFacade.assertHeaderContainsValue(request, "Accept", "application/json");
-    MockServerFacade.assertHeaderContainsValue(request, "Content-Type", "utf-8");
+    MockServerFacade.assertHeaderContainsValue(request, "Host", baseUrl.getHost());
+    MockServerFacade.assertHasHeader(request, "Date");
+
   }
 
-  private void assertSentCorrectGet() throws InterruptedException {
-    this.assertSentCorrectGet(IcFacade.COMPANIES_ENDPOINT);
-  }
 
   private void assertReceivedCorrectJson(IcFacade icFacade, Company correctCompany)
       throws IcException {
@@ -84,7 +85,7 @@ class IcFacadeIT {
     IcFacade icFacade = new IcFacade(TEST_API_TOKEN, baseUri);
     this.assertReceivedCorrectJson(icFacade, correctCompany);
 
-    this.assertSentCorrectGet();
+    this.assertSentCorrectGet(IcFacade.COMPANIES_ENDPOINT, baseUri);
   }
 
   @Test
@@ -104,7 +105,7 @@ class IcFacadeIT {
     IcFacade icFacade = new IcFacade(TEST_API_TOKEN, baseUri);
     this.assertReceivedCorrectJson(icFacade, correctCompany);
 
-    this.assertSentCorrectGet();
+    this.assertSentCorrectGet(IcFacade.COMPANIES_ENDPOINT, baseUri);
   }
 
   // should only have one of these
@@ -122,13 +123,13 @@ class IcFacadeIT {
     Company correctCompany = pair.getValue1();
     this.assertReceivedCorrectJson(icFacade, correctCompany);
 
-    this.assertSentCorrectGet();
+    this.assertSentCorrectGet(IcFacade.COMPANIES_ENDPOINT, baseUri);
   }
 
   @Test
   public void requestCompanyInfo_unparsableJson()
       throws IOException, IcException, InterruptedException {
-    
+
     String badJson = "{231,,[][[";
 
     IBuilder<MockResponse, String> mockBuilder = (companyJson) -> new MockResponse()
@@ -171,7 +172,7 @@ class IcFacadeIT {
   }
 
   private static final String REDIRECT_URL = "redirect";
-  
+
   @Test
   public void requestCompanyInfo_followRedirect()
       throws IOException, IcException, InterruptedException {
@@ -184,12 +185,34 @@ class IcFacadeIT {
     Company correctCompany = pair.getValue1();
     this.mockServer.addMockResponse(pair.getValue0());
 
-    // this.mockServer.start();
+    // this.mockServer.start(); //already started?
     IcFacade icFacade = new IcFacade(TEST_API_TOKEN, connectionUrl);
     this.assertReceivedCorrectJson(icFacade, correctCompany);
-    this.assertSentCorrectGet();
-    this.assertSentCorrectGet(REDIRECT_URL);
+    this.assertSentCorrectGet(IcFacade.COMPANIES_ENDPOINT, connectionUrl);
+    this.assertSentCorrectGet(REDIRECT_URL, connectionUrl);
   }
 
+  @Test
+  public void updateCompanyInfo() throws Exception {
+    Pair<MockResponse, Company> pair = this.initCompanyConfiguration();
+    Company companyToReceive = pair.getValue1();
+    Company companyUpdate = CompanyBuilder.buildTestCompanyBuilder().buildCompany();
+    companyUpdate.setAddress("new address");
+    companyUpdate.setCity("new city");
+    this.mockServer.addMockResponse(pair.getValue0());
+
+    this.mockServer.start();
+    URI baseUri = this.mockServer.getBaseUri();
+    IcFacade icFacade = new IcFacade(TEST_API_TOKEN, baseUri);
+    Company returnedCompany = icFacade.updateCompanyInfo(companyUpdate);
+    Assertions.assertEquals(companyToReceive, returnedCompany);
+
+    this.assertSentCorrectPut(IcFacade.COMPANIES_ENDPOINT, baseUri);
+  }
+
+  private void assertSentCorrectPut(String companiesEndpoint, URI baseUri) {
+    // TODO Implement
+    
+  }
 
 }

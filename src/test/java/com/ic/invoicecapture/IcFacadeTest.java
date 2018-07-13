@@ -11,14 +11,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import com.ic.invoicecapture.connection.ApiRequestFacade;
 import com.ic.invoicecapture.exceptions.IcException;
-import com.ic.invoicecapture.json.JsonFacade;
 import com.ic.invoicecapture.model.Company;
 import com.ic.invoicecapture.model.builder.CompanyBuilder;
+import com.ic.invoicecapture.model.json.JsonModelFacade;
 
 public class IcFacadeTest {
 
   private ApiRequestFacade apiMock;
-  private JsonFacade jsonMock;
+  private JsonModelFacade jsonMock;
   private IcFacade icFacade;
   private InputStream inputStream;
 
@@ -26,7 +26,7 @@ public class IcFacadeTest {
   @BeforeEach
   public void init() {
     this.apiMock = EasyMock.createNiceMock(ApiRequestFacade.class);
-    this.jsonMock = EasyMock.createNiceMock(JsonFacade.class);
+    this.jsonMock = EasyMock.createNiceMock(JsonModelFacade.class);
     this.icFacade = new IcFacade(this.apiMock, this.jsonMock);
     this.inputStream = new ByteArrayInputStream("test".getBytes(StandardCharsets.UTF_8));
   }
@@ -40,7 +40,7 @@ public class IcFacadeTest {
         .andReturn(this.inputStream);
     EasyMock
         .expect(
-            this.jsonMock.stringStreamToJsonObject(EasyMock.isA(InputStream.class), EasyMock.eq(Company.class)))
+            this.jsonMock.parseStringStream(EasyMock.isA(InputStream.class), EasyMock.eq(Company.class)))
         .andReturn(correctCompany);
 
     EasyMock.replay(this.apiMock);

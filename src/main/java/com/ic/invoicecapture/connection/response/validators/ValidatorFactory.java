@@ -8,6 +8,8 @@ public class ValidatorFactory {
   public IValidator build(RequestType requestType, ServerResponseFacade responsePair) {
     switch (requestType) {
       case GET:
+      case PUT:
+      case POST:
         ValidatorComposite composite = new ValidatorComposite();
         composite.addValidator(new StatusCodeValidator(responsePair));
         composite.addValidator(new JsonValidator(responsePair));
