@@ -7,7 +7,8 @@ import java.io.IOException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.LaxRedirectStrategy;
 
 public class MessageExchanger {
 
@@ -15,7 +16,17 @@ public class MessageExchanger {
   private IBuilder<ServerResponseFacade, CloseableHttpResponse> serverResponseBuilder;
 
   public MessageExchanger() {
-    this.httpClient = HttpClients.createMinimal();
+    // auto redirect
+    this.httpClient = HttpClientBuilder
+        .create()
+        .setRedirectStrategy(new LaxRedirectStrategy())
+        .build();
+    this.serverResponseBuilder = (response) -> new ServerResponseFacade(response);
+  }
+  
+  public MessageExchanger(CloseableHttpClient httpClient) {
+    // auto redirect
+    this.httpClient = httpClient;
     this.serverResponseBuilder = (response) -> new ServerResponseFacade(response);
   }
 

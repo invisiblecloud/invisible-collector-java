@@ -3,10 +3,10 @@ package com.ic.invoicecapture;
 import java.io.Closeable;
 import java.io.IOException;
 import java.net.URI;
-import org.junit.jupiter.api.Assertions;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
+import org.junit.jupiter.api.Assertions;
 
 public class MockServerFacade implements Closeable {
 
@@ -34,6 +34,10 @@ public class MockServerFacade implements Closeable {
     server.enqueue(mockResponse);
     return mockResponse;
   }
+  
+  public void addMockResponse(MockResponse mockResponse) {
+    server.enqueue(mockResponse);
+  }
 
   RecordedRequest getRequest() throws InterruptedException {
     return this.server.takeRequest();
@@ -52,4 +56,6 @@ public class MockServerFacade implements Closeable {
       String headerValue) {
     Assertions.assertTrue(request.getHeader(headerName).contains(headerValue));
   }
+
+  
 }
