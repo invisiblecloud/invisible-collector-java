@@ -30,6 +30,11 @@ public class IcFacade {
     this.jsonFacade = new JsonFacade(); 
   }
   
+  public IcFacade(ApiRequestFacade apiFacade) {
+    this.apiFacade = apiFacade;
+    this.jsonFacade = new JsonFacade();
+  }
+  
   public IcFacade(ApiRequestFacade apiFacade, JsonFacade jsonFacade) {
     this.apiFacade = apiFacade;
     this.jsonFacade = jsonFacade;

@@ -31,12 +31,12 @@ public class ApiRequestFacade {
   }
 
   public ApiRequestFacade(String apiToken, URI baseUrl,
-      MessageExchanger exchangerBuilder,
+      MessageExchanger exchanger,
       HttpRequestBuilder requestBuilder, ValidatorFactory validatorFactory) {
     this.apiToken = apiToken;
     this.baseUrl = baseUrl;
     this.requestBuilder = requestBuilder;
-    this.exchanger = exchangerBuilder;
+    this.exchanger = exchanger;
     this.validatorFactory = validatorFactory;
 
     this.addRequestBuilderHeaders(this.requestBuilder);
