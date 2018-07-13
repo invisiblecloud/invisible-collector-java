@@ -14,14 +14,19 @@ import java.net.URI;
  */
 public class IcFacade {
 
-  private static final URI PRODUCTION_BASE_URL = URI.create("https://api.invisiblecollector.com");
-  private static final String COMPANIES_ENDPOINT = "companies";
+  public static final URI PRODUCTION_BASE_URL = URI.create("https://api.invisiblecollector.com");
+  public static final String COMPANIES_ENDPOINT = "companies";
   
   private ApiRequestFacade apiFacade;
   private JsonFacade jsonFacade;
 
   public IcFacade(String apiToken) {
     this.apiFacade = new ApiRequestFacade(apiToken, PRODUCTION_BASE_URL);
+    this.jsonFacade = new JsonFacade(); 
+  }
+  
+  public IcFacade(String apiToken, URI baseUrl) {
+    this.apiFacade = new ApiRequestFacade(apiToken, baseUrl);
     this.jsonFacade = new JsonFacade(); 
   }
   

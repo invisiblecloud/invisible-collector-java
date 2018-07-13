@@ -1,27 +1,25 @@
 package com.ic.invoicecapture.connection.response.validators;
 
-import com.ic.invoicecapture.connection.response.ServerResponse;
+import com.ic.invoicecapture.connection.response.IResponseStatus;
 import com.ic.invoicecapture.exceptions.IcException;
-import org.apache.http.StatusLine;
 
 public class StatusCodeValidator implements IValidator {
 
-  private ServerResponse responsePair;
+  private IResponseStatus responseStatus;
 
-  public StatusCodeValidator(ServerResponse responsePair) {
-    this.responsePair = responsePair;
+  public StatusCodeValidator(IResponseStatus responseFacade) {
+    this.responseStatus = responseFacade;
   }
 
   @Override
   public void validateAndTryThrowException() throws IcException {
-    StatusLine statusLine = responsePair.getStatusLine();
-    final int statusCode = statusLine.getStatusCode();
+    final int statusCode = responseStatus.getStatusCode();
     final int statusFamily = statusCode / 100;
     if (statusFamily != 2) {
       String exceptionMsg =
-          "Status code returned: " + statusCode + " " + statusLine.getReasonPhrase();
+          "Server returned: " + statusCode + " " + responseStatus.getStatusCodeReasonPhrase();
       try {
-        exceptionMsg += "\n" + this.responsePair.getBodyAsString();
+        exceptionMsg += "\n" + this.responseStatus.consumeConnectionAsString();
         throw new IcException(exceptionMsg);
       } catch (IcException e) {
         throw new IcException(exceptionMsg, e);

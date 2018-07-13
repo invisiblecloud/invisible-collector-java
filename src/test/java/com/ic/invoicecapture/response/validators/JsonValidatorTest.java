@@ -10,7 +10,7 @@ import com.ic.invoicecapture.exceptions.IcException;
 public class JsonValidatorTest {
 
   @Test
-  public void validate_pass() throws IcException {
+  public void validate_success() throws IcException {
     JsonValidator jsonValidator = new JsonValidator("text/plain, application/json");
     
     jsonValidator.validateAndTryThrowException();

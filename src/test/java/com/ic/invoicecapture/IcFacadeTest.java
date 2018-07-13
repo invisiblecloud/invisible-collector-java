@@ -38,18 +38,17 @@ public class IcFacadeTest {
 
     EasyMock.expect(this.apiMock.getRequest(EasyMock.isA(String.class)))
         .andReturn(this.inputStream);
-    EasyMock.expect(this.jsonMock.stringStreamToJsonObject(this.inputStream, Company.class))
+    EasyMock
+        .expect(
+            this.jsonMock.stringStreamToJsonObject(EasyMock.isA(InputStream.class), EasyMock.eq(Company.class)))
         .andReturn(correctCompany);
 
     EasyMock.replay(this.apiMock);
     EasyMock.replay(this.jsonMock);
-    
+
     Company returnedCompany = this.icFacade.requestCompanyInfo();
-    
+
     Assertions.assertEquals(correctCompany, returnedCompany);
-    
-    EasyMock.verify(this.apiMock);
-    EasyMock.verify(this.jsonMock);
   }
 
 }

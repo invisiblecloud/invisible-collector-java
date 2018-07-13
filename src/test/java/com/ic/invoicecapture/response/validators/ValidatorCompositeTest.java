@@ -31,7 +31,7 @@ public class ValidatorCompositeTest {
   }
   
   @Test
-  public void validate_passing() throws IcException {
+  public void validate_successing() throws IcException {
     ValidatorComposite composite = new ValidatorComposite();
     IValidator validValidator = this.prepareValidatorMock(true);
     IValidator validValidator2 = this.prepareValidatorMock(true);
