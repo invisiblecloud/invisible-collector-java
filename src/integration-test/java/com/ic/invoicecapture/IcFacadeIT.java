@@ -18,6 +18,7 @@ import org.junit.jupiter.api.Test;
 class IcFacadeIT {
 
   private static final String TEST_API_TOKEN = "1234567890abcdef";
+  private static final String REDIRECT_URL = "redirect";
 
   private MockServerFacade mockServer;
 
@@ -31,23 +32,30 @@ class IcFacadeIT {
     mockServer.close();
   }
 
+  private MockResponse buildBodiedMockResponse(String bodyJson) {
+    return new MockResponse().setHeader("Content-Type", "application/json").setBody(bodyJson);
+  }
+
+  private Pair<MockResponse, Company> buildCompanyConfiguration(CompanyBuilder companyBuilder) {
+    String companyJson = companyBuilder.buildJsonObject().toString();
+    MockResponse mockResponse = buildBodiedMockResponse(companyJson);
+    Company correctCompany = companyBuilder.buildCompany();
+    return Pair.with(mockResponse, correctCompany);
+  }
+
   private Pair<MockResponse, Company> buildCompanyConfiguration(
       IBuilder<MockResponse, String> mockBuilder) {
     CompanyBuilder companyBuilder = CompanyBuilder.buildTestCompanyBuilder();
     String companyJson = companyBuilder.buildJsonObject().toString();
-
     MockResponse mockResponse = mockBuilder.build(companyJson);
-
     Company correctCompany = companyBuilder.buildCompany();
-
     return Pair.with(mockResponse, correctCompany);
   }
 
-
   private Pair<MockResponse, Company> buildCompanyConfiguration() {
 
-    IBuilder<MockResponse, String> mockBuilder = (companyJson) -> new MockResponse()
-        .setHeader("Content-Type", "application/json").setBody(companyJson);
+    IBuilder<MockResponse, String> mockBuilder =
+        (companyJson) -> buildBodiedMockResponse(companyJson);
     return this.buildCompanyConfiguration(mockBuilder);
   }
 
@@ -63,112 +71,102 @@ class IcFacadeIT {
 
   }
 
-
-  private void assertReceivedCorrectJson(IcFacade icFacade, Company correctCompany)
-      throws IcException {
-    Company returnedCompany = icFacade.requestCompanyInfo();
-    Assertions.assertEquals(correctCompany, returnedCompany);
+  private void assertSentCorrectPut(String endpoint, URI baseUrl) throws Exception {
+    RecordedRequest request = this.mockServer.getRequest();
+    MockServerFacade.assertApiEndpointHit(request, endpoint);
+    MockServerFacade.assertRequestLineContains(request, "PUT");
+    MockServerFacade.assertHeaderContainsValue(request, "X-Api-Token", TEST_API_TOKEN);
+    MockServerFacade.assertHeaderContainsValue(request, "Content-Type", "application/json");
+    MockServerFacade.assertHeaderContainsValue(request, "Content-Type", "utf-8");
+    MockServerFacade.assertHeaderContainsValue(request, "Accept", "application/json");
+    MockServerFacade.assertHeaderContainsValue(request, "Host", baseUrl.getHost());
+    MockServerFacade.assertHasHeader(request, "Date");
+    MockServerFacade.assertHasHeader(request, "Content-Length");
   }
 
-  @Test
-  public void requestCompanyInfo_successNormalConditions()
-      throws IcException, IOException, InterruptedException {
-    Pair<MockResponse, Company> pair = this.buildCompanyConfiguration();
-    Company correctCompany = pair.getValue1();
-    this.mockServer.addMockResponse(pair.getValue0());
+  private void assertRequestWithReturn(Pair<MockResponse, Company> pair,
+      IBuilder2<Company, IcFacade, Company> facadeMethod) throws Exception {
+
+    IcFacade icFacade = initMockServer(pair.getValue0());
+    Company returnedCompany = facadeMethod.build(icFacade, pair.getValue1());
+    Company companyToReceive = pair.getValue1();
+    Assertions.assertEquals(companyToReceive, returnedCompany);
+  }
+
+  private void assertRequestWithReturn(CompanyBuilder companyBuilder,
+      IBuilder2<Company, IcFacade, Company> facadeMethod) throws Exception {
+    Pair<MockResponse, Company> pair = this.buildCompanyConfiguration(companyBuilder);
+    this.assertRequestWithReturn(pair, facadeMethod);
+  }
+
+  private IcFacade initMockServer(MockResponse response) throws Exception {
+    this.mockServer.addMockResponse(response);
 
     this.mockServer.start();
     URI baseUri = this.mockServer.getBaseUri();
-    IcFacade icFacade = new IcFacade(TEST_API_TOKEN, baseUri);
-    this.assertReceivedCorrectJson(icFacade, correctCompany);
-
-    this.assertSentCorrectGet(IcFacade.COMPANIES_ENDPOINT, baseUri);
+    return new IcFacade(TEST_API_TOKEN, baseUri);
   }
 
   @Test
-  public void requestCompanyInfo_extraMessageSuffix()
-      throws IcException, IOException, InterruptedException {
+  public void requestCompanyInfo_successNormalConditions() throws Exception {
+    this.assertRequestWithReturn(CompanyBuilder.buildTestCompanyBuilder(),
+        (icFacade, company) -> icFacade.requestCompanyInfo());
+
+    this.assertSentCorrectGet(IcFacade.COMPANIES_ENDPOINT, this.mockServer.getBaseUri());
+  }
+
+  @Test
+  public void requestCompanyInfo_extraMessageSuffix() throws Exception {
     String extraMessage = CompanyBuilder.buildTestCompanyBuilder().setCity("/").setGid("//")
         .buildJsonObject().toString();
-
     IBuilder<MockResponse, String> mockBuilder = (companyJson) -> new MockResponse()
         .setHeader("Content-Type", "application/json").setBody(companyJson + "\n" + extraMessage);
     Pair<MockResponse, Company> pair = this.buildCompanyConfiguration(mockBuilder);
-    Company correctCompany = pair.getValue1();
-    this.mockServer.addMockResponse(pair.getValue0());
+    this.assertRequestWithReturn(pair, (icFacade, company) -> icFacade.requestCompanyInfo());
 
-    this.mockServer.start();
-    URI baseUri = this.mockServer.getBaseUri();
-    IcFacade icFacade = new IcFacade(TEST_API_TOKEN, baseUri);
-    this.assertReceivedCorrectJson(icFacade, correctCompany);
-
-    this.assertSentCorrectGet(IcFacade.COMPANIES_ENDPOINT, baseUri);
+    this.assertSentCorrectGet(IcFacade.COMPANIES_ENDPOINT, this.mockServer.getBaseUri());
   }
 
   // should only have one of these
   @Test
-  public void requestCompanyInfo_slowConnection()
-      throws IOException, IcException, InterruptedException {
+  public void requestCompanyInfo_slowConnection() throws Exception {
     Pair<MockResponse, Company> pair = this.buildCompanyConfiguration();
     MockResponse response = pair.getValue0();
     response.throttleBody(1, 1, TimeUnit.MILLISECONDS); // 1000 Byte/sec
-    this.mockServer.addMockResponse(pair.getValue0());
+    this.assertRequestWithReturn(pair, (icFacade, company) -> icFacade.requestCompanyInfo());
 
-    this.mockServer.start();
-    URI baseUri = this.mockServer.getBaseUri();
-    IcFacade icFacade = new IcFacade(TEST_API_TOKEN, baseUri);
-    Company correctCompany = pair.getValue1();
-    this.assertReceivedCorrectJson(icFacade, correctCompany);
-
-    this.assertSentCorrectGet(IcFacade.COMPANIES_ENDPOINT, baseUri);
+    this.assertSentCorrectGet(IcFacade.COMPANIES_ENDPOINT, this.mockServer.getBaseUri());
   }
 
   @Test
-  public void requestCompanyInfo_unparsableJson()
-      throws IOException, IcException, InterruptedException {
+  public void requestCompanyInfo_unparsableJson() throws Exception {
 
     String badJson = "{231,,[][[";
 
     IBuilder<MockResponse, String> mockBuilder = (companyJson) -> new MockResponse()
         .setHeader("Content-Type", "application/json").setBody(badJson);
     Pair<MockResponse, Company> pair = this.buildCompanyConfiguration(mockBuilder);
-    this.mockServer.addMockResponse(pair.getValue0());
-
-    this.mockServer.start();
-    URI baseUri = this.mockServer.getBaseUri();
-    IcFacade icFacade = new IcFacade(TEST_API_TOKEN, baseUri);
+    IcFacade icFacade = initMockServer(pair.getValue0());
     Assertions.assertThrows(IcException.class, icFacade::requestCompanyInfo);
   }
 
   @Test
-  public void requestCompanyInfo_failOnNoContentTypeHeader()
-      throws IOException, IcException, InterruptedException {
+  public void requestCompanyInfo_failOnNoContentTypeHeader() throws Exception {
     IBuilder<MockResponse, String> mockBuilder =
         (companyJson) -> new MockResponse().setBody(companyJson);
     Pair<MockResponse, Company> pair = this.buildCompanyConfiguration(mockBuilder);
-    this.mockServer.addMockResponse(pair.getValue0());
-
-    this.mockServer.start();
-    URI baseUri = this.mockServer.getBaseUri();
-    IcFacade icFacade = new IcFacade(TEST_API_TOKEN, baseUri);
+    IcFacade icFacade = initMockServer(pair.getValue0());
     Assertions.assertThrows(IcException.class, icFacade::requestCompanyInfo);
   }
 
   @Test
-  public void requestCompanyInfo_erroredStatusCode()
-      throws IOException, IcException, InterruptedException {
+  public void requestCompanyInfo_erroredStatusCode() throws Exception {
     IBuilder<MockResponse, String> mockBuilder =
         (companyJson) -> new MockResponse().setResponseCode(400).setBody(companyJson);
     Pair<MockResponse, Company> pair = this.buildCompanyConfiguration(mockBuilder);
-    this.mockServer.addMockResponse(pair.getValue0());
-
-    this.mockServer.start();
-    URI baseUri = this.mockServer.getBaseUri();
-    IcFacade icFacade = new IcFacade(TEST_API_TOKEN, baseUri);
+    IcFacade icFacade = initMockServer(pair.getValue0());
     Assertions.assertThrows(IcException.class, icFacade::requestCompanyInfo);
   }
-
-  private static final String REDIRECT_URL = "redirect";
 
   @Test
   public void requestCompanyInfo_followRedirect()
@@ -184,40 +182,42 @@ class IcFacadeIT {
 
     // this.mockServer.start(); //already started?
     IcFacade icFacade = new IcFacade(TEST_API_TOKEN, connectionUrl);
-    this.assertReceivedCorrectJson(icFacade, correctCompany);
+    Company receivedCompany = icFacade.requestCompanyInfo();
+    Assertions.assertEquals(receivedCompany, correctCompany);
     this.assertSentCorrectGet(IcFacade.COMPANIES_ENDPOINT, connectionUrl);
     this.assertSentCorrectGet(REDIRECT_URL, connectionUrl);
   }
 
   @Test
-  public void updateCompanyInfo() throws Exception {
-    Pair<MockResponse, Company> pair = this.buildCompanyConfiguration();
-    this.mockServer.addMockResponse(pair.getValue0());
+  public void updateCompanyInfo_correctness() throws Exception {
+    final String newAddress = StringUtils.randomHexString();
+    final String newCity = StringUtils.randomHexString();
 
-    this.mockServer.start();
-    URI baseUri = this.mockServer.getBaseUri();
-    Company companyUpdate = CompanyBuilder.buildTestCompanyBuilder().buildCompany();
-    companyUpdate.setAddress("new address");
-    companyUpdate.setCity("new city");
-    IcFacade icFacade = new IcFacade(TEST_API_TOKEN, baseUri);
-    Company returnedCompany = icFacade.updateCompanyInfo(companyUpdate);
-    Company companyToReceive = pair.getValue1();
-    Assertions.assertEquals(companyToReceive, returnedCompany);
+    CompanyBuilder companyBuilder = CompanyBuilder.buildTestCompanyBuilder();
+    companyBuilder.setAddress(newAddress);
+    companyBuilder.setCity(newCity);
 
-    this.assertSentCorrectPut(IcFacade.COMPANIES_ENDPOINT, baseUri);
+    assertRequestWithReturn(companyBuilder,
+        (icFacade, company) -> icFacade.updateCompanyInfo(company));
+    this.assertSentCorrectPut(IcFacade.COMPANIES_ENDPOINT, this.mockServer.getBaseUri());
   }
 
-  private void assertSentCorrectPut(String endpoint, URI baseUrl) throws Exception {
-    RecordedRequest request = this.mockServer.getRequest();
-    MockServerFacade.assertApiEndpointHit(request, endpoint);
-    MockServerFacade.assertRequestLineContains(request, "PUT");
-    MockServerFacade.assertHeaderContainsValue(request, "X-Api-Token", TEST_API_TOKEN);
-    MockServerFacade.assertHeaderContainsValue(request, "Content-Type", "application/json");
-    MockServerFacade.assertHeaderContainsValue(request, "Content-Type", "utf-8");
-    MockServerFacade.assertHeaderContainsValue(request, "Accept", "application/json");
-    MockServerFacade.assertHeaderContainsValue(request, "Host", baseUrl.getHost());
-    MockServerFacade.assertHasHeader(request, "Date");
-    MockServerFacade.assertHasHeader(request, "Content-Length");
+  @Test
+  public void setCompanyNotifications_enable() throws Exception {
+    CompanyBuilder companyBuilder = CompanyBuilder.buildTestCompanyBuilder();
+    companyBuilder.setNotificationsEnabled(true);
+
+    assertRequestWithReturn(companyBuilder,
+        (icFacade, unused) -> icFacade.setCompanyNotifications(true));
+  }
+
+  @Test
+  public void setCompanyNotifications_disable() throws Exception {
+    CompanyBuilder companyBuilder = CompanyBuilder.buildTestCompanyBuilder();
+    companyBuilder.setNotificationsEnabled(false);
+
+    assertRequestWithReturn(companyBuilder,
+        (icFacade, unused) -> icFacade.setCompanyNotifications(false));
   }
 
 }

@@ -11,13 +11,17 @@ import org.junit.jupiter.api.Assertions;
 public class MockServerFacade implements Closeable {
 
   private MockWebServer server;
+  private URI connectionUrli = null;
 
   public MockServerFacade() {
     this.server = new MockWebServer();
   }
 
   public URI getBaseUri() {
-    return server.url("").uri();
+    if (this.connectionUrli == null) {
+      this.connectionUrli = server.url("").uri();
+    }
+    return this.connectionUrli;
   }
 
   public void close() throws IOException {
