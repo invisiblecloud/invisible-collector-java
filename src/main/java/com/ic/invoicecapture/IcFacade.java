@@ -1,6 +1,9 @@
 package com.ic.invoicecapture;
 
 import com.ic.invoicecapture.connection.ApiRequestFacade;
+import com.ic.invoicecapture.connection.builders.IThrowingBuilder;
+import com.ic.invoicecapture.connection.response.validators.IValidator;
+import com.ic.invoicecapture.connection.response.validators.ValidatorFactory;
 import com.ic.invoicecapture.exceptions.IcException;
 import com.ic.invoicecapture.model.Company;
 import com.ic.invoicecapture.model.ICompanyUpdate;
@@ -24,6 +27,7 @@ public class IcFacade {
 
   private ApiRequestFacade apiFacade;
   private JsonModelFacade jsonFacade;
+  private ValidatorFactory validatorFactory;
 
   public IcFacade(String apiToken) {
     this(new ApiRequestFacade(apiToken, PRODUCTION_BASE_URL));
@@ -37,33 +41,42 @@ public class IcFacade {
     this(apiFacade, new JsonModelFacade());
   }
 
-  public IcFacade(ApiRequestFacade apiFacade, JsonModelFacade jsonFacade) {
+  public IcFacade(ApiRequestFacade apiFacade, JsonModelFacade jsonFacade,
+      ValidatorFactory validatorFactory) {
     this.apiFacade = apiFacade;
     this.jsonFacade = jsonFacade;
+    this.validatorFactory = validatorFactory;
+  }
+
+  private IcFacade(ApiRequestFacade apiFacade, JsonModelFacade jsonFacade) {
+    this(apiFacade, jsonFacade, new ValidatorFactory());
+  }
+
+  private Company returningCompanyMethod(IThrowingBuilder<InputStream, IValidator> requestMethod)
+      throws IcException {
+    IValidator validator = this.validatorFactory.buildCompanyReturnValidator();
+    InputStream inputStream = requestMethod.build(validator);
+
+    return this.jsonFacade.parseStringStream(inputStream, Company.class);
   }
 
   public Company requestCompanyInfo() throws IcException {
-    InputStream inputStream = apiFacade.getRequest(COMPANIES_ENDPOINT);
-
-    return this.jsonFacade.parseStringStream(inputStream, Company.class);
+    return this
+        .returningCompanyMethod((validator) -> apiFacade.getRequest(validator, COMPANIES_ENDPOINT));
   }
 
   public Company updateCompanyInfo(ICompanyUpdate companyInfo) throws IcException {
     String jsonToSend = this.jsonFacade.toJson(companyInfo);
-
-    InputStream inputStream = apiFacade.putRequest(COMPANIES_ENDPOINT, jsonToSend);
-    return this.jsonFacade.parseStringStream(inputStream, Company.class);
+    return this.returningCompanyMethod(
+        (validator) -> apiFacade.putRequest(validator, COMPANIES_ENDPOINT, jsonToSend));
   }
 
   public Company setCompanyNotifications(boolean bEnableNotifications) throws IcException {
-    InputStream inputStream;
-    if (bEnableNotifications) {
-      inputStream = apiFacade.putRequest(ENABLE_NOTIFICATIONS_ENDPOINT, null);
-    } else {
-      inputStream = apiFacade.putRequest(DISABLE_NOTIFICATIONS_ENDPOINT, null);
-    }
+    IThrowingBuilder<InputStream, IValidator> requestMethod = bEnableNotifications
+        ? (validator) -> apiFacade.putRequest(validator, ENABLE_NOTIFICATIONS_ENDPOINT, null)
+        : (validator) -> apiFacade.putRequest(validator, DISABLE_NOTIFICATIONS_ENDPOINT, null);
 
-    return this.jsonFacade.parseStringStream(inputStream, Company.class);
+    return this.returningCompanyMethod(requestMethod);
   }
 
 

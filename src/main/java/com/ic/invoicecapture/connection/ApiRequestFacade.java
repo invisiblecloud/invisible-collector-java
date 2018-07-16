@@ -3,6 +3,7 @@ package com.ic.invoicecapture.connection;
 import com.ic.invoicecapture.connection.request.HttpRequestBuilder;
 import com.ic.invoicecapture.connection.request.MessageExchanger;
 import com.ic.invoicecapture.connection.response.ServerResponseFacade;
+import com.ic.invoicecapture.connection.response.validators.IValidator;
 import com.ic.invoicecapture.connection.response.validators.ValidatorFactory;
 import com.ic.invoicecapture.exceptions.IcException;
 import java.io.InputStream;
@@ -68,29 +69,29 @@ public class ApiRequestFacade {
     return requestBuilder;
   }
 
-  private ServerResponseFacade exchangeAndValidateMessages(RequestType requestType,
+  private ServerResponseFacade exchangeAndValidateMessages(IValidator validator, RequestType requestType,
       HttpRequestBuilder requestBuilder) throws IcException {
     ServerResponseFacade responseFacade = exchanger.exchangeMessages(requestBuilder);
-    this.validatorFactory.build(requestType, responseFacade).validateAndTryThrowException();
+    validator.validateAndTryThrowException(responseFacade);
 
     return responseFacade;
   }
 
-  public InputStream getRequest(String urlEndpoint) throws IcException {
+  public InputStream getRequest(IValidator validator, String urlEndpoint) throws IcException {
     HttpRequestBuilder requestBuilder = buildRequestBuilder(urlEndpoint, RequestType.GET);
     this.addCommonHeaders(requestBuilder);
 
-    return this.exchangeAndValidateMessages(RequestType.GET, requestBuilder)
+    return this.exchangeAndValidateMessages(validator, RequestType.GET, requestBuilder)
         .getResponseBodyStream();
   }
 
-  public InputStream putRequest(String urlEndpoint, String bodyToSend) throws IcException {
+  public InputStream putRequest(IValidator validator, String urlEndpoint, String bodyToSend) throws IcException {
     HttpRequestBuilder requestBuilder = buildRequestBuilder(urlEndpoint, RequestType.PUT);
     this.addCommonHeaders(requestBuilder)
         .addBodyHeaders(requestBuilder);
     requestBuilder.setBody(bodyToSend);
 
-    return this.exchangeAndValidateMessages(RequestType.PUT, requestBuilder)
+    return this.exchangeAndValidateMessages(validator, RequestType.PUT, requestBuilder)
         .getResponseBodyStream();
   }
 }

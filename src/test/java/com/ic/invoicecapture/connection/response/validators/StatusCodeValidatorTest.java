@@ -1,6 +1,6 @@
 package com.ic.invoicecapture.connection.response.validators;
 
-import com.ic.invoicecapture.connection.response.IResponseStatus;
+import com.ic.invoicecapture.connection.response.IServerResponse;
 import com.ic.invoicecapture.connection.response.validators.StatusCodeValidator;
 import com.ic.invoicecapture.exceptions.IcException;
 import org.easymock.EasyMock;
@@ -9,9 +9,9 @@ import org.junit.jupiter.api.Test;
 
 public class StatusCodeValidatorTest {
 
-  private IResponseStatus buildResponseStatusMock(int code, String reason, String body)
+  private IServerResponse buildResponseStatusMock(int code, String reason, String body)
       throws IcException {
-    IResponseStatus mock = EasyMock.createNiceMock(IResponseStatus.class);
+    IServerResponse mock = EasyMock.createNiceMock(IServerResponse.class);
     EasyMock.expect(mock.getStatusCode()).andReturn(code);
     EasyMock.expect(mock.getStatusCodeReasonPhrase()).andReturn(reason);
     EasyMock.expect(mock.consumeConnectionAsString()).andReturn(body);
@@ -23,7 +23,7 @@ public class StatusCodeValidatorTest {
 
   @Test
   public void validate_success() throws IcException {
-    IResponseStatus status = this.buildResponseStatusMock(200, "OK", "body");
+    IServerResponse status = this.buildResponseStatusMock(200, "OK", "body");
 
     StatusCodeValidator statusCodeValidator = new StatusCodeValidator(status);
 
@@ -36,7 +36,7 @@ public class StatusCodeValidatorTest {
     final String reasonMsg = "reason";
     final String boyMsg = "body string";
 
-    IResponseStatus status = this.buildResponseStatusMock(statusCode, reasonMsg, boyMsg);
+    IServerResponse status = this.buildResponseStatusMock(statusCode, reasonMsg, boyMsg);
 
     StatusCodeValidator statusCodeValidator = new StatusCodeValidator(status);
 
