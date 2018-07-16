@@ -1,4 +1,4 @@
-package com.ic.invoicecapture.response.validators;
+package com.ic.invoicecapture.connection.response.validators;
 
 import com.ic.invoicecapture.connection.RequestType;
 import com.ic.invoicecapture.connection.response.ServerResponseFacade;

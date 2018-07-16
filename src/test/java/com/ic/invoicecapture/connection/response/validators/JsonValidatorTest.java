@@ -1,4 +1,4 @@
-package com.ic.invoicecapture.response.validators;
+package com.ic.invoicecapture.connection.response.validators;
 
 import com.ic.invoicecapture.connection.response.validators.JsonValidator;
 import com.ic.invoicecapture.exceptions.IcException;

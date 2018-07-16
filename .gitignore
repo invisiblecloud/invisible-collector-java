@@ -36,4 +36,4 @@ checkstyle/
 .vscode
 .checkstyle
 .eclipse-pmd
-src/manual
+src/integration-test/java/com/ic/invoicecapture/IcFacadeManualTests.java

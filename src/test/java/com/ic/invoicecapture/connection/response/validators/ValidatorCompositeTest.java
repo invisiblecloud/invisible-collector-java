@@ -1,4 +1,4 @@
-package com.ic.invoicecapture.response.validators;
+package com.ic.invoicecapture.connection.response.validators;
 
 import com.ic.invoicecapture.connection.response.validators.IValidator;
 import com.ic.invoicecapture.connection.response.validators.ValidatorComposite;

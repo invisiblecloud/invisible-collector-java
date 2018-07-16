@@ -44,7 +44,7 @@ class IcFacadeIT {
   }
 
 
-  private Pair<MockResponse, Company> initCompanyConfiguration() {
+  private Pair<MockResponse, Company> buildCompanyConfiguration() {
 
     IBuilder<MockResponse, String> mockBuilder = (companyJson) -> new MockResponse()
         .setHeader("Content-Type", "application/json").setBody(companyJson);
@@ -57,8 +57,6 @@ class IcFacadeIT {
     MockServerFacade.assertApiEndpointHit(request, endpoint);
     MockServerFacade.assertRequestLineContains(request, "GET");
     MockServerFacade.assertHeaderContainsValue(request, "X-Api-Token", TEST_API_TOKEN);
-    // MockServerFacade.assertHeaderContainsValue(request, "Content-Type", "application/json");
-    // MockServerFacade.assertHeaderContainsValue(request, "Content-Type", "utf-8");
     MockServerFacade.assertHeaderContainsValue(request, "Accept", "application/json");
     MockServerFacade.assertHeaderContainsValue(request, "Host", baseUrl.getHost());
     MockServerFacade.assertHasHeader(request, "Date");
@@ -75,7 +73,7 @@ class IcFacadeIT {
   @Test
   public void requestCompanyInfo_successNormalConditions()
       throws IcException, IOException, InterruptedException {
-    Pair<MockResponse, Company> pair = this.initCompanyConfiguration();
+    Pair<MockResponse, Company> pair = this.buildCompanyConfiguration();
     Company correctCompany = pair.getValue1();
     this.mockServer.addMockResponse(pair.getValue0());
 
@@ -111,7 +109,7 @@ class IcFacadeIT {
   @Test
   public void requestCompanyInfo_slowConnection()
       throws IOException, IcException, InterruptedException {
-    Pair<MockResponse, Company> pair = this.initCompanyConfiguration();
+    Pair<MockResponse, Company> pair = this.buildCompanyConfiguration();
     MockResponse response = pair.getValue0();
     response.throttleBody(1, 1, TimeUnit.MILLISECONDS); // 1000 Byte/sec
     this.mockServer.addMockResponse(pair.getValue0());
@@ -180,7 +178,7 @@ class IcFacadeIT {
     MockResponse response =
         new MockResponse().setHeader("Location", redirectUrl).setResponseCode(301);
     this.mockServer.addMockResponse(response);
-    Pair<MockResponse, Company> pair = this.initCompanyConfiguration();
+    Pair<MockResponse, Company> pair = this.buildCompanyConfiguration();
     Company correctCompany = pair.getValue1();
     this.mockServer.addMockResponse(pair.getValue0());
 
@@ -193,14 +191,14 @@ class IcFacadeIT {
 
   @Test
   public void updateCompanyInfo() throws Exception {
-    Pair<MockResponse, Company> pair = this.initCompanyConfiguration();
-    Company companyUpdate = CompanyBuilder.buildTestCompanyBuilder().buildCompany();
-    companyUpdate.setAddress("new address");
-    companyUpdate.setCity("new city");
+    Pair<MockResponse, Company> pair = this.buildCompanyConfiguration();
     this.mockServer.addMockResponse(pair.getValue0());
 
     this.mockServer.start();
     URI baseUri = this.mockServer.getBaseUri();
+    Company companyUpdate = CompanyBuilder.buildTestCompanyBuilder().buildCompany();
+    companyUpdate.setAddress("new address");
+    companyUpdate.setCity("new city");
     IcFacade icFacade = new IcFacade(TEST_API_TOKEN, baseUri);
     Company returnedCompany = icFacade.updateCompanyInfo(companyUpdate);
     Company companyToReceive = pair.getValue1();
@@ -209,9 +207,17 @@ class IcFacadeIT {
     this.assertSentCorrectPut(IcFacade.COMPANIES_ENDPOINT, baseUri);
   }
 
-  private void assertSentCorrectPut(String companiesEndpoint, URI baseUri) {
-    // TODO Implement
-    
+  private void assertSentCorrectPut(String endpoint, URI baseUrl) throws Exception {
+    RecordedRequest request = this.mockServer.getRequest();
+    MockServerFacade.assertApiEndpointHit(request, endpoint);
+    MockServerFacade.assertRequestLineContains(request, "PUT");
+    MockServerFacade.assertHeaderContainsValue(request, "X-Api-Token", TEST_API_TOKEN);
+    MockServerFacade.assertHeaderContainsValue(request, "Content-Type", "application/json");
+    MockServerFacade.assertHeaderContainsValue(request, "Content-Type", "utf-8");
+    MockServerFacade.assertHeaderContainsValue(request, "Accept", "application/json");
+    MockServerFacade.assertHeaderContainsValue(request, "Host", baseUrl.getHost());
+    MockServerFacade.assertHasHeader(request, "Date");
+    MockServerFacade.assertHasHeader(request, "Content-Length");
   }
 
 }
