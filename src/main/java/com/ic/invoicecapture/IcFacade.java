@@ -2,8 +2,9 @@ package com.ic.invoicecapture;
 
 import com.ic.invoicecapture.connection.ApiRequestFacade;
 import com.ic.invoicecapture.exceptions.IcException;
-import com.ic.invoicecapture.json.JsonFacade;
 import com.ic.invoicecapture.model.Company;
+import com.ic.invoicecapture.model.ICompanyUpdate;
+import com.ic.invoicecapture.model.json.JsonModelFacade;
 import java.io.InputStream;
 import java.net.URI;
 
@@ -18,19 +19,21 @@ public class IcFacade {
   public static final String COMPANIES_ENDPOINT = "companies";
   
   private ApiRequestFacade apiFacade;
-  private JsonFacade jsonFacade;
+  private JsonModelFacade jsonFacade;
 
   public IcFacade(String apiToken) {
-    this.apiFacade = new ApiRequestFacade(apiToken, PRODUCTION_BASE_URL);
-    this.jsonFacade = new JsonFacade(); 
+    this(new ApiRequestFacade(apiToken, PRODUCTION_BASE_URL)); 
   }
   
   public IcFacade(String apiToken, URI baseUrl) {
-    this.apiFacade = new ApiRequestFacade(apiToken, baseUrl);
-    this.jsonFacade = new JsonFacade(); 
+    this(new ApiRequestFacade(apiToken, baseUrl)); 
   }
   
-  public IcFacade(ApiRequestFacade apiFacade, JsonFacade jsonFacade) {
+  public IcFacade(ApiRequestFacade apiFacade) {
+    this(apiFacade, new JsonModelFacade());
+  }
+  
+  public IcFacade(ApiRequestFacade apiFacade, JsonModelFacade jsonFacade) {
     this.apiFacade = apiFacade;
     this.jsonFacade = jsonFacade;
   }
@@ -38,7 +41,13 @@ public class IcFacade {
   public Company requestCompanyInfo() throws IcException {
     InputStream inputStream = apiFacade.getRequest(COMPANIES_ENDPOINT);
 
-    return this.jsonFacade.stringStreamToJsonObject(inputStream, Company.class);
+    return this.jsonFacade.parseStringStream(inputStream, Company.class);
   }
-
+  
+  public Company updateCompanyInfo(ICompanyUpdate companyInfo) throws IcException {
+    String jsonToSend = this.jsonFacade.toJson(companyInfo); 
+    
+    InputStream inputStream = apiFacade.putRequest(COMPANIES_ENDPOINT, jsonToSend);
+    return this.jsonFacade.parseStringStream(inputStream, Company.class);
+  }
 }

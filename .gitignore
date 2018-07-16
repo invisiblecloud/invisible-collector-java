@@ -36,3 +36,4 @@ checkstyle/
 .vscode
 .checkstyle
 .eclipse-pmd
+src/manual

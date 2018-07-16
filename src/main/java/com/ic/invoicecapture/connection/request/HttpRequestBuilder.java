@@ -4,15 +4,20 @@ import com.ic.invoicecapture.connection.RequestType;
 import com.ic.invoicecapture.exceptions.IcRuntimeException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.TreeMap;
+import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.entity.StringEntity;
 
 
 public class HttpRequestBuilder implements Cloneable, IRequestBuilder {
 
-  // private String body = null;
+  private String body = null;
   private Map<String, String> headers;
   private RequestType requestType = null;
   private URI uri = null;
@@ -36,11 +41,11 @@ public class HttpRequestBuilder implements Cloneable, IRequestBuilder {
     return this;
   }
 
-  // public void setBody(String body) {
-  // this.body = body;
-  // }
+  public void setBody(String body) {
+    this.body = body;
+  }
 
-  public HttpUriRequest build()  {
+  public HttpUriRequest build() {
     if (requestType == null) {
       throw new IllegalArgumentException("No Http Request Type set");
     } else if (uri == null) {
@@ -51,6 +56,16 @@ public class HttpRequestBuilder implements Cloneable, IRequestBuilder {
     return buildRequest();
   }
 
+  private HttpUriRequest addBodyToRequest(HttpEntityEnclosingRequestBase request) {
+    
+    if (this.body != null) {
+      StringEntity stringEntity = new StringEntity(this.body, StandardCharsets.UTF_8); 
+      request.setEntity(stringEntity);
+    }
+    
+    return request;
+  }
+  
   private HttpUriRequest buildRequest() {
     HttpUriRequest request = null;
 
@@ -58,13 +73,16 @@ public class HttpRequestBuilder implements Cloneable, IRequestBuilder {
       case GET:
         request = new HttpGet(this.uri);
         break;
-      case POST:
       case PUT:
-        throw new UnsupportedOperationException("PUT, POST not implemented yet");
+        request = this.addBodyToRequest(new HttpPut(this.uri));
+        break;
+      case POST:
+        request = this.addBodyToRequest(new HttpPost(this.uri));
+        break;     
       default:
-        return null;
+        throw new IllegalArgumentException("Invalid type " + requestType);
     }
-
+    
     for (Map.Entry<String, String> entry : headers.entrySet()) {
       request.addHeader(entry.getKey(), entry.getValue());
     }
@@ -85,15 +103,15 @@ public class HttpRequestBuilder implements Cloneable, IRequestBuilder {
   public Map<String, String> getHeaders() {
     return new TreeMap<String, String>(this.headers);
   }
-  
+
   public RequestType getRequestType() {
     return this.requestType;
   }
-  
+
   public URI getUri() {
     return this.uri;
   }
-  
+
   private static URI joinUris(URI baseUri, String uriEndpoint) {
     if (uriEndpoint == null || uriEndpoint.equals("")) {
       return baseUri.normalize();
@@ -110,12 +128,12 @@ public class HttpRequestBuilder implements Cloneable, IRequestBuilder {
     this.requestType = requestType;
     return this;
   }
-  
+
   public HttpRequestBuilder setUri(URI url) {
     this.uri = url;
     return this;
   }
-  
+
   public HttpRequestBuilder setUri(URI url, String urlEndpoint) {
     this.uri = joinUris(url, urlEndpoint);
     return this;

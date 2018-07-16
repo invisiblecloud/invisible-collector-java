@@ -7,6 +7,9 @@ import com.ic.invoicecapture.connection.response.validators.ValidatorFactory;
 import com.ic.invoicecapture.exceptions.IcException;
 import java.io.InputStream;
 import java.net.URI;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class ApiRequestFacade {
 
@@ -26,46 +29,64 @@ public class ApiRequestFacade {
     this.requestBuilder = new HttpRequestBuilder();
     this.exchanger = new MessageExchanger();
     this.validatorFactory = new ValidatorFactory();
-
-    this.addRequestBuilderHeaders(this.requestBuilder);
   }
 
-  public ApiRequestFacade(String apiToken, URI baseUrl,
-      MessageExchanger exchangerBuilder,
+  public ApiRequestFacade(String apiToken, URI baseUrl, MessageExchanger exchanger,
       HttpRequestBuilder requestBuilder, ValidatorFactory validatorFactory) {
     this.apiToken = apiToken;
     this.baseUrl = baseUrl;
     this.requestBuilder = requestBuilder;
-    this.exchanger = exchangerBuilder;
+    this.exchanger = exchanger;
     this.validatorFactory = validatorFactory;
-
-    this.addRequestBuilderHeaders(this.requestBuilder);
   }
 
-  private void addRequestBuilderHeaders(HttpRequestBuilder requestBuilder) {
+  private ApiRequestFacade addCommonHeaders(HttpRequestBuilder requestBuilder) {
     requestBuilder.addHeader(X_API_TOKEN_NAME, this.apiToken);
-    requestBuilder.addHeader("Content-Type", SENT_CONTENT_TYPE);
+    String host = this.baseUrl.getHost();
+    final int port = this.baseUrl.getPort();
+    if (port >= 0) {
+      host += ":" + port;
+    }
+    requestBuilder.addHeader("Host", host);
     requestBuilder.addHeader("Accept", CONTENT_TYPE);
+    final String sendDate =
+        DateTimeFormatter.RFC_1123_DATE_TIME.format(ZonedDateTime.now(ZoneOffset.UTC));
+    requestBuilder.addHeader("Date", sendDate);
+    return this;
+  }
+
+  private ApiRequestFacade addBodyHeaders(HttpRequestBuilder requestBuilder) {
+    requestBuilder.addHeader("Content-Type", SENT_CONTENT_TYPE);
+    return this;
   }
 
   private HttpRequestBuilder buildRequestBuilder(String urlEndpoint, RequestType requestType) {
     HttpRequestBuilder requestBuilder = this.requestBuilder.clone();
     requestBuilder.setRequestType(requestType);
     requestBuilder.setUri(this.baseUrl, urlEndpoint);
-    
+
     return requestBuilder;
   }
 
-  public InputStream getRequest(String urlEndpoint)
-      throws IcException {
-    
-    HttpRequestBuilder request = buildRequestBuilder(urlEndpoint, RequestType.GET);
-    ServerResponseFacade responseFacade = exchanger.exchangeMessages(request);
 
-    this.validatorFactory.build(RequestType.GET, responseFacade)
-        .validateAndTryThrowException(); // can throw exception
+  public InputStream getRequest(String urlEndpoint) throws IcException {
+    HttpRequestBuilder requestBuilder = buildRequestBuilder(urlEndpoint, RequestType.GET);
+    this.addCommonHeaders(requestBuilder);
+    ServerResponseFacade responseFacade = exchanger.exchangeMessages(requestBuilder);
+
+    this.validatorFactory.build(RequestType.GET, responseFacade).validateAndTryThrowException();
 
     return responseFacade.getResponseBodyStream();
   }
-  
+
+  public InputStream putRequest(String urlEndpoint, String bodyToSend) throws IcException {
+    HttpRequestBuilder requestBuilder = buildRequestBuilder(urlEndpoint, RequestType.PUT);
+    this.addCommonHeaders(requestBuilder).addBodyHeaders(requestBuilder);
+    requestBuilder.setBody(bodyToSend);
+    ServerResponseFacade responseFacade = exchanger.exchangeMessages(requestBuilder);
+
+    this.validatorFactory.build(RequestType.PUT, responseFacade).validateAndTryThrowException();
+
+    return responseFacade.getResponseBodyStream();
+  }
 }

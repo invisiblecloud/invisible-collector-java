@@ -1,6 +1,6 @@
 package com.ic.invoicecapture.connection.request;
 
-import com.ic.invoicecapture.builders.IBuilder;
+import com.ic.invoicecapture.connection.builders.IBuilder;
 import com.ic.invoicecapture.connection.response.ServerResponseFacade;
 import com.ic.invoicecapture.exceptions.IcException;
 import java.io.IOException;
@@ -55,7 +55,7 @@ public class MessageExchangerTest {
 
   @Test
   public void exchangeMessages_success() throws ClientProtocolException, IOException, IcException {
-    final String TEST_STRING = "TEST BODY";
+    final String testString = "TEST BODY";
 
     CloseableHttpClient httpClient = HttpClients.createMinimal();
     
@@ -68,7 +68,7 @@ public class MessageExchangerTest {
     MockWebServer server = new MockWebServer();
     MockResponse mockResponse = new MockResponse()
         .setHeader("Content-Type", "text/plain")
-        .setBody(TEST_STRING);
+        .setBody(testString);
     server.enqueue(mockResponse);
     server.start();
 
@@ -78,7 +78,7 @@ public class MessageExchangerTest {
     HttpEntity entity = responseBuilder.getResponse().getEntity();
     String response = EntityUtils.toString(entity, StandardCharsets.UTF_8);
 
-    Assertions.assertTrue(response.contains(TEST_STRING));
+    Assertions.assertTrue(response.contains(testString));
 
     server.shutdown();
   }
