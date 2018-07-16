@@ -59,28 +59,30 @@ class IcFacadeIT {
     return this.buildCompanyConfiguration(mockBuilder);
   }
 
-  private void assertSentCorrectGet(String endpoint, URI baseUrl) throws InterruptedException {
-
-    RecordedRequest request = this.mockServer.getRequest();
+  private void assertSentCorrectHeadersCommon(RecordedRequest request, String endpoint, URI baseUrl)
+      throws InterruptedException {
     MockServerFacade.assertApiEndpointHit(request, endpoint);
-    MockServerFacade.assertRequestLineContains(request, "GET");
     MockServerFacade.assertHeaderContainsValue(request, "X-Api-Token", TEST_API_TOKEN);
     MockServerFacade.assertHeaderContainsValue(request, "Accept", "application/json");
     MockServerFacade.assertHeaderContainsValue(request, "Host", baseUrl.getHost());
     MockServerFacade.assertHasHeader(request, "Date");
-
   }
 
-  private void assertSentCorrectPut(String endpoint, URI baseUrl) throws Exception {
+  private void assertSentCorrectGetHeaders(String endpoint, URI baseUrl)
+      throws InterruptedException {
+
+    RecordedRequest request = this.mockServer.getRequest();
+    MockServerFacade.assertRequestLineContains(request, "GET");
+    this.assertSentCorrectHeadersCommon(request, endpoint, baseUrl);
+  }
+
+  private void assertSentCorrectPutHeaders(String endpoint, URI baseUrl) throws Exception {
     RecordedRequest request = this.mockServer.getRequest();
     MockServerFacade.assertApiEndpointHit(request, endpoint);
     MockServerFacade.assertRequestLineContains(request, "PUT");
-    MockServerFacade.assertHeaderContainsValue(request, "X-Api-Token", TEST_API_TOKEN);
+    this.assertSentCorrectHeadersCommon(request, endpoint, baseUrl);
     MockServerFacade.assertHeaderContainsValue(request, "Content-Type", "application/json");
     MockServerFacade.assertHeaderContainsValue(request, "Content-Type", "utf-8");
-    MockServerFacade.assertHeaderContainsValue(request, "Accept", "application/json");
-    MockServerFacade.assertHeaderContainsValue(request, "Host", baseUrl.getHost());
-    MockServerFacade.assertHasHeader(request, "Date");
     MockServerFacade.assertHasHeader(request, "Content-Length");
   }
 
@@ -112,7 +114,7 @@ class IcFacadeIT {
     this.assertRequestWithReturn(CompanyBuilder.buildTestCompanyBuilder(),
         (icFacade, company) -> icFacade.requestCompanyInfo());
 
-    this.assertSentCorrectGet(IcFacade.COMPANIES_ENDPOINT, this.mockServer.getBaseUri());
+    this.assertSentCorrectGetHeaders(IcFacade.COMPANIES_ENDPOINT, this.mockServer.getBaseUri());
   }
 
   @Test
@@ -124,7 +126,7 @@ class IcFacadeIT {
     Pair<MockResponse, Company> pair = this.buildCompanyConfiguration(mockBuilder);
     this.assertRequestWithReturn(pair, (icFacade, company) -> icFacade.requestCompanyInfo());
 
-    this.assertSentCorrectGet(IcFacade.COMPANIES_ENDPOINT, this.mockServer.getBaseUri());
+    this.assertSentCorrectGetHeaders(IcFacade.COMPANIES_ENDPOINT, this.mockServer.getBaseUri());
   }
 
   // should only have one of these
@@ -135,7 +137,7 @@ class IcFacadeIT {
     response.throttleBody(1, 1, TimeUnit.MILLISECONDS); // 1000 Byte/sec
     this.assertRequestWithReturn(pair, (icFacade, company) -> icFacade.requestCompanyInfo());
 
-    this.assertSentCorrectGet(IcFacade.COMPANIES_ENDPOINT, this.mockServer.getBaseUri());
+    this.assertSentCorrectGetHeaders(IcFacade.COMPANIES_ENDPOINT, this.mockServer.getBaseUri());
   }
 
   @Test
@@ -184,8 +186,8 @@ class IcFacadeIT {
     IcFacade icFacade = new IcFacade(TEST_API_TOKEN, connectionUrl);
     Company receivedCompany = icFacade.requestCompanyInfo();
     Assertions.assertEquals(receivedCompany, correctCompany);
-    this.assertSentCorrectGet(IcFacade.COMPANIES_ENDPOINT, connectionUrl);
-    this.assertSentCorrectGet(REDIRECT_URL, connectionUrl);
+    this.assertSentCorrectGetHeaders(IcFacade.COMPANIES_ENDPOINT, connectionUrl);
+    this.assertSentCorrectGetHeaders(REDIRECT_URL, connectionUrl);
   }
 
   @Test
@@ -199,7 +201,7 @@ class IcFacadeIT {
 
     assertRequestWithReturn(companyBuilder,
         (icFacade, company) -> icFacade.updateCompanyInfo(company));
-    this.assertSentCorrectPut(IcFacade.COMPANIES_ENDPOINT, this.mockServer.getBaseUri());
+    this.assertSentCorrectPutHeaders(IcFacade.COMPANIES_ENDPOINT, this.mockServer.getBaseUri());
   }
 
   @Test
