@@ -20,11 +20,7 @@ public class ValidatorComposite implements IValidator {
 
   @Override
   public void validateAndTryThrowException(IServerResponse serverResponse) throws IcException {
-    
-    if (this.validators.isEmpty()) {
-      throw new IllegalArgumentException("No validators added");
-    }
-    
+
     for (IValidator validator : this.validators) {
       validator.validateAndTryThrowException(serverResponse);
     }

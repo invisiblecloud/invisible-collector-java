@@ -7,27 +7,23 @@ import org.easymock.EasyMock;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class StatusCodeValidatorTest {
+public class StatusCodeValidatorTest  {
 
-  private IServerResponse buildResponseStatusMock(int code, String reason, String body)
+  protected IServerResponse buildResponseStatusMock(int code, String reason, String body)
       throws IcException {
-    IServerResponse mock = EasyMock.createNiceMock(IServerResponse.class);
-    EasyMock.expect(mock.getStatusCode()).andReturn(code);
-    EasyMock.expect(mock.getStatusCodeReasonPhrase()).andReturn(reason);
-    EasyMock.expect(mock.consumeConnectionAsString()).andReturn(body);
-
-    EasyMock.replay(mock);
-    return mock;
+    return new ServerResponseMockBuilder()
+        .setStatusCode(code)
+        .setReason(reason)
+        .setBody(body)
+        .build();
   }
-
-
+  
   @Test
   public void validate_success() throws IcException {
     IServerResponse status = this.buildResponseStatusMock(200, "OK", "body");
 
-    StatusCodeValidator statusCodeValidator = new StatusCodeValidator(status);
-
-    statusCodeValidator.validateAndTryThrowException();
+    new StatusCodeValidator()
+        .validateAndTryThrowException(status);
   }
 
   @Test
@@ -38,10 +34,10 @@ public class StatusCodeValidatorTest {
 
     IServerResponse status = this.buildResponseStatusMock(statusCode, reasonMsg, boyMsg);
 
-    StatusCodeValidator statusCodeValidator = new StatusCodeValidator(status);
+    StatusCodeValidator statusCodeValidator = new StatusCodeValidator();
 
     IcException exception = Assertions.assertThrows(IcException.class,
-        statusCodeValidator::validateAndTryThrowException);
+        ()->statusCodeValidator.validateAndTryThrowException(status));
 
 
     String exceptionMessage = exception.getMessage();

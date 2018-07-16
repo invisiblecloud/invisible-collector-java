@@ -12,7 +12,6 @@ public class ValidatorFactoryTest {
   @Test
   public void build_get() {
     ValidatorFactory factory = new ValidatorFactory();
-    ServerResponseFacade responsePair = EasyMock.createNiceMock(ServerResponseFacade.class);
-    Assertions.assertNotEquals(null, factory.build(RequestType.GET, responsePair));
+    Assertions.assertNotNull(factory.buildCompanyReturnValidator());
   }
 }
