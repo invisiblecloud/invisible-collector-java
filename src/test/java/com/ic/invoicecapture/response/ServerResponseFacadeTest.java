@@ -38,7 +38,7 @@ public class ServerResponseFacadeTest {
     }
 
     public boolean isCloseCalled() {
-      return this.isCloseCalled ;
+      return this.isCloseCalled;
     }
 
   }

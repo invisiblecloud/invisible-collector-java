@@ -1,5 +1,13 @@
 package com.ic.invoicecapture.connection;
 
+import com.ic.invoicecapture.StringUtils;
+import com.ic.invoicecapture.connection.request.HttpRequestBuilder;
+import com.ic.invoicecapture.connection.request.IRequestBuilder;
+import com.ic.invoicecapture.connection.request.MessageExchanger;
+import com.ic.invoicecapture.connection.response.ServerResponseFacade;
+import com.ic.invoicecapture.connection.response.validators.IValidator;
+import com.ic.invoicecapture.connection.response.validators.ValidatorFactory;
+import com.ic.invoicecapture.exceptions.IcException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -9,22 +17,14 @@ import org.easymock.EasyMock;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import com.ic.invoicecapture.StringUtils;
-import com.ic.invoicecapture.connection.request.HttpRequestBuilder;
-import com.ic.invoicecapture.connection.request.IRequestBuilder;
-import com.ic.invoicecapture.connection.request.MessageExchanger;
-import com.ic.invoicecapture.connection.response.ServerResponseFacade;
-import com.ic.invoicecapture.connection.response.validators.IValidator;
-import com.ic.invoicecapture.connection.response.validators.ValidatorFactory;
-import com.ic.invoicecapture.exceptions.IcException;
 
 public class ApiRequestFacadeTest {
 
-  private final String TEST_API_TOKEN = "abcdef";
-  private final String TEST_URL_STRING = "http://test.test";
-  private final URI TEST_URI = URI.create(TEST_URL_STRING);
-  private final String TEST_ENDPOINT = "endpoint";
-  private final String TEST_MESSAGE = "message";
+  private static final String TEST_API_TOKEN = "abcdef";
+  private static final String TEST_URL_STRING = "http://test.test";
+  private static final URI TEST_URI = URI.create(TEST_URL_STRING);
+  private static final String TEST_ENDPOINT = "endpoint";
+  private static final String TEST_MESSAGE = "message";
   private ValidatorFactory validatorFactory;
   private IValidator validator;
   private HttpRequestBuilder requestBuilder;
@@ -102,10 +102,11 @@ public class ApiRequestFacadeTest {
   public void getRequest_correctMessagePiping() throws IOException, IcException {
     EasyMock.replay(requestBuilder);
 
-    InputStream inputStream = new ApiRequestFacade(TEST_API_TOKEN, TEST_URI, exchanger, requestBuilder, validatorFactory)
-        .getRequest(TEST_ENDPOINT);
-    
-    String receivedMessage =  StringUtils.inputStreamToString(inputStream);
+    InputStream inputStream =
+        new ApiRequestFacade(TEST_API_TOKEN, TEST_URI, exchanger, requestBuilder, validatorFactory)
+            .getRequest(TEST_ENDPOINT);
+
+    String receivedMessage = StringUtils.inputStreamToString(inputStream);
     Assertions.assertTrue(receivedMessage.contains(TEST_MESSAGE));
   }
 }

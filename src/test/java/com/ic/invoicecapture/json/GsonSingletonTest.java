@@ -1,9 +1,9 @@
 package com.ic.invoicecapture.json;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 import com.google.gson.Gson;
 import com.ic.invoicecapture.model.json.GsonSingleton;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 
 public class GsonSingletonTest {

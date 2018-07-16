@@ -9,12 +9,13 @@ import org.junit.jupiter.api.Test;
 
 public class StatusCodeValidatorTest {
 
-  private IResponseStatus buildResponseStatusMock(int code, String reason, String body) throws IcException {
+  private IResponseStatus buildResponseStatusMock(int code, String reason, String body)
+      throws IcException {
     IResponseStatus mock = EasyMock.createNiceMock(IResponseStatus.class);
     EasyMock.expect(mock.getStatusCode()).andReturn(code);
     EasyMock.expect(mock.getStatusCodeReasonPhrase()).andReturn(reason);
     EasyMock.expect(mock.consumeConnectionAsString()).andReturn(body);
-    
+
     EasyMock.replay(mock);
     return mock;
   }
@@ -31,22 +32,22 @@ public class StatusCodeValidatorTest {
 
   @Test
   public void validate_fail() throws IcException {
-    final int STATUS_CODE = 400;
-    final String REASON_STRING = "reason";
-    final String BODY_STRING = "body string";
+    final int statusCode = 400;
+    final String reasonMsg = "reason";
+    final String boyMsg = "body string";
 
-    IResponseStatus status = this.buildResponseStatusMock(STATUS_CODE, REASON_STRING, BODY_STRING);
+    IResponseStatus status = this.buildResponseStatusMock(statusCode, reasonMsg, boyMsg);
 
     StatusCodeValidator statusCodeValidator = new StatusCodeValidator(status);
 
-    IcException exception =
-        Assertions.assertThrows(IcException.class, statusCodeValidator::validateAndTryThrowException);
-   
+    IcException exception = Assertions.assertThrows(IcException.class,
+        statusCodeValidator::validateAndTryThrowException);
+
 
     String exceptionMessage = exception.getMessage();
-    Assertions.assertTrue(exceptionMessage.contains("" + STATUS_CODE));
-    Assertions.assertTrue(exceptionMessage.contains(REASON_STRING));
-    Assertions.assertTrue(exceptionMessage.contains(BODY_STRING));
+    Assertions.assertTrue(exceptionMessage.contains("" + statusCode));
+    Assertions.assertTrue(exceptionMessage.contains(reasonMsg));
+    Assertions.assertTrue(exceptionMessage.contains(boyMsg));
   }
 
 }

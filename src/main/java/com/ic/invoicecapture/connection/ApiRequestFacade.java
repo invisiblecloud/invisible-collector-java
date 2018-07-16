@@ -7,7 +7,6 @@ import com.ic.invoicecapture.connection.response.validators.ValidatorFactory;
 import com.ic.invoicecapture.exceptions.IcException;
 import java.io.InputStream;
 import java.net.URI;
-import java.nio.charset.StandardCharsets;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -56,10 +55,8 @@ public class ApiRequestFacade {
     return this;
   }
 
-  private ApiRequestFacade addBodyHeaders(HttpRequestBuilder requestBuilder, String bodyString) {
+  private ApiRequestFacade addBodyHeaders(HttpRequestBuilder requestBuilder) {
     requestBuilder.addHeader("Content-Type", SENT_CONTENT_TYPE);
-    int bodyLength = bodyString.getBytes(StandardCharsets.UTF_8).length;
-    // requestBuilder.addHeader("Content-Length", "" + bodyLength); // already present?
     return this;
   }
 
@@ -84,7 +81,7 @@ public class ApiRequestFacade {
 
   public InputStream putRequest(String urlEndpoint, String bodyToSend) throws IcException {
     HttpRequestBuilder requestBuilder = buildRequestBuilder(urlEndpoint, RequestType.PUT);
-    this.addCommonHeaders(requestBuilder).addBodyHeaders(requestBuilder, bodyToSend);
+    this.addCommonHeaders(requestBuilder).addBodyHeaders(requestBuilder);
     requestBuilder.setBody(bodyToSend);
     ServerResponseFacade responseFacade = exchanger.exchangeMessages(requestBuilder);
 

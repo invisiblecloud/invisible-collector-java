@@ -3,7 +3,6 @@ package com.ic.invoicecapture;
 import com.ic.invoicecapture.connection.builders.IBuilder;
 import com.ic.invoicecapture.exceptions.IcException;
 import com.ic.invoicecapture.model.Company;
-import com.ic.invoicecapture.model.ICompanyUpdate;
 import com.ic.invoicecapture.model.builder.CompanyBuilder;
 import java.io.IOException;
 import java.net.URI;
@@ -195,7 +194,6 @@ class IcFacadeIT {
   @Test
   public void updateCompanyInfo() throws Exception {
     Pair<MockResponse, Company> pair = this.initCompanyConfiguration();
-    Company companyToReceive = pair.getValue1();
     Company companyUpdate = CompanyBuilder.buildTestCompanyBuilder().buildCompany();
     companyUpdate.setAddress("new address");
     companyUpdate.setCity("new city");
@@ -205,6 +203,7 @@ class IcFacadeIT {
     URI baseUri = this.mockServer.getBaseUri();
     IcFacade icFacade = new IcFacade(TEST_API_TOKEN, baseUri);
     Company returnedCompany = icFacade.updateCompanyInfo(companyUpdate);
+    Company companyToReceive = pair.getValue1();
     Assertions.assertEquals(companyToReceive, returnedCompany);
 
     this.assertSentCorrectPut(IcFacade.COMPANIES_ENDPOINT, baseUri);

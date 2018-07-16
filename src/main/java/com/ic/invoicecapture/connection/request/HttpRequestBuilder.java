@@ -78,7 +78,9 @@ public class HttpRequestBuilder implements Cloneable, IRequestBuilder {
         break;
       case POST:
         request = this.addBodyToRequest(new HttpPost(this.uri));
-        break;        
+        break;     
+      default:
+        throw new IllegalArgumentException("Invalid type " + requestType);
     }
     
     for (Map.Entry<String, String> entry : headers.entrySet()) {
