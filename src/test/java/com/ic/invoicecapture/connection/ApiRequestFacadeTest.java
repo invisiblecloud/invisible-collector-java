@@ -25,7 +25,8 @@ public class ApiRequestFacadeTest {
   private static final URI TEST_URI = URI.create(TEST_URL_STRING);
   private static final String TEST_ENDPOINT = "endpoint";
   private static final String TEST_MESSAGE = "message";
-  private ValidatorFactory validatorFactory;
+  private static final String TEST_JSON = "{ }";
+  
   private IValidator validator;
   private HttpRequestBuilder requestBuilder;
   private MessageExchanger exchanger;
@@ -54,11 +55,9 @@ public class ApiRequestFacadeTest {
 
   @BeforeEach
   private void buildValidationMocks() {
-    this.validatorFactory = EasyMock.createNiceMock(ValidatorFactory.class);
+    
     this.validator = EasyMock.createNiceMock(IValidator.class);
-    EasyMock.expect(validatorFactory.build(EasyMock.isA(RequestType.class),
-        EasyMock.isA(ServerResponseFacade.class))).andReturn(validator);
-    EasyMock.replay(validatorFactory);
+    this.serverResponse = EasyMock.createMock(ServerResponseFacade.class);
   }
 
   @Test
@@ -71,8 +70,8 @@ public class ApiRequestFacadeTest {
     EasyMock.expect(requestBuilder.setUri(TEST_URI, TEST_ENDPOINT)).andReturn(requestBuilder);
     EasyMock.replay(requestBuilder);
 
-    new ApiRequestFacade(TEST_API_TOKEN, TEST_URI, exchanger, requestBuilder, validatorFactory)
-        .getRequest(TEST_ENDPOINT);
+    new ApiRequestFacade(TEST_API_TOKEN, TEST_URI, exchanger, requestBuilder)
+        .getRequest(this.validator, TEST_ENDPOINT);
     EasyMock.verify(requestBuilder);
   }
 
@@ -80,8 +79,8 @@ public class ApiRequestFacadeTest {
   public void getRequest_validationSuccess() throws IOException, IcException {
     EasyMock.replay(requestBuilder);
 
-    new ApiRequestFacade(TEST_API_TOKEN, TEST_URI, exchanger, requestBuilder, validatorFactory)
-        .getRequest(TEST_ENDPOINT);
+    new ApiRequestFacade(TEST_API_TOKEN, TEST_URI, exchanger, requestBuilder)
+        .getRequest(this.validator, TEST_ENDPOINT);
   }
 
   @Test
@@ -89,13 +88,13 @@ public class ApiRequestFacadeTest {
     EasyMock.replay(requestBuilder);
 
     IcException exception = new IcException();
-    this.validator.validateAndTryThrowException();
+    this.validator.validateAndTryThrowException(this.serverResponse);
     EasyMock.expectLastCall().andThrow(exception).andVoid();
     EasyMock.replay(this.validator);
 
     ApiRequestFacade api =
-        new ApiRequestFacade(TEST_API_TOKEN, TEST_URI, exchanger, requestBuilder, validatorFactory);
-    Assertions.assertThrows(IcException.class, () -> api.getRequest(TEST_ENDPOINT));
+        new ApiRequestFacade(TEST_API_TOKEN, TEST_URI, exchanger, requestBuilder);
+    Assertions.assertThrows(IcException.class, () -> api.getRequest(this.validator, TEST_ENDPOINT));
   }
 
   @Test
@@ -103,8 +102,20 @@ public class ApiRequestFacadeTest {
     EasyMock.replay(requestBuilder);
 
     InputStream inputStream =
-        new ApiRequestFacade(TEST_API_TOKEN, TEST_URI, exchanger, requestBuilder, validatorFactory)
-            .getRequest(TEST_ENDPOINT);
+        new ApiRequestFacade(TEST_API_TOKEN, TEST_URI, exchanger, requestBuilder)
+            .getRequest(this.validator, TEST_ENDPOINT);
+
+    String receivedMessage = StringUtils.inputStreamToString(inputStream);
+    Assertions.assertTrue(receivedMessage.contains(TEST_MESSAGE));
+  }
+  
+  @Test
+  public void putRequest_correctMessagePiping() throws IOException, IcException {
+    EasyMock.replay(requestBuilder);
+
+    InputStream inputStream =
+        new ApiRequestFacade(TEST_API_TOKEN, TEST_URI, exchanger, requestBuilder)
+            .putRequest(this.validator, TEST_ENDPOINT, TEST_JSON);
 
     String receivedMessage = StringUtils.inputStreamToString(inputStream);
     Assertions.assertTrue(receivedMessage.contains(TEST_MESSAGE));

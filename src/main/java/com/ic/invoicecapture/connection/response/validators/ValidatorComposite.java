@@ -1,5 +1,6 @@
 package com.ic.invoicecapture.connection.response.validators;
 
+import com.ic.invoicecapture.connection.response.IServerResponse;
 import com.ic.invoicecapture.exceptions.IcException;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,14 +19,10 @@ public class ValidatorComposite implements IValidator {
   }
 
   @Override
-  public void validateAndTryThrowException() throws IcException {
-    
-    if (this.validators.isEmpty()) {
-      throw new IllegalArgumentException("No validators added");
-    }
-    
+  public void validateAndTryThrowException(IServerResponse serverResponse) throws IcException {
+
     for (IValidator validator : this.validators) {
-      validator.validateAndTryThrowException();
+      validator.validateAndTryThrowException(serverResponse);
     }
   }
 

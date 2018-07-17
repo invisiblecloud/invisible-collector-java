@@ -11,7 +11,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.util.EntityUtils;
 
-public class ServerResponseFacade implements IResponseStatus, IResponseHeaders {
+public class ServerResponseFacade implements IServerResponse {
 
   private boolean isConnectionOpen;
   private CloseableHttpResponse response;

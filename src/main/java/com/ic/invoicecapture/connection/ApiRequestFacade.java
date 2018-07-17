@@ -3,7 +3,7 @@ package com.ic.invoicecapture.connection;
 import com.ic.invoicecapture.connection.request.HttpRequestBuilder;
 import com.ic.invoicecapture.connection.request.MessageExchanger;
 import com.ic.invoicecapture.connection.response.ServerResponseFacade;
-import com.ic.invoicecapture.connection.response.validators.ValidatorFactory;
+import com.ic.invoicecapture.connection.response.validators.IValidator;
 import com.ic.invoicecapture.exceptions.IcException;
 import java.io.InputStream;
 import java.net.URI;
@@ -21,23 +21,20 @@ public class ApiRequestFacade {
   private final URI baseUrl;
   private final MessageExchanger exchanger; // must be thread-safe
   private HttpRequestBuilder requestBuilder;
-  private ValidatorFactory validatorFactory;
-
+  
   public ApiRequestFacade(String apiToken, URI baseUrl) {
     this.apiToken = apiToken;
     this.baseUrl = baseUrl;
     this.requestBuilder = new HttpRequestBuilder();
     this.exchanger = new MessageExchanger();
-    this.validatorFactory = new ValidatorFactory();
   }
 
   public ApiRequestFacade(String apiToken, URI baseUrl, MessageExchanger exchanger,
-      HttpRequestBuilder requestBuilder, ValidatorFactory validatorFactory) {
+      HttpRequestBuilder requestBuilder) {
     this.apiToken = apiToken;
     this.baseUrl = baseUrl;
     this.requestBuilder = requestBuilder;
     this.exchanger = exchanger;
-    this.validatorFactory = validatorFactory;
   }
 
   private ApiRequestFacade addCommonHeaders(HttpRequestBuilder requestBuilder) {
@@ -68,25 +65,28 @@ public class ApiRequestFacade {
     return requestBuilder;
   }
 
-
-  public InputStream getRequest(String urlEndpoint) throws IcException {
-    HttpRequestBuilder requestBuilder = buildRequestBuilder(urlEndpoint, RequestType.GET);
-    this.addCommonHeaders(requestBuilder);
+  private ServerResponseFacade exchangeAndValidateMessages(IValidator validator, HttpRequestBuilder requestBuilder) throws IcException {
     ServerResponseFacade responseFacade = exchanger.exchangeMessages(requestBuilder);
+    validator.validateAndTryThrowException(responseFacade);
 
-    this.validatorFactory.build(RequestType.GET, responseFacade).validateAndTryThrowException();
-
-    return responseFacade.getResponseBodyStream();
+    return responseFacade;
   }
 
-  public InputStream putRequest(String urlEndpoint, String bodyToSend) throws IcException {
+  public InputStream getRequest(IValidator validator, String urlEndpoint) throws IcException {
+    HttpRequestBuilder requestBuilder = buildRequestBuilder(urlEndpoint, RequestType.GET);
+    this.addCommonHeaders(requestBuilder);
+
+    return this.exchangeAndValidateMessages(validator, requestBuilder)
+        .getResponseBodyStream();
+  }
+
+  public InputStream putRequest(IValidator validator, String urlEndpoint, String bodyToSend)
+      throws IcException {
     HttpRequestBuilder requestBuilder = buildRequestBuilder(urlEndpoint, RequestType.PUT);
     this.addCommonHeaders(requestBuilder).addBodyHeaders(requestBuilder);
     requestBuilder.setBody(bodyToSend);
-    ServerResponseFacade responseFacade = exchanger.exchangeMessages(requestBuilder);
 
-    this.validatorFactory.build(RequestType.PUT, responseFacade).validateAndTryThrowException();
-
-    return responseFacade.getResponseBodyStream();
+    return this.exchangeAndValidateMessages(validator, requestBuilder)
+        .getResponseBodyStream();
   }
 }

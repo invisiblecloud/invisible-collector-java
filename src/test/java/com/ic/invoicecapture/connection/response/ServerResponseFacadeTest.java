@@ -1,4 +1,4 @@
-package com.ic.invoicecapture.response;
+package com.ic.invoicecapture.connection.response;
 
 import com.ic.invoicecapture.StringUtils;
 import com.ic.invoicecapture.connection.response.ServerResponseFacade;

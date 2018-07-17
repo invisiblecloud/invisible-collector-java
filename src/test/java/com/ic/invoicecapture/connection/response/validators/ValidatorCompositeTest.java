@@ -1,24 +1,21 @@
-package com.ic.invoicecapture.response.validators;
+package com.ic.invoicecapture.connection.response.validators;
 
+import com.ic.invoicecapture.connection.response.IServerResponse;
 import com.ic.invoicecapture.connection.response.validators.IValidator;
 import com.ic.invoicecapture.connection.response.validators.ValidatorComposite;
 import com.ic.invoicecapture.exceptions.IcException;
 import org.easymock.EasyMock;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class ValidatorCompositeTest {
 
-  @Test
-  public void validate_empty() {
-    ValidatorComposite composite = new ValidatorComposite();
-    Assertions.assertThrows(IllegalArgumentException.class,
-        composite::validateAndTryThrowException);
-  }
+  private IServerResponse serverResponse;
 
   private IValidator prepareValidatorMock(boolean isValid) throws IcException {
     IValidator validator = EasyMock.createNiceMock(IValidator.class);
-    validator.validateAndTryThrowException();
+    validator.validateAndTryThrowException(this.serverResponse);
     if (isValid) {
       EasyMock.expectLastCall().once();
     } else {
@@ -30,6 +27,17 @@ public class ValidatorCompositeTest {
     return validator;
   }
 
+  @BeforeEach
+  private void initMocks() throws IcException {
+    this.serverResponse = new ServerResponseMockBuilder().build();
+  }
+
+  @Test
+  public void validate_empty() throws IcException {
+    ValidatorComposite composite = new ValidatorComposite();
+    composite.validateAndTryThrowException(this.serverResponse);
+  }
+
   @Test
   public void validate_successing() throws IcException {
     ValidatorComposite composite = new ValidatorComposite();
@@ -38,7 +46,7 @@ public class ValidatorCompositeTest {
     composite.addValidator(validValidator);
     composite.addValidator(validValidator2);
 
-    composite.validateAndTryThrowException();
+    composite.validateAndTryThrowException(this.serverResponse);
 
     EasyMock.verify(validValidator);
     EasyMock.verify(validValidator2);
@@ -52,7 +60,8 @@ public class ValidatorCompositeTest {
     composite.addValidator(validValidator);
     composite.addValidator(failingValidator);
 
-    Assertions.assertThrows(IcException.class, composite::validateAndTryThrowException);
+    Assertions.assertThrows(IcException.class,
+        () -> composite.validateAndTryThrowException(this.serverResponse));
 
     EasyMock.verify(validValidator);
     EasyMock.verify(failingValidator);
