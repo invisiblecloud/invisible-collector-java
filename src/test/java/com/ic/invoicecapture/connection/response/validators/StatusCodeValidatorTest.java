@@ -3,27 +3,22 @@ package com.ic.invoicecapture.connection.response.validators;
 import com.ic.invoicecapture.connection.response.IServerResponse;
 import com.ic.invoicecapture.connection.response.validators.StatusCodeValidator;
 import com.ic.invoicecapture.exceptions.IcException;
-import org.easymock.EasyMock;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class StatusCodeValidatorTest  {
+public class StatusCodeValidatorTest {
 
   protected IServerResponse buildResponseStatusMock(int code, String reason, String body)
       throws IcException {
-    return new ServerResponseMockBuilder()
-        .setStatusCode(code)
-        .setReason(reason)
-        .setBody(body)
+    return new ServerResponseMockBuilder().setStatusCode(code).setReason(reason).setBody(body)
         .build();
   }
-  
+
   @Test
   public void validate_success() throws IcException {
     IServerResponse status = this.buildResponseStatusMock(200, "OK", "body");
 
-    new StatusCodeValidator()
-        .validateAndTryThrowException(status);
+    new StatusCodeValidator().validateAndTryThrowException(status);
   }
 
   @Test
@@ -37,7 +32,7 @@ public class StatusCodeValidatorTest  {
     StatusCodeValidator statusCodeValidator = new StatusCodeValidator();
 
     IcException exception = Assertions.assertThrows(IcException.class,
-        ()->statusCodeValidator.validateAndTryThrowException(status));
+        () -> statusCodeValidator.validateAndTryThrowException(status));
 
 
     String exceptionMessage = exception.getMessage();

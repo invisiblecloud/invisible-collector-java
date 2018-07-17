@@ -71,8 +71,8 @@ public class IcFacade {
         (validator) -> apiFacade.putRequest(validator, COMPANIES_ENDPOINT, jsonToSend));
   }
 
-  public Company setCompanyNotifications(boolean bEnableNotifications) throws IcException {
-    IThrowingBuilder<InputStream, IValidator> requestMethod = bEnableNotifications
+  public Company setCompanyNotifications(boolean enableNotifications) throws IcException {
+    IThrowingBuilder<InputStream, IValidator> requestMethod = enableNotifications
         ? (validator) -> apiFacade.putRequest(validator, ENABLE_NOTIFICATIONS_ENDPOINT, null)
         : (validator) -> apiFacade.putRequest(validator, DISABLE_NOTIFICATIONS_ENDPOINT, null);
 

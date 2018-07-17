@@ -1,6 +1,9 @@
 package com.ic.invoicecapture;
 
 import com.ic.invoicecapture.connection.ApiRequestFacade;
+import com.ic.invoicecapture.connection.builders.IThrowingBuilder;
+import com.ic.invoicecapture.connection.response.validators.IValidator;
+import com.ic.invoicecapture.connection.response.validators.ValidatorFactory;
 import com.ic.invoicecapture.exceptions.IcException;
 import com.ic.invoicecapture.model.Company;
 import com.ic.invoicecapture.model.ICompanyUpdate;
@@ -20,16 +23,24 @@ public class IcFacadeTest {
   private JsonModelFacade jsonMock;
   private IcFacade icFacade;
   private InputStream inputStream;
+  private ValidatorFactory validatorFactoryMock;
+  private IValidator validatorMock;
 
 
   @BeforeEach
   public void init() {
     this.apiMock = EasyMock.createNiceMock(ApiRequestFacade.class);
     this.jsonMock = EasyMock.createNiceMock(JsonModelFacade.class);
-    this.icFacade = new IcFacade(this.apiMock, this.jsonMock);
+    this.validatorFactoryMock = EasyMock.createNiceMock(ValidatorFactory.class);
+    this.icFacade = new IcFacade(this.apiMock, this.jsonMock, this.validatorFactoryMock);
     this.inputStream = new ByteArrayInputStream("test".getBytes(StandardCharsets.UTF_8));
+    this.validatorMock = EasyMock.createNiceMock(IValidator.class);
+    EasyMock.expect(validatorFactoryMock.buildCompanyReturnValidator())
+        .andReturn(this.validatorMock);
+
+    EasyMock.replay(this.validatorFactoryMock);
   }
-  
+
   private CompanyBuilder initJsonParserMock() throws IcException {
     CompanyBuilder companyBuilder = CompanyBuilder.buildTestCompanyBuilder();
     Company correctCompany = companyBuilder.buildCompany();
@@ -38,38 +49,41 @@ public class IcFacadeTest {
         EasyMock.eq(Company.class))).andReturn(correctCompany);
     EasyMock.expect(this.jsonMock.toJson(EasyMock.isA(ICompanyUpdate.class)))
         .andReturn(companyJson);
-    
+
     return companyBuilder;
+  }
+
+  private void assertRequestGuts(IThrowingBuilder<Company, Void> method) throws IcException {
+    CompanyBuilder companyBuilder = this.initJsonParserMock();
+    EasyMock.replay(this.jsonMock);
+
+    EasyMock.replay(this.apiMock);
+    Company correctCompany = companyBuilder.buildCompany();
+    Company returnedCompany = method.build(null);
+
+    Assertions.assertEquals(correctCompany, returnedCompany);
   }
 
   @Test
   public void requestCompanyInfo_correctness() throws IcException {
 
-    EasyMock.expect(this.apiMock.getRequest(EasyMock.isA(String.class)))
+    EasyMock
+        .expect(this.apiMock.getRequest(EasyMock.isA(IValidator.class), EasyMock.isA(String.class)))
         .andReturn(this.inputStream);
-    EasyMock.replay(this.apiMock);
 
-    CompanyBuilder companyBuilder = this.initJsonParserMock();
-    EasyMock.replay(this.jsonMock);
-    Company correctCompany = companyBuilder.buildCompany();
-    Company returnedCompany = this.icFacade.requestCompanyInfo();
-
-    Assertions.assertEquals(correctCompany, returnedCompany);
+    assertRequestGuts((unused) -> this.icFacade.requestCompanyInfo());
   }
+
+
 
   @Test
   public void updateCompanyInfo_correctness() throws IcException {
-    
-    EasyMock.expect(this.apiMock.putRequest(EasyMock.anyString(), EasyMock.anyString()))
-        .andReturn(this.inputStream);
-    EasyMock.replay(this.apiMock);
-    
-    CompanyBuilder companyBuilder = this.initJsonParserMock();
-    EasyMock.replay(this.jsonMock);
-    Company correctCompany = companyBuilder.buildCompany();
-    Company returnedCompany = this.icFacade.updateCompanyInfo(correctCompany);
 
-    Assertions.assertEquals(correctCompany, returnedCompany);
+    EasyMock.expect(this.apiMock.putRequest(EasyMock.isA(IValidator.class), EasyMock.anyString(),
+        EasyMock.anyString())).andReturn(this.inputStream);
+
+    assertRequestGuts(
+        (unused) -> this.icFacade.updateCompanyInfo(EasyMock.isA(ICompanyUpdate.class)));
   }
 
 }

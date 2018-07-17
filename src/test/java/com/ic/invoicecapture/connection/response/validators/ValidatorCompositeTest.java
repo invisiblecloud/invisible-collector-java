@@ -10,7 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class ValidatorCompositeTest {
-  
+
   private IServerResponse serverResponse;
 
   private IValidator prepareValidatorMock(boolean isValid) throws IcException {
@@ -26,7 +26,7 @@ public class ValidatorCompositeTest {
     EasyMock.replay(validator);
     return validator;
   }
-  
+
   @BeforeEach
   private void initMocks() throws IcException {
     this.serverResponse = new ServerResponseMockBuilder().build();
@@ -61,7 +61,7 @@ public class ValidatorCompositeTest {
     composite.addValidator(failingValidator);
 
     Assertions.assertThrows(IcException.class,
-        ()->composite.validateAndTryThrowException(this.serverResponse));
+        () -> composite.validateAndTryThrowException(this.serverResponse));
 
     EasyMock.verify(validValidator);
     EasyMock.verify(failingValidator);

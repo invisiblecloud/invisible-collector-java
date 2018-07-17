@@ -43,13 +43,13 @@ public class MessageExchangerTest {
       return this.response;
     }
   }
-  
+
   private IRequestBuilder buildRequestBuilderMock(URI baseUrl) {
     HttpUriRequest request = new HttpGet(baseUrl);
     IRequestBuilder builder = EasyMock.createNiceMock(IRequestBuilder.class);
     EasyMock.expect(builder.build()).andReturn(request);
     EasyMock.replay(builder);
-    
+
     return builder;
   }
 
@@ -58,17 +58,16 @@ public class MessageExchangerTest {
     final String testString = "TEST BODY";
 
     CloseableHttpClient httpClient = HttpClients.createMinimal();
-    
+
     ServerResponseFacade responseFacade = EasyMock.createNiceMock(ServerResponseFacade.class);
-    ServerResponseBuilder responseBuilder = new ServerResponseBuilder()
-        .setServerResponseFacade(responseFacade);
+    ServerResponseBuilder responseBuilder =
+        new ServerResponseBuilder().setServerResponseFacade(responseFacade);
 
     MessageExchanger exchanger = new MessageExchanger(httpClient, responseBuilder);
 
     MockWebServer server = new MockWebServer();
-    MockResponse mockResponse = new MockResponse()
-        .setHeader("Content-Type", "text/plain")
-        .setBody(testString);
+    MockResponse mockResponse =
+        new MockResponse().setHeader("Content-Type", "text/plain").setBody(testString);
     server.enqueue(mockResponse);
     server.start();
 
@@ -82,20 +81,21 @@ public class MessageExchangerTest {
 
     server.shutdown();
   }
-  
+
   @Test
   public void exchangeMessages_fail() throws ClientProtocolException, IOException, IcException {
-    CloseableHttpClient httpClient = EasyMock.createNiceMock(CloseableHttpClient.class);
+    CloseableHttpClient clientMock = EasyMock.createNiceMock(CloseableHttpClient.class);
     IOException exception = new IOException("message");
-    EasyMock.expect(httpClient.execute(EasyMock.anyObject())).andThrow(exception);
-    EasyMock.replay(httpClient);
-    
-    ServerResponseFacade responseFacade = EasyMock.createNiceMock(ServerResponseFacade.class);
-    ServerResponseBuilder responseBuilder = new ServerResponseBuilder()
-        .setServerResponseFacade(responseFacade);
+    EasyMock.expect(clientMock.execute(EasyMock.isA(HttpUriRequest.class)))
+        .andThrow(exception);
+    EasyMock.replay(clientMock);
 
-    MessageExchanger exchanger = new MessageExchanger(httpClient, responseBuilder);
-    
+    ServerResponseFacade responseFacade = EasyMock.createNiceMock(ServerResponseFacade.class);
+    ServerResponseBuilder responseBuilder =
+        new ServerResponseBuilder().setServerResponseFacade(responseFacade);
+
+    MessageExchanger exchanger = new MessageExchanger(clientMock, responseBuilder);
+
     URI baseUrl = URI.create("http://test.test");
     IRequestBuilder builder = this.buildRequestBuilderMock(baseUrl);
     Assertions.assertThrows(IcException.class, () -> exchanger.exchangeMessages(builder));
