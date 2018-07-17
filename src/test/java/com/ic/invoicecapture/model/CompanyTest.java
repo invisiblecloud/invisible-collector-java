@@ -14,7 +14,7 @@ public class CompanyTest {
 
     Assertions.assertEquals(company1, company2);
 
-    company1.setGid("12321");
+    company1.setName("12321");
     Assertions.assertNotEquals(company1, company2);
   }
 

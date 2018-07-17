@@ -21,7 +21,7 @@ public class ApiRequestFacade {
   private final URI baseUrl;
   private final MessageExchanger exchanger; // must be thread-safe
   private HttpRequestBuilder requestBuilder;
-  
+
   public ApiRequestFacade(String apiToken, URI baseUrl) {
     this.apiToken = apiToken;
     this.baseUrl = baseUrl;
@@ -65,7 +65,8 @@ public class ApiRequestFacade {
     return requestBuilder;
   }
 
-  private ServerResponseFacade exchangeAndValidateMessages(IValidator validator, HttpRequestBuilder requestBuilder) throws IcException {
+  private ServerResponseFacade exchangeAndValidateMessages(IValidator validator,
+      HttpRequestBuilder requestBuilder) throws IcException {
     ServerResponseFacade responseFacade = exchanger.exchangeMessages(requestBuilder);
     validator.validateAndTryThrowException(responseFacade);
 
@@ -76,8 +77,7 @@ public class ApiRequestFacade {
     HttpRequestBuilder requestBuilder = buildRequestBuilder(urlEndpoint, RequestType.GET);
     this.addCommonHeaders(requestBuilder);
 
-    return this.exchangeAndValidateMessages(validator, requestBuilder)
-        .getResponseBodyStream();
+    return this.exchangeAndValidateMessages(validator, requestBuilder).getResponseBodyStream();
   }
 
   public InputStream putRequest(IValidator validator, String urlEndpoint, String bodyToSend)
@@ -86,7 +86,6 @@ public class ApiRequestFacade {
     this.addCommonHeaders(requestBuilder).addBodyHeaders(requestBuilder);
     requestBuilder.setBody(bodyToSend);
 
-    return this.exchangeAndValidateMessages(validator, requestBuilder)
-        .getResponseBodyStream();
+    return this.exchangeAndValidateMessages(validator, requestBuilder).getResponseBodyStream();
   }
 }
