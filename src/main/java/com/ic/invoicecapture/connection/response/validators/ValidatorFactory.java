@@ -14,10 +14,13 @@ public class ValidatorFactory {
   public IValidator buildCompanyReturnValidator() {
     return buildCommonComposite();
   }
-  
+
   public IValidator buildCustomerValidator() {
     return buildCommonComposite()
-        .addValidatorFirst(new GidConflictValidator("Customer already exists with the same VAT number"));
-        
+        .addValidatorFirst(
+            new GidConflictValidator("Customer already exists with the same VAT number"))
+        .addValidatorFirst(new SpecificStatusCodeValidator(422,
+            "Invalid json sent to the server (probably a library error)"));
+
   }
 }
