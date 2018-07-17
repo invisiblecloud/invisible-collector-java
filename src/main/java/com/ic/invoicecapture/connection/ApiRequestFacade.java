@@ -73,19 +73,29 @@ public class ApiRequestFacade {
     return responseFacade;
   }
 
-  public InputStream getRequest(IValidator validator, String urlEndpoint) throws IcException {
-    HttpRequestBuilder requestBuilder = buildRequestBuilder(urlEndpoint, RequestType.GET);
+  private InputStream requestGuts(IValidator validator, String urlEndpoint, RequestType requestType,
+      String bodyToSend) throws IcException {
+    HttpRequestBuilder requestBuilder = buildRequestBuilder(urlEndpoint, requestType);
     this.addCommonHeaders(requestBuilder);
+    if (bodyToSend != null) {
+      this.addBodyHeaders(requestBuilder);
+      requestBuilder.setBody(bodyToSend);
+    }
 
     return this.exchangeAndValidateMessages(validator, requestBuilder).getResponseBodyStream();
   }
 
+  public InputStream getRequest(IValidator validator, String urlEndpoint) throws IcException {
+    return this.requestGuts(validator, urlEndpoint, RequestType.GET, null);
+  }
+
   public InputStream putRequest(IValidator validator, String urlEndpoint, String bodyToSend)
       throws IcException {
-    HttpRequestBuilder requestBuilder = buildRequestBuilder(urlEndpoint, RequestType.PUT);
-    this.addCommonHeaders(requestBuilder).addBodyHeaders(requestBuilder);
-    requestBuilder.setBody(bodyToSend);
+    return this.requestGuts(validator, urlEndpoint, RequestType.PUT, bodyToSend);
+  }
 
-    return this.exchangeAndValidateMessages(validator, requestBuilder).getResponseBodyStream();
+  public InputStream postRequest(IValidator validator, String urlEndpoint, String bodyToSend)
+      throws IcException {
+    return this.requestGuts(validator, urlEndpoint, RequestType.POST, bodyToSend);
   }
 }

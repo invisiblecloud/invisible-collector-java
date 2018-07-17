@@ -14,7 +14,7 @@ import java.util.List;
 public class ValidatorComposite implements IValidator {
   private List<IValidator> validators = new ArrayList<>();
 
-  public ValidatorComposite addValidator(IValidator validator) {
+  public ValidatorComposite addValidatorLast(IValidator validator) {
     this.validators.add(validator);
     return this;
   }

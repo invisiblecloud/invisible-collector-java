@@ -4,9 +4,12 @@ import com.ic.invoicecapture.connection.ApiRequestFacade;
 import com.ic.invoicecapture.connection.builders.IThrowingBuilder;
 import com.ic.invoicecapture.connection.response.validators.IValidator;
 import com.ic.invoicecapture.connection.response.validators.ValidatorFactory;
+import com.ic.invoicecapture.exceptions.IcConflictingException;
 import com.ic.invoicecapture.exceptions.IcException;
 import com.ic.invoicecapture.model.Company;
+import com.ic.invoicecapture.model.Customer;
 import com.ic.invoicecapture.model.ICompanyUpdate;
+import com.ic.invoicecapture.model.ICustomerUpdate;
 import com.ic.invoicecapture.model.json.JsonModelFacade;
 import java.io.InputStream;
 import java.net.URI;
@@ -78,7 +81,17 @@ public class IcFacade {
 
     return this.returningCompanyMethod(requestMethod);
   }
- 
+
+  private static final String CUSTOMERS_ENDPOINT = "customers";
+
+  public Customer registerNewCustomer(ICustomerUpdate costumerInfo)
+      throws IcException, IcConflictingException {
+    String jsonToSend = this.jsonFacade.toJson(costumerInfo);
+    IValidator validator = this.validatorFactory.buildCustomerValidator();
+    InputStream inputStream = apiFacade.postRequest(validator, CUSTOMERS_ENDPOINT, jsonToSend);
+
+    return this.jsonFacade.parseStringStream(inputStream, Customer.class);
+  }
 
 
 }

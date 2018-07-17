@@ -38,8 +38,8 @@ public class CompanyBuilder {
   }
   
   public static CompanyBuilder buildTestCompanyBuilder() {
-    return new CompanyBuilder("testAdress", "testCity", "testCountry", "testGid", "testName", false,
-        "testVatNumber", "testZipCode");
+    return new CompanyBuilder("testAdress", "testCity", "PT", "7657", "testName", false,
+        "7657567", "123");
   }
 
   public JsonObject buildJsonObject() {

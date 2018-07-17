@@ -7,6 +7,7 @@ import com.google.gson.JsonSyntaxException;
 import com.google.gson.stream.JsonReader;
 import com.ic.invoicecapture.exceptions.IcException;
 import com.ic.invoicecapture.model.ICompanyUpdate;
+import com.ic.invoicecapture.model.ICustomerUpdate;
 import com.ic.invoicecapture.model.IModel;
 import java.io.IOException;
 import java.io.InputStream;
@@ -55,6 +56,20 @@ public class JsonModelFacade {
     jsonObj.addProperty("address", model.getAddress());
     jsonObj.addProperty("zipCode", model.getZipCode());
     jsonObj.addProperty("city", model.getCity());
+    return jsonObj.toString();
+  }
+
+  public String toJson(ICustomerUpdate model) {
+    JsonObject jsonObj = new JsonObject();
+    jsonObj.addProperty("name", model.getName());
+    jsonObj.addProperty("externalId", model.getExternalId());
+    jsonObj.addProperty("vatNumber", model.getVatNumber());
+    jsonObj.addProperty("address", model.getAddress());
+    jsonObj.addProperty("zipCode", model.getZipCode());
+    jsonObj.addProperty("city", model.getCity());
+    jsonObj.addProperty("country", model.getCountry());
+    jsonObj.addProperty("email", model.getEmail());
+    jsonObj.addProperty("phone", model.getPhone());
     return jsonObj.toString();
   }
   

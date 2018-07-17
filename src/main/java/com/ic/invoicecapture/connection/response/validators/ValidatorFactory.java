@@ -4,13 +4,20 @@ public class ValidatorFactory {
 
   private ValidatorComposite buildCommonComposite() {
     ValidatorComposite composite = new ValidatorComposite();
-    composite.addValidator(new StatusCodeValidator());
-    composite.addValidator(new JsonValidator());
+    composite.addValidatorLast(new SpecificStatusCodeValidator(401,
+        "Invalid API token supplied, was rejected by the server"));
+    composite.addValidatorLast(new StatusCodeValidator());
+    composite.addValidatorLast(new JsonValidator());
     return composite;
   }
 
   public IValidator buildCompanyReturnValidator() {
-    return buildCommonComposite().addValidatorFirst(new SpecificStatusCodeValidator(401,
-        "Invalid API token supplied, was rejected by the server"));
+    return buildCommonComposite();
+  }
+  
+  public IValidator buildCustomerValidator() {
+    return buildCommonComposite()
+        .addValidatorFirst(new GidConflictValidator("Customer already exists with the same VAT number"));
+        
   }
 }
