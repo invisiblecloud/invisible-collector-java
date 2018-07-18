@@ -10,9 +10,11 @@ import com.ic.invoicecapture.model.Company;
 import com.ic.invoicecapture.model.Customer;
 import com.ic.invoicecapture.model.ICompanyUpdate;
 import com.ic.invoicecapture.model.ICustomerUpdate;
+import com.ic.invoicecapture.model.IRoutable;
 import com.ic.invoicecapture.model.json.JsonModelFacade;
 import java.io.InputStream;
 import java.net.URI;
+import java.util.Map;
 
 /**
  * Thread safe.
@@ -93,6 +95,8 @@ public class IcFacade {
     return this.jsonFacade.parseStringStream(inputStream, Customer.class);
   }
 
+
+
   public Customer requestCustomerInfo(String customerId) throws IcException {
     String endpoint = CUSTOMERS_ENDPOINT + "/" + customerId;
     IValidator validator = this.validatorFactory.buildExistingEntityValidator();
@@ -109,6 +113,36 @@ public class IcFacade {
     InputStream inputStream = apiFacade.putRequest(validator, endpoint, json);
 
     return this.jsonFacade.parseStringStream(inputStream, Customer.class);
+  }
+
+  private String getId(IRoutable idContainer) {
+    String gid = idContainer.getGid();
+    String externalId = idContainer.getExternalId();
+    if (gid != null && !gid.isEmpty()) {
+      return gid;
+    } else if (externalId != null && !externalId.isEmpty()) {
+      return externalId;
+    } else {
+      throw new IllegalArgumentException("no valid id contained in object");
+    }
+  }
+
+  public Map<String, String> setCustomerAttributes(IRoutable idContainer,
+      Map<String, String> attributes) throws IcException {
+    String id = getId(idContainer);
+    return setCustomerAttributes(id, attributes);
+  }
+
+  private static final String ATTRIBUTES_PATH = "attributes";
+
+  public Map<String, String> setCustomerAttributes(String customerId,
+      Map<String, String> attributes) throws IcException {
+    String endpoint = String.join("/", CUSTOMERS_ENDPOINT, customerId, ATTRIBUTES_PATH);
+    String jsonToSend = this.jsonFacade.toJson(attributes);
+    IValidator validator = this.validatorFactory.buildConflictValidator();
+    InputStream inputStream = apiFacade.postRequest(validator, endpoint, jsonToSend);
+
+    return this.jsonFacade.parseStringStreamAsStringMap(inputStream);
   }
 
 }

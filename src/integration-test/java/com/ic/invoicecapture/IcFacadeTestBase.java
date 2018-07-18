@@ -11,7 +11,6 @@ public class IcFacadeTestBase {
 
   protected static final String CONFLICT_GID = "abdbdbd0000";
   protected static final String JSON_ERROR_MESSAGE = "error-message";
-
   protected static final String TEST_API_TOKEN = "1234567890abcdef";
 
   protected MockServerFacade mockServer;

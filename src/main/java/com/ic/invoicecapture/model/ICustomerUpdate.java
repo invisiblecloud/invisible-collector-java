@@ -1,6 +1,6 @@
 package com.ic.invoicecapture.model;
 
-public interface ICustomerUpdate {
+public interface ICustomerUpdate extends IRoutable {
   String getAddress();
 
   String getCity();
@@ -8,8 +8,6 @@ public interface ICustomerUpdate {
   String getCountry();
 
   String getEmail();
-
-  String getExternalId();
 
   String getName();
 

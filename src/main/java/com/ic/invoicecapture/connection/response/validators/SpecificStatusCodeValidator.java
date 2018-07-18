@@ -16,7 +16,7 @@ public class SpecificStatusCodeValidator extends JsonValidatorBase implements IV
   
   protected void throwJsonException(ServerErrorFacade serverErrorFacade) throws IcException {
     String msg = serverErrorFacade.getErrorMessage();
-    throw new IcException(this.exceptionMsg + " (" + msg + ")");
+    throw new IcException(this.exceptionMsg + " (\"" + msg + "\")");
   }
 
   @Override
