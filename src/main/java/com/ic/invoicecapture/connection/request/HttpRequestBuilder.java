@@ -52,7 +52,6 @@ public class HttpRequestBuilder implements Cloneable, IRequestBuilder {
       throw new IllegalArgumentException("No URL set");
     }
 
-
     return buildRequest();
   }
 

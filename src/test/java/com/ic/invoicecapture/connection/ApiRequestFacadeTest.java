@@ -6,7 +6,6 @@ import com.ic.invoicecapture.connection.request.IRequestBuilder;
 import com.ic.invoicecapture.connection.request.MessageExchanger;
 import com.ic.invoicecapture.connection.response.ServerResponseFacade;
 import com.ic.invoicecapture.connection.response.validators.IValidator;
-import com.ic.invoicecapture.connection.response.validators.ValidatorFactory;
 import com.ic.invoicecapture.exceptions.IcException;
 import java.io.IOException;
 import java.io.InputStream;

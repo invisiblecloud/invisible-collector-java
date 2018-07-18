@@ -43,8 +43,8 @@ public class ValidatorCompositeTest {
     ValidatorComposite composite = new ValidatorComposite();
     IValidator validValidator = this.prepareValidatorMock(true);
     IValidator validValidator2 = this.prepareValidatorMock(true);
-    composite.addValidator(validValidator);
-    composite.addValidator(validValidator2);
+    composite.addValidatorLast(validValidator);
+    composite.addValidatorLast(validValidator2);
 
     composite.validateAndTryThrowException(this.serverResponse);
 
@@ -57,8 +57,8 @@ public class ValidatorCompositeTest {
     ValidatorComposite composite = new ValidatorComposite();
     IValidator validValidator = this.prepareValidatorMock(true);
     IValidator failingValidator = this.prepareValidatorMock(false);
-    composite.addValidator(validValidator);
-    composite.addValidator(failingValidator);
+    composite.addValidatorLast(validValidator);
+    composite.addValidatorLast(failingValidator);
 
     Assertions.assertThrows(IcException.class,
         () -> composite.validateAndTryThrowException(this.serverResponse));

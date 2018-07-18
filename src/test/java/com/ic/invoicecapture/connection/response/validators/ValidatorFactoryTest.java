@@ -9,6 +9,6 @@ public class ValidatorFactoryTest {
   @Test
   public void build_get() {
     ValidatorFactory factory = new ValidatorFactory();
-    Assertions.assertNotNull(factory.buildCompanyReturnValidator());
+    Assertions.assertNotNull(factory.buildBasicValidator());
   }
 }

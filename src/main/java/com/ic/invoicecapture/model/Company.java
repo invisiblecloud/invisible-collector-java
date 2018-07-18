@@ -4,14 +4,14 @@ import java.util.Objects;
 
 public class Company implements IModel, ICompanyUpdate {
 
-  private String name;
-  private String gid;
-  private String vatNumber;
   private String address;
-  private String zipCode;
   private String city;
   private String country;
+  private String gid;
+  private String name;
   private Boolean notificationsEnabled;
+  private String vatNumber;
+  private String zipCode;
   
   @Override
   public boolean equals(Object obj) {
@@ -80,20 +80,8 @@ public class Company implements IModel, ICompanyUpdate {
     this.city = city;
   }
 
-  public void setCountry(String country) {
-    this.country = country;
-  }
-
-  public void setGid(String gid) {
-    this.gid = gid;
-  }
-
   public void setName(String name) {
     this.name = name;
-  }
-
-  public void setNotificationsEnabled(Boolean notificationsEnabled) {
-    this.notificationsEnabled = notificationsEnabled;
   }
 
   public void setVatNumber(String vatNumber) {

@@ -4,12 +4,17 @@ import com.ic.invoicecapture.connection.ApiRequestFacade;
 import com.ic.invoicecapture.connection.builders.IThrowingBuilder;
 import com.ic.invoicecapture.connection.response.validators.IValidator;
 import com.ic.invoicecapture.connection.response.validators.ValidatorFactory;
+import com.ic.invoicecapture.exceptions.IcConflictingException;
 import com.ic.invoicecapture.exceptions.IcException;
 import com.ic.invoicecapture.model.Company;
+import com.ic.invoicecapture.model.Customer;
 import com.ic.invoicecapture.model.ICompanyUpdate;
+import com.ic.invoicecapture.model.ICustomerUpdate;
+import com.ic.invoicecapture.model.IRoutable;
 import com.ic.invoicecapture.model.json.JsonModelFacade;
 import java.io.InputStream;
 import java.net.URI;
+import java.util.Map;
 
 /**
  * Thread safe.
@@ -54,7 +59,7 @@ public class IcFacade {
 
   private Company returningCompanyMethod(IThrowingBuilder<InputStream, IValidator> requestMethod)
       throws IcException {
-    IValidator validator = this.validatorFactory.buildCompanyReturnValidator();
+    IValidator validator = this.validatorFactory.buildBasicValidator();
     InputStream inputStream = requestMethod.build(validator);
 
     return this.jsonFacade.parseStringStream(inputStream, Company.class);
@@ -79,5 +84,65 @@ public class IcFacade {
     return this.returningCompanyMethod(requestMethod);
   }
 
+  public static final String CUSTOMERS_ENDPOINT = "customers";
+
+  public Customer registerNewCustomer(ICustomerUpdate costumerInfo)
+      throws IcException, IcConflictingException {
+    String jsonToSend = this.jsonFacade.toJson(costumerInfo);
+    IValidator validator = this.validatorFactory.buildConflictValidator();
+    InputStream inputStream = apiFacade.postRequest(validator, CUSTOMERS_ENDPOINT, jsonToSend);
+
+    return this.jsonFacade.parseStringStream(inputStream, Customer.class);
+  }
+
+
+
+  public Customer requestCustomerInfo(String customerId) throws IcException {
+    String endpoint = CUSTOMERS_ENDPOINT + "/" + customerId;
+    IValidator validator = this.validatorFactory.buildExistingEntityValidator();
+    InputStream inputStream = apiFacade.getRequest(validator, endpoint);
+
+    return this.jsonFacade.parseStringStream(inputStream, Customer.class);
+  }
+
+  public Customer updateCustomerInfo(ICustomerUpdate customerInfo, String customerId)
+      throws IcException {
+    String endpoint = CUSTOMERS_ENDPOINT + "/" + customerId;
+    String json = this.jsonFacade.toJson(customerInfo);
+    IValidator validator = this.validatorFactory.buildExistingConflictingEntityValidator();
+    InputStream inputStream = apiFacade.putRequest(validator, endpoint, json);
+
+    return this.jsonFacade.parseStringStream(inputStream, Customer.class);
+  }
+
+  private String getId(IRoutable idContainer) {
+    String gid = idContainer.getGid();
+    String externalId = idContainer.getExternalId();
+    if (gid != null && !gid.isEmpty()) {
+      return gid;
+    } else if (externalId != null && !externalId.isEmpty()) {
+      return externalId;
+    } else {
+      throw new IllegalArgumentException("no valid id contained in object");
+    }
+  }
+
+  public Map<String, String> setCustomerAttributes(IRoutable idContainer,
+      Map<String, String> attributes) throws IcException {
+    String id = getId(idContainer);
+    return setCustomerAttributes(id, attributes);
+  }
+
+  private static final String ATTRIBUTES_PATH = "attributes";
+
+  public Map<String, String> setCustomerAttributes(String customerId,
+      Map<String, String> attributes) throws IcException {
+    String endpoint = String.join("/", CUSTOMERS_ENDPOINT, customerId, ATTRIBUTES_PATH);
+    String jsonToSend = this.jsonFacade.toJson(attributes);
+    IValidator validator = this.validatorFactory.buildConflictValidator();
+    InputStream inputStream = apiFacade.postRequest(validator, endpoint, jsonToSend);
+
+    return this.jsonFacade.parseStringStreamAsStringMap(inputStream);
+  }
 
 }

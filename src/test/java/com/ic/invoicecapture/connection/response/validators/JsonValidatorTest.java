@@ -42,7 +42,6 @@ public class JsonValidatorTest {
   @Test
   public void validate_wrongHeaderValue() throws IcException {
     String headerValue = "abcde";
-    String exceptionMessage = this.exceptionAssertion(TARGET_HEADER, headerValue);
-    Assertions.assertTrue(exceptionMessage.contains(headerValue));
+    this.exceptionAssertion(TARGET_HEADER, headerValue);
   }
 }

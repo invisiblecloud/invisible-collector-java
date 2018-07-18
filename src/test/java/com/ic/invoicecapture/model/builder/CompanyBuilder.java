@@ -1,7 +1,9 @@
 package com.ic.invoicecapture.model.builder;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.ic.invoicecapture.model.Company;
+import com.ic.invoicecapture.model.json.GsonSingleton;
 
 public class CompanyBuilder {
 
@@ -28,23 +30,16 @@ public class CompanyBuilder {
   }
   
   public Company buildCompany() {
-    Company company = new Company();
+    
+    String json = this.buildJsonObject().toString();
 
-    company.setName(name);
-    company.setGid(gid);
-    company.setVatNumber(vatNumber);
-    company.setAddress(address);
-    company.setZipCode(zipCode);
-    company.setCity(city);
-    company.setCountry(country);
-    company.setNotificationsEnabled(notificationsEnabled);
-
-    return company;
+    Gson gson = GsonSingleton.getInstance();
+    return gson.fromJson(json, Company.class);
   }
   
   public static CompanyBuilder buildTestCompanyBuilder() {
-    return new CompanyBuilder("testAdress", "testCity", "testCountry", "testGid", "testName", false,
-        "testVatNumber", "testZipCode");
+    return new CompanyBuilder("testAdress", "testCity", "PT", "7657", "testName", false,
+        "7657567", "123");
   }
 
   public JsonObject buildJsonObject() {

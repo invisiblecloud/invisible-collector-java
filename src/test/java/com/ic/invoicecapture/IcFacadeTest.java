@@ -35,7 +35,7 @@ public class IcFacadeTest {
     this.icFacade = new IcFacade(this.apiMock, this.jsonMock, this.validatorFactoryMock);
     this.inputStream = new ByteArrayInputStream("test".getBytes(StandardCharsets.UTF_8));
     this.validatorMock = EasyMock.createNiceMock(IValidator.class);
-    EasyMock.expect(validatorFactoryMock.buildCompanyReturnValidator())
+    EasyMock.expect(validatorFactoryMock.buildBasicValidator())
         .andReturn(this.validatorMock);
 
     EasyMock.replay(this.validatorFactoryMock);

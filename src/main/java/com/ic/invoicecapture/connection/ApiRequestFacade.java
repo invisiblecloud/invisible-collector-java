@@ -21,7 +21,7 @@ public class ApiRequestFacade {
   private final URI baseUrl;
   private final MessageExchanger exchanger; // must be thread-safe
   private HttpRequestBuilder requestBuilder;
-  
+
   public ApiRequestFacade(String apiToken, URI baseUrl) {
     this.apiToken = apiToken;
     this.baseUrl = baseUrl;
@@ -65,28 +65,37 @@ public class ApiRequestFacade {
     return requestBuilder;
   }
 
-  private ServerResponseFacade exchangeAndValidateMessages(IValidator validator, HttpRequestBuilder requestBuilder) throws IcException {
+  private ServerResponseFacade exchangeAndValidateMessages(IValidator validator,
+      HttpRequestBuilder requestBuilder) throws IcException {
     ServerResponseFacade responseFacade = exchanger.exchangeMessages(requestBuilder);
     validator.validateAndTryThrowException(responseFacade);
 
     return responseFacade;
   }
 
-  public InputStream getRequest(IValidator validator, String urlEndpoint) throws IcException {
-    HttpRequestBuilder requestBuilder = buildRequestBuilder(urlEndpoint, RequestType.GET);
+  private InputStream requestGuts(IValidator validator, String urlEndpoint, RequestType requestType,
+      String bodyToSend) throws IcException {
+    HttpRequestBuilder requestBuilder = buildRequestBuilder(urlEndpoint, requestType);
     this.addCommonHeaders(requestBuilder);
+    if (bodyToSend != null) {
+      this.addBodyHeaders(requestBuilder);
+      requestBuilder.setBody(bodyToSend);
+    }
 
-    return this.exchangeAndValidateMessages(validator, requestBuilder)
-        .getResponseBodyStream();
+    return this.exchangeAndValidateMessages(validator, requestBuilder).getResponseBodyStream();
+  }
+
+  public InputStream getRequest(IValidator validator, String urlEndpoint) throws IcException {
+    return this.requestGuts(validator, urlEndpoint, RequestType.GET, null);
   }
 
   public InputStream putRequest(IValidator validator, String urlEndpoint, String bodyToSend)
       throws IcException {
-    HttpRequestBuilder requestBuilder = buildRequestBuilder(urlEndpoint, RequestType.PUT);
-    this.addCommonHeaders(requestBuilder).addBodyHeaders(requestBuilder);
-    requestBuilder.setBody(bodyToSend);
+    return this.requestGuts(validator, urlEndpoint, RequestType.PUT, bodyToSend);
+  }
 
-    return this.exchangeAndValidateMessages(validator, requestBuilder)
-        .getResponseBodyStream();
+  public InputStream postRequest(IValidator validator, String urlEndpoint, String bodyToSend)
+      throws IcException {
+    return this.requestGuts(validator, urlEndpoint, RequestType.POST, bodyToSend);
   }
 }
