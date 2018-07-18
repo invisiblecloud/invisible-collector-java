@@ -2,10 +2,10 @@ package com.ic.invoicecapture;
 
 import java.io.IOException;
 import java.net.URI;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.RecordedRequest;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 public class IcFacadeTestBase {
 
@@ -33,7 +33,7 @@ public class IcFacadeTestBase {
     this.assertSentCorrectHeadersCommon(request, endpoint, baseUrl, "GET");
   }
 
-  protected String joinUriPaths(String ... paths) {
+  protected String joinUriPaths(String... paths) {
     return String.join("/", paths);
   }
 
@@ -65,7 +65,7 @@ public class IcFacadeTestBase {
     return String.format("{\"code\": %d, \"message\": %s, \"gid\": %s}", statusCode,
         JSON_ERROR_MESSAGE, CONFLICT_GID);
   }
-  
+
   protected String buildErrorJson(int statusCode) {
     return String.format("{\"code\": %d, \"message\": %s}", statusCode, JSON_ERROR_MESSAGE);
   }

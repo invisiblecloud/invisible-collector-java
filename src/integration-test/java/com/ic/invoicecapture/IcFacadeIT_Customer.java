@@ -1,6 +1,5 @@
 package com.ic.invoicecapture;
 
-import com.ic.invoicecapture.connection.builders.IBuilder;
 import com.ic.invoicecapture.connection.builders.IThrowingBuilder;
 import com.ic.invoicecapture.exceptions.IcConflictingException;
 import com.ic.invoicecapture.exceptions.IcException;
@@ -47,8 +46,6 @@ public class IcFacadeIT_Customer extends IcFacadeTestBase {
     Assertions.assertEquals(CONFLICT_GID, exception.getGid());
   }
 
-  
-  
   @Test
   public void updateCustomerInfo_success() throws Exception {
     CustomerBuilder customerBuilder =

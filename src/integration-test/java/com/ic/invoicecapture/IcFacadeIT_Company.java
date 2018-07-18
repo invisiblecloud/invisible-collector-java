@@ -8,11 +8,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.concurrent.TimeUnit;
 import okhttp3.mockwebserver.MockResponse;
-import okhttp3.mockwebserver.RecordedRequest;
 import org.javatuples.Pair;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class IcFacadeIT_Company extends IcFacadeTestBase {
@@ -72,7 +69,8 @@ class IcFacadeIT_Company extends IcFacadeTestBase {
     IBuilder<MockResponse, String> mockBuilder = (companyJson) -> new MockResponse()
         .setHeader("Content-Type", "application/json").setBody(companyJson + "\n" + extraMessage);
     Pair<MockResponse, Company> pair = this.buildCompanyConfiguration(mockBuilder);
-    this.assertRequestWithReturnedCompany(pair, (icFacade, company) -> icFacade.requestCompanyInfo());
+    this.assertRequestWithReturnedCompany(pair,
+        (icFacade, company) -> icFacade.requestCompanyInfo());
 
     this.assertSentCorrectGetHeaders(IcFacade.COMPANIES_ENDPOINT, this.mockServer.getBaseUri());
   }
@@ -83,7 +81,8 @@ class IcFacadeIT_Company extends IcFacadeTestBase {
     Pair<MockResponse, Company> pair = this.buildCompanyConfiguration();
     MockResponse response = pair.getValue0();
     response.throttleBody(1, 1, TimeUnit.MILLISECONDS); // 1000 Byte/sec
-    this.assertRequestWithReturnedCompany(pair, (icFacade, company) -> icFacade.requestCompanyInfo());
+    this.assertRequestWithReturnedCompany(pair,
+        (icFacade, company) -> icFacade.requestCompanyInfo());
 
     this.assertSentCorrectGetHeaders(IcFacade.COMPANIES_ENDPOINT, this.mockServer.getBaseUri());
   }
