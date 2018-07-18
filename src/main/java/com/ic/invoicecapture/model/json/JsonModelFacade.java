@@ -72,7 +72,4 @@ public class JsonModelFacade {
     jsonObj.addProperty("phone", model.getPhone());
     return jsonObj.toString();
   }
-  
-  
-  
 }

@@ -66,44 +66,62 @@ public class CustomerBuilder {
     return jsonObject;
   }
 
-  public void setAddress(String address) {
+  public CustomerBuilder setAddress(String address) {
     this.address = address;
+    return this;
   }
 
-  public void setCity(String city) {
+  public CustomerBuilder setCity(String city) {
     this.city = city;
+    return this;
   }
 
-  public void setCountry(String country) {
+  public CustomerBuilder setCountry(String country) {
     this.country = country;
+    return this;
   }
 
-  public void setEmail(String email) {
+  public CustomerBuilder setEmail(String email) {
     this.email = email;
+    return this;
   }
 
-  public void setExternalId(String externalId) {
+  public CustomerBuilder setExternalId(String externalId) {
     this.externalId = externalId;
+    return this;
   }
 
-  public void setName(String name) {
+  public CustomerBuilder setName(String name) {
     this.name = name;
+    return this;
   }
 
-  public void setPhone(String phone) {
+  public CustomerBuilder setPhone(String phone) {
     this.phone = phone;
+    return this;
   }
 
-  public void setVatNumber(String vatNumber) {
+  public CustomerBuilder setVatNumber(String vatNumber) {
     this.vatNumber = vatNumber;
+    return this;
   }
 
-  public void setZipCode(String zipCode) {
+  public CustomerBuilder setZipCode(String zipCode) {
     this.zipCode = zipCode;
+    return this;
   }
 
-  public void setGid(String gid) {
+  public CustomerBuilder setGid(String gid) {
     this.gid = gid;
+    return this;
+  }
+
+  public String buildJson() {
+    return this.buildJsonObject().toString();
+  }
+
+  public String getExternalId() {
+    return gid;
   }
 
 }

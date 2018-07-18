@@ -57,7 +57,7 @@ public class IcFacade {
 
   private Company returningCompanyMethod(IThrowingBuilder<InputStream, IValidator> requestMethod)
       throws IcException {
-    IValidator validator = this.validatorFactory.buildCompanyReturnValidator();
+    IValidator validator = this.validatorFactory.buildBasicValidator();
     InputStream inputStream = requestMethod.build(validator);
 
     return this.jsonFacade.parseStringStream(inputStream, Company.class);
@@ -82,16 +82,33 @@ public class IcFacade {
     return this.returningCompanyMethod(requestMethod);
   }
 
-  private static final String CUSTOMERS_ENDPOINT = "customers";
+  public static final String CUSTOMERS_ENDPOINT = "customers";
 
   public Customer registerNewCustomer(ICustomerUpdate costumerInfo)
       throws IcException, IcConflictingException {
     String jsonToSend = this.jsonFacade.toJson(costumerInfo);
-    IValidator validator = this.validatorFactory.buildCustomerValidator();
+    IValidator validator = this.validatorFactory.buildConflictValidator();
     InputStream inputStream = apiFacade.postRequest(validator, CUSTOMERS_ENDPOINT, jsonToSend);
 
     return this.jsonFacade.parseStringStream(inputStream, Customer.class);
   }
 
+  public Customer requestCustomerInfo(String customerId) throws IcException {
+    String endpoint = CUSTOMERS_ENDPOINT + "/" + customerId;
+    IValidator validator = this.validatorFactory.buildExistingEntityValidator();
+    InputStream inputStream = apiFacade.getRequest(validator, endpoint);
+
+    return this.jsonFacade.parseStringStream(inputStream, Customer.class);
+  }
+
+  public Customer updateCustomerInfo(ICustomerUpdate customerInfo, String customerId)
+      throws IcException {
+    String endpoint = CUSTOMERS_ENDPOINT + "/" + customerId;
+    String json = this.jsonFacade.toJson(customerInfo);
+    IValidator validator = this.validatorFactory.buildExistingConflictingEntityValidator();
+    InputStream inputStream = apiFacade.putRequest(validator, endpoint, json);
+
+    return this.jsonFacade.parseStringStream(inputStream, Customer.class);
+  }
 
 }

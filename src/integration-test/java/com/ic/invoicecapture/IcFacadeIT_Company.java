@@ -15,26 +15,9 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class IcFacadeIT {
+class IcFacadeIT_Company extends IcFacadeTestBase {
 
-  private static final String TEST_API_TOKEN = "1234567890abcdef";
   private static final String REDIRECT_URL = "redirect";
-
-  private MockServerFacade mockServer;
-
-  @BeforeEach
-  private void startServer() {
-    mockServer = new MockServerFacade();
-  }
-
-  @AfterEach
-  private void closeServer() throws IOException {
-    mockServer.close();
-  }
-
-  private MockResponse buildBodiedMockResponse(String bodyJson) {
-    return new MockResponse().setHeader("Content-Type", "application/json").setBody(bodyJson);
-  }
 
   private Pair<MockResponse, Company> buildCompanyConfiguration(CompanyBuilder companyBuilder) {
     String companyJson = companyBuilder.buildJsonObject().toString();
@@ -59,34 +42,7 @@ class IcFacadeIT {
     return this.buildCompanyConfiguration(mockBuilder);
   }
 
-  private void assertSentCorrectHeadersCommon(RecordedRequest request, String endpoint, URI baseUrl)
-      throws InterruptedException {
-    MockServerFacade.assertApiEndpointHit(request, endpoint);
-    MockServerFacade.assertHeaderContainsValue(request, "X-Api-Token", TEST_API_TOKEN);
-    MockServerFacade.assertHeaderContainsValue(request, "Accept", "application/json");
-    MockServerFacade.assertHeaderContainsValue(request, "Host", baseUrl.getHost());
-    MockServerFacade.assertHasHeader(request, "Date");
-  }
-
-  private void assertSentCorrectGetHeaders(String endpoint, URI baseUrl)
-      throws InterruptedException {
-
-    RecordedRequest request = this.mockServer.getRequest();
-    MockServerFacade.assertRequestLineContains(request, "GET");
-    this.assertSentCorrectHeadersCommon(request, endpoint, baseUrl);
-  }
-
-  private void assertSentCorrectPutHeaders(String endpoint, URI baseUrl) throws Exception {
-    RecordedRequest request = this.mockServer.getRequest();
-    MockServerFacade.assertApiEndpointHit(request, endpoint);
-    MockServerFacade.assertRequestLineContains(request, "PUT");
-    this.assertSentCorrectHeadersCommon(request, endpoint, baseUrl);
-    MockServerFacade.assertHeaderContainsValue(request, "Content-Type", "application/json");
-    MockServerFacade.assertHeaderContainsValue(request, "Content-Type", "utf-8");
-    MockServerFacade.assertHasHeader(request, "Content-Length");
-  }
-
-  private void assertRequestWithReturn(Pair<MockResponse, Company> pair,
+  private void assertRequestWithReturnedCompany(Pair<MockResponse, Company> pair,
       IBuilder2<Company, IcFacade, Company> facadeMethod) throws Exception {
 
     IcFacade icFacade = initMockServer(pair.getValue0());
@@ -95,23 +51,15 @@ class IcFacadeIT {
     Assertions.assertEquals(companyToReceive, returnedCompany);
   }
 
-  private void assertRequestWithReturn(CompanyBuilder companyBuilder,
+  private void assertRequestWithReturnedCompany(CompanyBuilder companyBuilder,
       IBuilder2<Company, IcFacade, Company> facadeMethod) throws Exception {
     Pair<MockResponse, Company> pair = this.buildCompanyConfiguration(companyBuilder);
-    this.assertRequestWithReturn(pair, facadeMethod);
-  }
-
-  private IcFacade initMockServer(MockResponse response) throws Exception {
-    this.mockServer.addMockResponse(response);
-
-    this.mockServer.start();
-    URI baseUri = this.mockServer.getBaseUri();
-    return new IcFacade(TEST_API_TOKEN, baseUri);
+    this.assertRequestWithReturnedCompany(pair, facadeMethod);
   }
 
   @Test
   public void requestCompanyInfo_successNormalConditions() throws Exception {
-    this.assertRequestWithReturn(CompanyBuilder.buildTestCompanyBuilder(),
+    this.assertRequestWithReturnedCompany(CompanyBuilder.buildTestCompanyBuilder(),
         (icFacade, company) -> icFacade.requestCompanyInfo());
 
     this.assertSentCorrectGetHeaders(IcFacade.COMPANIES_ENDPOINT, this.mockServer.getBaseUri());
@@ -124,7 +72,7 @@ class IcFacadeIT {
     IBuilder<MockResponse, String> mockBuilder = (companyJson) -> new MockResponse()
         .setHeader("Content-Type", "application/json").setBody(companyJson + "\n" + extraMessage);
     Pair<MockResponse, Company> pair = this.buildCompanyConfiguration(mockBuilder);
-    this.assertRequestWithReturn(pair, (icFacade, company) -> icFacade.requestCompanyInfo());
+    this.assertRequestWithReturnedCompany(pair, (icFacade, company) -> icFacade.requestCompanyInfo());
 
     this.assertSentCorrectGetHeaders(IcFacade.COMPANIES_ENDPOINT, this.mockServer.getBaseUri());
   }
@@ -135,7 +83,7 @@ class IcFacadeIT {
     Pair<MockResponse, Company> pair = this.buildCompanyConfiguration();
     MockResponse response = pair.getValue0();
     response.throttleBody(1, 1, TimeUnit.MILLISECONDS); // 1000 Byte/sec
-    this.assertRequestWithReturn(pair, (icFacade, company) -> icFacade.requestCompanyInfo());
+    this.assertRequestWithReturnedCompany(pair, (icFacade, company) -> icFacade.requestCompanyInfo());
 
     this.assertSentCorrectGetHeaders(IcFacade.COMPANIES_ENDPOINT, this.mockServer.getBaseUri());
   }
@@ -145,10 +93,9 @@ class IcFacadeIT {
 
     String badJson = "{231,,[][[";
 
-    IBuilder<MockResponse, String> mockBuilder = (companyJson) -> new MockResponse()
-        .setHeader("Content-Type", "application/json").setBody(badJson);
-    Pair<MockResponse, Company> pair = this.buildCompanyConfiguration(mockBuilder);
-    IcFacade icFacade = initMockServer(pair.getValue0());
+    MockResponse mockResponse =
+        new MockResponse().setHeader("Content-Type", "application/json").setBody(badJson);
+    IcFacade icFacade = initMockServer(mockResponse);
     Assertions.assertThrows(IcException.class, icFacade::requestCompanyInfo);
   }
 
@@ -163,11 +110,13 @@ class IcFacadeIT {
 
   @Test
   public void requestCompanyInfo_erroredStatusCode() throws Exception {
-    IBuilder<MockResponse, String> mockBuilder =
-        (companyJson) -> new MockResponse().setResponseCode(400).setBody(companyJson);
-    Pair<MockResponse, Company> pair = this.buildCompanyConfiguration(mockBuilder);
-    IcFacade icFacade = initMockServer(pair.getValue0());
-    Assertions.assertThrows(IcException.class, icFacade::requestCompanyInfo);
+    int statusCode = 400;
+    String json = buildErrorJson(statusCode);
+    MockResponse mockResponse = buildBodiedMockResponse(json).setResponseCode(statusCode);
+    IcFacade icFacade = initMockServer(mockResponse);
+    IcException exception =
+        Assertions.assertThrows(IcException.class, icFacade::requestCompanyInfo);
+    Assertions.assertTrue(exception.getMessage().contains(JSON_ERROR_MESSAGE));
   }
 
   @Test
@@ -199,7 +148,7 @@ class IcFacadeIT {
     companyBuilder.setAddress(newAddress);
     companyBuilder.setCity(newCity);
 
-    assertRequestWithReturn(companyBuilder,
+    assertRequestWithReturnedCompany(companyBuilder,
         (icFacade, company) -> icFacade.updateCompanyInfo(company));
     this.assertSentCorrectPutHeaders(IcFacade.COMPANIES_ENDPOINT, this.mockServer.getBaseUri());
   }
@@ -209,7 +158,7 @@ class IcFacadeIT {
     CompanyBuilder companyBuilder = CompanyBuilder.buildTestCompanyBuilder();
     companyBuilder.setNotificationsEnabled(true);
 
-    assertRequestWithReturn(companyBuilder,
+    assertRequestWithReturnedCompany(companyBuilder,
         (icFacade, unused) -> icFacade.setCompanyNotifications(true));
   }
 
@@ -218,7 +167,7 @@ class IcFacadeIT {
     CompanyBuilder companyBuilder = CompanyBuilder.buildTestCompanyBuilder();
     companyBuilder.setNotificationsEnabled(false);
 
-    assertRequestWithReturn(companyBuilder,
+    assertRequestWithReturnedCompany(companyBuilder,
         (icFacade, unused) -> icFacade.setCompanyNotifications(false));
   }
 
