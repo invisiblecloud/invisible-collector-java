@@ -1,5 +1,6 @@
 package com.ic.invoicecapture;
 
+import com.ic.invoicecapture.connection.RequestType;
 import java.io.IOException;
 import java.net.URI;
 import okhttp3.mockwebserver.MockResponse;
@@ -32,10 +33,6 @@ public class IcFacadeTestBase {
     this.assertSentCorrectHeadersCommon(request, endpoint, baseUrl, "GET");
   }
 
-  protected String joinUriPaths(String... paths) {
-    return String.join("/", paths);
-  }
-
   private void assertSentCorrectHeadersCommon(RecordedRequest request, String endpoint, URI baseUrl,
       String requestType) throws InterruptedException {
     MockServerFacade.assertApiEndpointHit(request, endpoint);
@@ -54,6 +51,23 @@ public class IcFacadeTestBase {
   protected void assertSentCorrectPutHeaders(String endpoint, URI baseUrl) throws Exception {
     RecordedRequest request = this.mockServer.getRequest();
     assertSentCorrectBodiedHeaders(request, endpoint, baseUrl, "PUT");
+  }
+
+  protected void assertSentCorrectHeaders(String endpoint, URI baseUrl, RequestType requestType)
+      throws Exception {
+    switch (requestType) {
+      case GET:
+        assertSentCorrectGetHeaders(endpoint, baseUrl);
+        break;
+      case POST:
+        assertSentCorrectPostHeaders(endpoint, baseUrl);
+        break;
+      case PUT:
+        assertSentCorrectPutHeaders(endpoint, baseUrl);
+        break;
+      default:
+        throw new IllegalArgumentException("Invalid request Type");
+    }
   }
 
   protected MockResponse buildBodiedMockResponse(String bodyJson) {
@@ -80,6 +94,10 @@ public class IcFacadeTestBase {
     this.mockServer.start();
     URI baseUri = this.mockServer.getBaseUri();
     return new IcFacade(TEST_API_TOKEN, baseUri);
+  }
+
+  protected String joinUriPaths(String... paths) {
+    return String.join("/", paths);
   }
 
   @BeforeEach

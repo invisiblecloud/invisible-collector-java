@@ -1,10 +1,10 @@
 package com.ic.invoicecapture.connection.response.validators;
 
+import com.ic.invoicecapture.exceptions.IcRuntimeException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
-import com.ic.invoicecapture.exceptions.IcRuntimeException;
 
 /**
  * Validator builder. Order of added validator checking is stack based (LIFO).

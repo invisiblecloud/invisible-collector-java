@@ -40,7 +40,7 @@ class IcFacadeIT_Company extends IcFacadeTestBase {
   }
 
   private void assertRequestWithReturnedCompany(Pair<MockResponse, Company> pair,
-      IBuilder2<Company, IcFacade, Company> facadeMethod) throws Exception {
+      IThrowingBuilder2<Company, IcFacade, Company> facadeMethod) throws Exception {
 
     IcFacade icFacade = initMockServer(pair.getValue0());
     Company returnedCompany = facadeMethod.build(icFacade, pair.getValue1());
@@ -49,7 +49,7 @@ class IcFacadeIT_Company extends IcFacadeTestBase {
   }
 
   private void assertRequestWithReturnedCompany(CompanyBuilder companyBuilder,
-      IBuilder2<Company, IcFacade, Company> facadeMethod) throws Exception {
+      IThrowingBuilder2<Company, IcFacade, Company> facadeMethod) throws Exception {
     Pair<MockResponse, Company> pair = this.buildCompanyConfiguration(companyBuilder);
     this.assertRequestWithReturnedCompany(pair, facadeMethod);
   }

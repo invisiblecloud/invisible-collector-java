@@ -16,6 +16,16 @@ import org.junit.jupiter.api.Test;
 
 public class JsonModelFacadeTest {
 
+  private static String TEST_JSON = "{ \"a\":12, \"b\":\"string\", \"c\":null }";
+  private static String CORRECT_JSON = "{ \"a\":\"12\", \"b\":\"string\", \"c\":null }";
+  private static Map<String, String> CORRECT_MAP = new TreeMap<>();
+  
+  static {
+    CORRECT_MAP.put("a", "12");
+    CORRECT_MAP.put("b", "string");
+    CORRECT_MAP.put("c", null);
+  }
+  
   private InputStream stringToInputStream(String string) {
     return new ByteArrayInputStream(string.getBytes(StandardCharsets.UTF_8));
   }
@@ -45,16 +55,6 @@ public class JsonModelFacadeTest {
     JsonObject returnedJsonObj = JsonTestUtils.jsonStringAsJsonObject(returnedJson);
     JsonObject correctCompanyJsonObj = companyBuilder.buildJsonObject();
     Assertions.assertEquals(returnedJsonObj, correctCompanyJsonObj);
-  }
-
-  private static String TEST_JSON = "{ \"a\":12, \"b\":\"string\", \"c\":null }";
-  private static String CORRECT_JSON = "{ \"a\":\"12\", \"b\":\"string\", \"c\":null }";
-  private static Map<String, String> CORRECT_MAP = new TreeMap<>();
-  
-  static {
-    CORRECT_MAP.put("a", "12");
-    CORRECT_MAP.put("b", "string");
-    CORRECT_MAP.put("c", null);
   }
 
   @Test
