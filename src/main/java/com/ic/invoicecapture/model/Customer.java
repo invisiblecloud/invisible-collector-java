@@ -1,8 +1,9 @@
 package com.ic.invoicecapture.model;
 
+import java.util.EnumMap;
 import java.util.Objects;
 
-public class Customer implements IModel, ICustomerUpdate {
+public class Customer implements IModel, IRoutable, ICustomerUpdate {
   
   private String address;
   private String city;
@@ -114,4 +115,10 @@ public class Customer implements IModel, ICustomerUpdate {
   public void setZipCode(String zipCode) {
     this.zipCode = zipCode;
   }
+
+  @Override
+  public EnumMap<? extends Enum<?>, Object> toEnumMap() {
+    throw new IllegalArgumentException("not implemented yet");
+  }
+
 }

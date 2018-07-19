@@ -6,9 +6,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.stream.JsonReader;
 import com.ic.invoicecapture.exceptions.IcException;
-import com.ic.invoicecapture.model.ICompanyUpdate;
 import com.ic.invoicecapture.model.ICustomerUpdate;
-import com.ic.invoicecapture.model.IModel;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -52,22 +50,6 @@ public class JsonModelFacade {
     return parseStringStream(inputStream, StringMap.class);
   }
 
-  public String toJson(IModel model) {
-    final Gson gson = GsonSingleton.getInstance();
-    return gson.toJson(model);
-  }
-
-  public String toJson(ICompanyUpdate model) {
-
-    JsonObject jsonObj = new JsonObject();
-    jsonObj.addProperty("name", model.getName());
-    jsonObj.addProperty("vatNumber", model.getVatNumber());
-    jsonObj.addProperty("address", model.getAddress());
-    jsonObj.addProperty("zipCode", model.getZipCode());
-    jsonObj.addProperty("city", model.getCity());
-    return jsonObj.toString();
-  }
-
   public String toJson(ICustomerUpdate model) {
     JsonObject jsonObj = new JsonObject();
     jsonObj.addProperty("name", model.getName());
@@ -82,13 +64,8 @@ public class JsonModelFacade {
     return jsonObj.toString();
   }
 
-  public String toJson(Map<String, String> attributes) {
-    JsonObject jsonObject = new JsonObject();
-    for (Map.Entry<String, String> entry : attributes.entrySet()) {
-      jsonObject.addProperty(entry.getKey(), entry.getValue());
-    }
-
-    return jsonObject.toString();
+  public String toJson(Object obj) {
+    return GsonSingleton.getInstance().toJson(obj);
   }
 
 

@@ -35,7 +35,7 @@ public class ValidatorBuilder implements Cloneable {
   }
   
   public ValidatorBuilder addServerJsonValidator() {
-    validatorStack.push(new JsonValidator());
+    validatorStack.add(0, new JsonValidator());
     return this;
   }
 

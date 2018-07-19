@@ -3,12 +3,14 @@ package com.ic.invoicecapture.model.json;
 import com.google.gson.JsonObject;
 import com.ic.invoicecapture.exceptions.IcException;
 import com.ic.invoicecapture.model.Company;
+import com.ic.invoicecapture.model.CompanyField;
 import com.ic.invoicecapture.model.IModel;
 import com.ic.invoicecapture.model.builder.CompanyBuilder;
 import com.ic.invoicecapture.model.json.JsonModelFacade;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.EnumMap;
 import java.util.Map;
 import java.util.TreeMap;
 import org.junit.jupiter.api.Assertions;
@@ -70,5 +72,16 @@ public class JsonModelFacadeTest {
   public void toJson_stringMap_correctness() {
     String returnedJson = new JsonModelFacade().toJson(CORRECT_MAP);
     JsonTestUtils.assertJsonEquals(CORRECT_JSON, returnedJson);
+  }
+  
+  @Test
+  public void toJson_enumMap_correctness() {
+    EnumMap<CompanyField, Object> companyMap = new EnumMap<>(CompanyField.class);
+    companyMap.put(CompanyField.CITY, "new city");
+    companyMap.put(CompanyField.ADDRESS, null);
+    String correctJson = "{ 'city':'new city', 'address': null }".replaceAll("'", "\"");
+    
+    String json = new JsonModelFacade().toJson(companyMap);
+    JsonTestUtils.assertJsonEquals(correctJson, json);
   }
 }

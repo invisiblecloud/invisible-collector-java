@@ -88,12 +88,12 @@ public class IcFacadeTestBase {
     mockServer.close();
   }
 
-  protected IcFacade initMockServer(MockResponse response) throws Exception {
+  protected IcApiFacade initMockServer(MockResponse response) throws Exception {
     this.mockServer.addMockResponse(response);
 
     this.mockServer.start();
     URI baseUri = this.mockServer.getBaseUri();
-    return new IcFacade(TEST_API_TOKEN, baseUri);
+    return new IcApiFacade(TEST_API_TOKEN, baseUri);
   }
 
   protected String joinUriPaths(String... paths) {
