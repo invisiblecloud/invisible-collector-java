@@ -6,6 +6,11 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import com.ic.invoicecapture.exceptions.IcException;
 
+/**
+ * Immutable class.
+ * @author ros
+ *
+ */
 public class ServerErrorFacade {
 
   private JsonObject responseObject;

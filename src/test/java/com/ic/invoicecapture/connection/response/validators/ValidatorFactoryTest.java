@@ -1,6 +1,6 @@
 package com.ic.invoicecapture.connection.response.validators;
 
-import com.ic.invoicecapture.connection.response.validators.ValidatorFactory;
+import com.ic.invoicecapture.connection.response.validators.ValidatorBuilder;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -8,7 +8,7 @@ public class ValidatorFactoryTest {
   
   @Test
   public void build_get() {
-    ValidatorFactory factory = new ValidatorFactory();
-    Assertions.assertNotNull(factory.buildBasicValidator());
+    ValidatorBuilder builder = new ValidatorBuilder();
+    Assertions.assertNotNull(builder.build());
   }
 }

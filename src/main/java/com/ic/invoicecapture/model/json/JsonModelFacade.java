@@ -22,8 +22,10 @@ import java.util.Map;
  *
  */
 public class JsonModelFacade {
-  
-  private interface StringMap extends Map<String, String> {}
+
+  // not to be used, just to get class of map
+  private interface StringMap extends Map<String, String> {
+  }
 
   public <T> T parseStringStream(InputStream inputStream, Class<T> classType) throws IcException {
 
@@ -44,8 +46,9 @@ public class JsonModelFacade {
     }
     return value;
   }
-  
-  public Map<String, String> parseStringStreamAsStringMap(InputStream inputStream) throws IcException {
+
+  public Map<String, String> parseStringStreamAsStringMap(InputStream inputStream)
+      throws IcException {
     return parseStringStream(inputStream, StringMap.class);
   }
 
@@ -88,5 +91,5 @@ public class JsonModelFacade {
     return jsonObject.toString();
   }
 
-  
+
 }

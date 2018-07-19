@@ -3,6 +3,11 @@ package com.ic.invoicecapture.connection.response.validators;
 import com.ic.invoicecapture.connection.response.IServerResponse;
 import com.ic.invoicecapture.exceptions.IcException;
 
+/**
+ * Immutable class.
+ * @author ros
+ *
+ */
 public class SpecificStatusCodeValidator extends JsonValidatorBase implements IValidator {
 
   private final int badStatusCode;

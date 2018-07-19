@@ -38,34 +38,34 @@ public class ValidatorCompositeTest {
     composite.validateAndTryThrowException(this.serverResponse);
   }
 
-  @Test
-  public void validate_successing() throws IcException {
-    ValidatorComposite composite = new ValidatorComposite();
-    IValidator validValidator = this.prepareValidatorMock(true);
-    IValidator validValidator2 = this.prepareValidatorMock(true);
-    composite.addValidatorLast(validValidator);
-    composite.addValidatorLast(validValidator2);
-
-    composite.validateAndTryThrowException(this.serverResponse);
-
-    EasyMock.verify(validValidator);
-    EasyMock.verify(validValidator2);
-  }
-
-  @Test
-  public void validate_failingCorrectOrder() throws IcException {
-    ValidatorComposite composite = new ValidatorComposite();
-    IValidator validValidator = this.prepareValidatorMock(true);
-    IValidator failingValidator = this.prepareValidatorMock(false);
-    composite.addValidatorLast(validValidator);
-    composite.addValidatorLast(failingValidator);
-
-    Assertions.assertThrows(IcException.class,
-        () -> composite.validateAndTryThrowException(this.serverResponse));
-
-    EasyMock.verify(validValidator);
-    EasyMock.verify(failingValidator);
-  }
+//  @Test
+//  public void validate_successing() throws IcException {
+//    ValidatorComposite composite = new ValidatorComposite();
+//    IValidator validValidator = this.prepareValidatorMock(true);
+//    IValidator validValidator2 = this.prepareValidatorMock(true);
+//    composite.addValidatorLast(validValidator);
+//    composite.addValidatorLast(validValidator2);
+//
+//    composite.validateAndTryThrowException(this.serverResponse);
+//
+//    EasyMock.verify(validValidator);
+//    EasyMock.verify(validValidator2);
+//  }
+//
+//  @Test
+//  public void validate_failingCorrectOrder() throws IcException {
+//    ValidatorComposite composite = new ValidatorComposite();
+//    IValidator validValidator = this.prepareValidatorMock(true);
+//    IValidator failingValidator = this.prepareValidatorMock(false);
+//    composite.addValidatorLast(validValidator);
+//    composite.addValidatorLast(failingValidator);
+//
+//    Assertions.assertThrows(IcException.class,
+//        () -> composite.validateAndTryThrowException(this.serverResponse));
+//
+//    EasyMock.verify(validValidator);
+//    EasyMock.verify(failingValidator);
+//  }
 
 
 

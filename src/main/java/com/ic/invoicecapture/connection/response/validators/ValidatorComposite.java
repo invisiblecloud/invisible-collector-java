@@ -7,22 +7,20 @@ import java.util.List;
 
 /**
  * IResponseValidator order matters.
- * 
- * @author ros
- *
+ * Immutable class.
  */
 public class ValidatorComposite implements IValidator {
-  private List<IValidator> validators = new ArrayList<>();
+  private List<IValidator> validators;
 
-  public ValidatorComposite addValidatorLast(IValidator validator) {
-    this.validators.add(validator);
-    return this;
+  public ValidatorComposite() {
+    this.validators = new ArrayList<>();
   }
   
-  public ValidatorComposite addValidatorFirst(IValidator validator) {
-    this.validators.add(0, validator);
-    return this;
+  public ValidatorComposite(List<IValidator> validators) {
+    this.validators = validators;
   }
+
+  
 
   @Override
   public void validateAndTryThrowException(IServerResponse serverResponse) throws IcException {
