@@ -70,7 +70,7 @@ public class CustomerApiFacadeIT extends IcFacadeTestBase {
     this.assertCorrectCustomerReturned(customerBuilder, (unused) -> {
       Customer updateCustomer =
           customerBuilder.setVatNumber(null).setExternalId(null).buildCustomer();
-      return icFacade.updateCustomerInfo(updateCustomer, id);
+      return icFacade.updateCustomerInfo(updateCustomer.toEnumMap(), id);
     });
     this.assertSentCorrectPutHeaders(endpoint, this.mockServer.getBaseUri());
   }

@@ -3,7 +3,13 @@ package com.ic.invoicecapture.model;
 import java.util.Map;
 
 public enum CompanyField implements ICheckableField {
-  NAME("name"), VAT_NUMBER("vatNumber"), ADDRESS("address"), ZIP_CODE("zipCode"), CITY("city");
+  ADDRESS("address"), CITY("city"), NAME("name"), VAT_NUMBER("vatNumber"), ZIP_CODE("zipCode");
+
+  public static void assertCorrectlyInitialized(Map<CompanyField, Object> companyInfo)
+      throws IllegalArgumentException {
+    FieldEnumUtils.assertCorrectlyInitializedEnumMap(companyInfo, "Company", CompanyField.NAME,
+        CompanyField.VAT_NUMBER);
+  }
 
   private final String jsonName;
 
@@ -12,19 +18,13 @@ public enum CompanyField implements ICheckableField {
   }
 
   @Override
-  public String toString() {
-    return this.jsonName;
-  }
-
-  public static void assertCorrectlyInitialized(Map<CompanyField, Object> companyInfo)
-      throws IllegalArgumentException {
-    FieldEnumUtils.assertCorrectlyInitializedEnumMap(companyInfo, "Company", CompanyField.NAME,
-        CompanyField.VAT_NUMBER);
+  public boolean isValidValue(Object value) {
+    return value == null || value instanceof String;
   }
 
   @Override
-  public boolean isValidValue(Object value) {
-    return value == null || value instanceof String;
+  public String toString() {
+    return this.jsonName;
   }
 
 }

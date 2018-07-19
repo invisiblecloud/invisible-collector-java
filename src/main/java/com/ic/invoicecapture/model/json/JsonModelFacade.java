@@ -2,11 +2,9 @@ package com.ic.invoicecapture.model.json;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonIOException;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.stream.JsonReader;
 import com.ic.invoicecapture.exceptions.IcException;
-import com.ic.invoicecapture.model.ICustomerUpdate;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -48,20 +46,6 @@ public class JsonModelFacade {
   public Map<String, String> parseStringStreamAsStringMap(InputStream inputStream)
       throws IcException {
     return parseStringStream(inputStream, StringMap.class);
-  }
-
-  public String toJson(ICustomerUpdate model) {
-    JsonObject jsonObj = new JsonObject();
-    jsonObj.addProperty("name", model.getName());
-    jsonObj.addProperty("externalId", model.getExternalId());
-    jsonObj.addProperty("vatNumber", model.getVatNumber());
-    jsonObj.addProperty("address", model.getAddress());
-    jsonObj.addProperty("zipCode", model.getZipCode());
-    jsonObj.addProperty("city", model.getCity());
-    jsonObj.addProperty("country", model.getCountry());
-    jsonObj.addProperty("email", model.getEmail());
-    jsonObj.addProperty("phone", model.getPhone());
-    return jsonObj.toString();
   }
 
   public String toJson(Object obj) {
