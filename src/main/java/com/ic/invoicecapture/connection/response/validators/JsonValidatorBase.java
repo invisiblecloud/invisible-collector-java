@@ -2,6 +2,11 @@ package com.ic.invoicecapture.connection.response.validators;
 
 import com.ic.invoicecapture.connection.response.IServerResponse;
 
+/**
+ * Immutable class.
+ * @author ros
+ *
+ */
 public class JsonValidatorBase {
   protected static final String HEADER_NAME = "Content-Type";
   protected static final String JSON_CONTENT_TYPE = "application/json";

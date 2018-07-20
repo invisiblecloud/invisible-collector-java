@@ -3,7 +3,12 @@ package com.ic.invoicecapture.connection.response.validators;
 import com.ic.invoicecapture.connection.response.IServerResponse;
 import com.ic.invoicecapture.exceptions.IcException;
 
-public class StatusCodeValidator extends JsonValidatorBase implements IValidator {
+/**
+ * Immutable class.
+ * @author ros
+ *
+ */
+public class GeneralStatusCodeValidator extends JsonValidatorBase implements IValidator {
 
   @Override
   public void validateAndTryThrowException(IServerResponse responseStatus) throws IcException {

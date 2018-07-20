@@ -1,8 +1,9 @@
 package com.ic.invoicecapture.model;
 
+import java.util.EnumMap;
 import java.util.Objects;
 
-public class Company implements IModel, ICompanyUpdate {
+public class Company implements IModel {
 
   private String address;
   private String city;
@@ -90,5 +91,19 @@ public class Company implements IModel, ICompanyUpdate {
 
   public void setZipCode(String zipCode) {
     this.zipCode = zipCode;
+  }
+
+  @Override
+  public EnumMap<CompanyField, Object> toEnumMap() {
+    EnumMap<CompanyField, Object> map = new EnumMap<>(CompanyField.class);
+
+    ModelUtils.tryAddObject(map, CompanyField.NAME, getName());
+    ModelUtils.tryAddObject(map, CompanyField.ADDRESS, getAddress());
+    ModelUtils.tryAddObject(map, CompanyField.VAT_NUMBER, getVatNumber());
+    ModelUtils.tryAddObject(map, CompanyField.ZIP_CODE, getZipCode());
+    ModelUtils.tryAddObject(map, CompanyField.CITY, getCity());
+    ModelUtils.tryAddObject(map, CompanyField.COUNTRY, getCountry());
+    
+    return map;
   }
 }

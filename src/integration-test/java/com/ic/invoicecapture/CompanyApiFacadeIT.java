@@ -1,25 +1,26 @@
 package com.ic.invoicecapture;
 
+import com.ic.invoicecapture.connection.RequestType;
 import com.ic.invoicecapture.connection.builders.IBuilder;
 import com.ic.invoicecapture.exceptions.IcException;
 import com.ic.invoicecapture.model.Company;
 import com.ic.invoicecapture.model.builder.CompanyBuilder;
-import java.io.IOException;
 import java.net.URI;
 import java.util.concurrent.TimeUnit;
 import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.RecordedRequest;
 import org.javatuples.Pair;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class IcFacadeIT_Company extends IcFacadeTestBase {
+class CompanyApiFacadeIT extends IcFacadeTestBase {
 
   private static final String REDIRECT_URL = "redirect";
 
   private Pair<MockResponse, Company> buildCompanyConfiguration(CompanyBuilder companyBuilder) {
     String companyJson = companyBuilder.buildJsonObject().toString();
     MockResponse mockResponse = buildBodiedMockResponse(companyJson);
-    Company correctCompany = companyBuilder.buildCompany();
+    Company correctCompany = companyBuilder.buildModel();
     return Pair.with(mockResponse, correctCompany);
   }
 
@@ -28,7 +29,7 @@ class IcFacadeIT_Company extends IcFacadeTestBase {
     CompanyBuilder companyBuilder = CompanyBuilder.buildTestCompanyBuilder();
     String companyJson = companyBuilder.buildJsonObject().toString();
     MockResponse mockResponse = mockBuilder.build(companyJson);
-    Company correctCompany = companyBuilder.buildCompany();
+    Company correctCompany = companyBuilder.buildModel();
     return Pair.with(mockResponse, correctCompany);
   }
 
@@ -40,16 +41,16 @@ class IcFacadeIT_Company extends IcFacadeTestBase {
   }
 
   private void assertRequestWithReturnedCompany(Pair<MockResponse, Company> pair,
-      IBuilder2<Company, IcFacade, Company> facadeMethod) throws Exception {
+      IThrowingBuilder2<Company, CompanyApiFacade, Company> facadeMethod) throws Exception {
 
-    IcFacade icFacade = initMockServer(pair.getValue0());
+    CompanyApiFacade icFacade = initMockServer(pair.getValue0()).getCompanyFacade();
     Company returnedCompany = facadeMethod.build(icFacade, pair.getValue1());
     Company companyToReceive = pair.getValue1();
     Assertions.assertEquals(companyToReceive, returnedCompany);
   }
 
   private void assertRequestWithReturnedCompany(CompanyBuilder companyBuilder,
-      IBuilder2<Company, IcFacade, Company> facadeMethod) throws Exception {
+      IThrowingBuilder2<Company, CompanyApiFacade, Company> facadeMethod) throws Exception {
     Pair<MockResponse, Company> pair = this.buildCompanyConfiguration(companyBuilder);
     this.assertRequestWithReturnedCompany(pair, facadeMethod);
   }
@@ -59,7 +60,9 @@ class IcFacadeIT_Company extends IcFacadeTestBase {
     this.assertRequestWithReturnedCompany(CompanyBuilder.buildTestCompanyBuilder(),
         (icFacade, company) -> icFacade.requestCompanyInfo());
 
-    this.assertSentCorrectGetHeaders(IcFacade.COMPANIES_ENDPOINT, this.mockServer.getBaseUri());
+    RecordedRequest request = this.mockServer.getRequest();
+    this.assertSentCorrectBodiesHeaders(request, CompanyApiFacade.COMPANIES_ENDPOINT,
+        this.mockServer.getBaseUri(), RequestType.GET);
   }
 
   @Test
@@ -72,7 +75,9 @@ class IcFacadeIT_Company extends IcFacadeTestBase {
     this.assertRequestWithReturnedCompany(pair,
         (icFacade, company) -> icFacade.requestCompanyInfo());
 
-    this.assertSentCorrectGetHeaders(IcFacade.COMPANIES_ENDPOINT, this.mockServer.getBaseUri());
+    RecordedRequest request = this.mockServer.getRequest();
+    this.assertSentCorrectBodiesHeaders(request, CompanyApiFacade.COMPANIES_ENDPOINT,
+        this.mockServer.getBaseUri(), RequestType.GET);
   }
 
   // should only have one of these
@@ -84,7 +89,9 @@ class IcFacadeIT_Company extends IcFacadeTestBase {
     this.assertRequestWithReturnedCompany(pair,
         (icFacade, company) -> icFacade.requestCompanyInfo());
 
-    this.assertSentCorrectGetHeaders(IcFacade.COMPANIES_ENDPOINT, this.mockServer.getBaseUri());
+    RecordedRequest request = this.mockServer.getRequest();
+    this.assertSentCorrectBodiesHeaders(request, CompanyApiFacade.COMPANIES_ENDPOINT,
+        this.mockServer.getBaseUri(), RequestType.GET);
   }
 
   @Test
@@ -94,7 +101,7 @@ class IcFacadeIT_Company extends IcFacadeTestBase {
 
     MockResponse mockResponse =
         new MockResponse().setHeader("Content-Type", "application/json").setBody(badJson);
-    IcFacade icFacade = initMockServer(mockResponse);
+    CompanyApiFacade icFacade = initMockServer(mockResponse).getCompanyFacade();
     Assertions.assertThrows(IcException.class, icFacade::requestCompanyInfo);
   }
 
@@ -103,7 +110,7 @@ class IcFacadeIT_Company extends IcFacadeTestBase {
     IBuilder<MockResponse, String> mockBuilder =
         (companyJson) -> new MockResponse().setBody(companyJson);
     Pair<MockResponse, Company> pair = this.buildCompanyConfiguration(mockBuilder);
-    IcFacade icFacade = initMockServer(pair.getValue0());
+    CompanyApiFacade icFacade = initMockServer(pair.getValue0()).getCompanyFacade();
     Assertions.assertThrows(IcException.class, icFacade::requestCompanyInfo);
   }
 
@@ -112,15 +119,14 @@ class IcFacadeIT_Company extends IcFacadeTestBase {
     int statusCode = 400;
     String json = buildErrorJson(statusCode);
     MockResponse mockResponse = buildBodiedMockResponse(json).setResponseCode(statusCode);
-    IcFacade icFacade = initMockServer(mockResponse);
+    CompanyApiFacade icFacade = initMockServer(mockResponse).getCompanyFacade();
     IcException exception =
         Assertions.assertThrows(IcException.class, icFacade::requestCompanyInfo);
     Assertions.assertTrue(exception.getMessage().contains(JSON_ERROR_MESSAGE));
   }
 
   @Test
-  public void requestCompanyInfo_followRedirect()
-      throws IOException, IcException, InterruptedException {
+  public void requestCompanyInfo_followRedirect() throws Exception {
     URI connectionUrl = this.mockServer.getBaseUri();
     String redirectUrl = this.mockServer.getBaseUri().toString() + "/" + REDIRECT_URL;
     MockResponse response =
@@ -131,11 +137,14 @@ class IcFacadeIT_Company extends IcFacadeTestBase {
     this.mockServer.addMockResponse(pair.getValue0());
 
     // this.mockServer.start(); //already started?
-    IcFacade icFacade = new IcFacade(TEST_API_TOKEN, connectionUrl);
+    CompanyApiFacade icFacade = new CompanyApiFacade(TEST_API_TOKEN, connectionUrl);
     Company receivedCompany = icFacade.requestCompanyInfo();
     Assertions.assertEquals(receivedCompany, correctCompany);
-    this.assertSentCorrectGetHeaders(IcFacade.COMPANIES_ENDPOINT, connectionUrl);
-    this.assertSentCorrectGetHeaders(REDIRECT_URL, connectionUrl);
+    RecordedRequest request = this.mockServer.getRequest();
+    this.assertSentCorrectBodiesHeaders(request, CompanyApiFacade.COMPANIES_ENDPOINT, connectionUrl,
+        RequestType.GET);
+    RecordedRequest request2 = this.mockServer.getRequest();
+    this.assertSentCorrectBodiesHeaders(request2, REDIRECT_URL, connectionUrl, RequestType.GET);
   }
 
   @Test
@@ -149,7 +158,10 @@ class IcFacadeIT_Company extends IcFacadeTestBase {
 
     assertRequestWithReturnedCompany(companyBuilder,
         (icFacade, company) -> icFacade.updateCompanyInfo(company));
-    this.assertSentCorrectPutHeaders(IcFacade.COMPANIES_ENDPOINT, this.mockServer.getBaseUri());
+    RecordedRequest request = this.mockServer.getRequest();
+    this.assertSentCorrectBodiesHeaders(request, CompanyApiFacade.COMPANIES_ENDPOINT,
+        this.mockServer.getBaseUri(), RequestType.PUT);
+    assertSentCorrectJson(request, companyBuilder.buildSendableJson());
   }
 
   @Test
@@ -159,6 +171,9 @@ class IcFacadeIT_Company extends IcFacadeTestBase {
 
     assertRequestWithReturnedCompany(companyBuilder,
         (icFacade, unused) -> icFacade.setCompanyNotifications(true));
+    RecordedRequest request = this.mockServer.getRequest();
+    this.assertSentCorrectBodylessHeaders(request, CompanyApiFacade.ENABLE_NOTIFICATIONS_ENDPOINT,
+        this.mockServer.getBaseUri(), RequestType.PUT);
   }
 
   @Test
@@ -168,6 +183,9 @@ class IcFacadeIT_Company extends IcFacadeTestBase {
 
     assertRequestWithReturnedCompany(companyBuilder,
         (icFacade, unused) -> icFacade.setCompanyNotifications(false));
+    RecordedRequest request = this.mockServer.getRequest();
+    this.assertSentCorrectBodylessHeaders(request, CompanyApiFacade.DISABLE_NOTIFICATIONS_ENDPOINT,
+        this.mockServer.getBaseUri(), RequestType.PUT);
   }
 
 }

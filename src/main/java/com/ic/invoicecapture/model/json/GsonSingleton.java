@@ -1,6 +1,7 @@
 package com.ic.invoicecapture.model.json;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public class GsonSingleton {
 
@@ -8,7 +9,7 @@ public class GsonSingleton {
 
   public static Gson getInstance() {
     if (instance == null) {
-      instance = new Gson();
+      instance = new GsonBuilder().serializeNulls().create();
     }
     
     return instance;

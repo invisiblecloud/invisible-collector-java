@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 import com.ic.invoicecapture.model.Customer;
 import com.ic.invoicecapture.model.json.GsonSingleton;
 
-public class CustomerBuilder {
+public class CustomerBuilder extends BuilderBase {
 
   private String address;
   private String city;
@@ -35,8 +35,8 @@ public class CustomerBuilder {
 
   }
 
-
-  public Customer buildCustomer() {
+  @Override
+  public Customer buildModel() {
 
     String json = this.buildJsonObject().toString();
 
@@ -48,8 +48,9 @@ public class CustomerBuilder {
     return new CustomerBuilder("testAdress", "testCity", "PT", "testEmail@gmail.com", "12345",
         "234", "testName", "9999", "509784852", "23123");
   }
-
-  public JsonObject buildJsonObject() {
+  
+  @Override
+  public JsonObject buildSendableJsonObject() {
     JsonObject jsonObject = new JsonObject();
 
     jsonObject.addProperty("name", name);
@@ -61,6 +62,14 @@ public class CustomerBuilder {
     jsonObject.addProperty("country", country);
     jsonObject.addProperty("email", email);
     jsonObject.addProperty("phone", phone);
+
+    return jsonObject;
+  }
+
+  @Override
+  public JsonObject buildJsonObject() {
+    JsonObject jsonObject = buildSendableJsonObject();
+
     jsonObject.addProperty("gid", gid);
 
     return jsonObject;
@@ -116,9 +125,6 @@ public class CustomerBuilder {
     return this;
   }
 
-  public String buildJson() {
-    return this.buildJsonObject().toString();
-  }
 
   public String getExternalId() {
     return gid;

@@ -6,6 +6,7 @@ import com.ic.invoicecapture.exceptions.IcException;
 /**
  * Validation Can throw an exception of type {@code IcConflictingException } which contains the
  * conflicting customer's gid.
+ * Immutable class.
  * 
  * @author ros
  *
