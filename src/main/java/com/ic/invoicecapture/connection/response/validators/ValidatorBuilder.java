@@ -58,9 +58,7 @@ public class ValidatorBuilder implements Cloneable {
     return new ValidatorComposite(validators);
   }
 
-
   public ValidatorBuilder clone() {
-    
     try {
       super.clone();
     } catch (CloneNotSupportedException e) {

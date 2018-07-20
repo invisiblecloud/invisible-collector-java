@@ -51,6 +51,27 @@ public class CustomerApiFacadeIT extends IcFacadeTestBase {
   }
 
   @Test
+  public void registerNewCustomer_failMissingMandatoryField() throws Exception {
+    CustomerBuilder customerBuilder = new CustomerBuilder().setGid("1232132");
+    CustomerApiFacade icFacade = buildCustomerResponse(customerBuilder);
+
+    Customer correctCustomer = customerBuilder.buildModel();
+    Assertions.assertThrows(IllegalArgumentException.class,
+        () -> icFacade.registerNewCustomer(correctCustomer));
+  }
+
+  @Test
+  public void registerNewCustomer_onlyMandatoryFields() throws Exception {
+    CustomerBuilder customerBuilder = new CustomerBuilder().setGid("shouldn't appear")
+        .setName("A Name").setVatNumber("1234").setCity(null);
+    CustomerApiFacade icFacade = buildCustomerResponse(customerBuilder);
+    Customer customer = customerBuilder.buildModel();
+    icFacade.registerNewCustomer(customer);
+    RecordedRequest request = this.mockServer.getRequest();
+    assertSentCorrectJson(request, customerBuilder.buildSendableJson());
+  }
+
+  @Test
   public void registerNewCustomer_conflict() throws Exception {
     int statusCode = 409;
     String json = buildConflictErrorJson(statusCode);
@@ -71,14 +92,25 @@ public class CustomerApiFacadeIT extends IcFacadeTestBase {
     CustomerApiFacade icFacade = buildCustomerResponse(customerBuilder);
 
     this.assertCorrectCustomerReturned(customerBuilder, (unused) -> {
-      Customer updateCustomer =
-          customerBuilder.setVatNumber(null).setExternalId(null).buildModel();
+      Customer updateCustomer = customerBuilder.setVatNumber(null).setExternalId(null).buildModel();
       return icFacade.updateCustomerInfo(updateCustomer.toEnumMap(), id);
     });
     RecordedRequest request = this.mockServer.getRequest();
     this.assertSentCorrectBodiesHeaders(request, endpoint, this.mockServer.getBaseUri(),
         RequestType.PUT);
     assertSentCorrectJson(request, customerBuilder.buildSendableJson());
+  }
+
+  @Test
+  public void updateCustomerInfo_failBadId() throws Exception {
+    CustomerBuilder customerBuilder =
+        CustomerBuilder.buildTestCustomerBuilder().setName("Brand new new Name");
+    String id = "";
+    CustomerApiFacade icFacade = buildCustomerResponse(customerBuilder);
+    Customer correctCustomer = customerBuilder.buildModel();
+
+    Assertions.assertThrows(IllegalArgumentException.class,
+        () -> icFacade.updateCustomerInfo(correctCustomer.toEnumMap(), id));
   }
 
   @Test
@@ -124,5 +156,4 @@ public class CustomerApiFacadeIT extends IcFacadeTestBase {
     this.assertSentCorrectBodiesHeaders(request, endpoint, this.mockServer.getBaseUri(),
         RequestType.GET);
   }
-
 }

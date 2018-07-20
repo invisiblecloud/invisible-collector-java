@@ -6,7 +6,7 @@ import com.ic.invoicecapture.exceptions.IcException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class StatusCodeValidatorTest {
+public class GeneralStatusCodeValidatorTest {
 
   protected IServerResponse buildResponseStatusMock(int code, String reason, String body)
       throws IcException {

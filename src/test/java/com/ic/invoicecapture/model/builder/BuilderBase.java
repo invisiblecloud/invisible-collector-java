@@ -34,6 +34,10 @@ public abstract class BuilderBase {
     return this.buildJsonObject().toString();
   }
 
+  /**
+   * Strips all key-value with null values.
+   * @return
+   */
   public String buildSendableJson() {
     return this.buildSendableJsonObject(true).toString();
   }

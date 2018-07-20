@@ -30,7 +30,7 @@ public class SpecificStatusCodeValidator extends JsonValidatorBase implements IV
     if (statusCode == this.badStatusCode) {
       if (isJsonResponse(responsePair)) {
         String errorBody = responsePair.consumeConnectionAsString();
-        ServerErrorFacade serverErrorFacade = new ServerErrorFacade(errorBody);
+        ServerErrorFacade serverErrorFacade = buildServerErrorFacade(errorBody);
         throwJsonException(serverErrorFacade);
       } else {
         throw new IcException(this.exceptionMsg);

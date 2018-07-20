@@ -6,9 +6,9 @@ public enum CustomerField implements ICheckableField {
   ADDRESS("address"), CITY("city"), EXTERNAL_ID("externalId"), NAME("name"), VAT_NUMBER(
       "vatNumber"), ZIP_CODE("zipCode"), COUNTRY("country"), EMAIL("email"), PHONE("phone");
 
-  public static void assertCorrectlyInitialized(Map<CustomerField, Object> companyInfo)
+  public static void assertCorrectlyInitialized(Map<CustomerField, Object> customerInfo)
       throws IllegalArgumentException {
-    FieldEnumUtils.assertCorrectlyInitializedEnumMap(companyInfo, "Company", CustomerField.NAME,
+    FieldEnumUtils.assertCorrectlyInitializedEnumMap(customerInfo, "Customer", CustomerField.NAME,
         CustomerField.VAT_NUMBER);
   }
 
@@ -27,4 +27,6 @@ public enum CustomerField implements ICheckableField {
   public String toString() {
     return this.jsonName;
   }
+  
+  
 }

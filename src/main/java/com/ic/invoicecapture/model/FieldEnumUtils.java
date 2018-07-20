@@ -3,6 +3,7 @@ package com.ic.invoicecapture.model;
 import java.util.Map;
 
 final class FieldEnumUtils {
+  @SafeVarargs // mandatoryEnums should be safe, need to check
   static <T extends ICheckableField> void assertCorrectlyInitializedEnumMap(Map<T, Object> map,
       String modelName, T... mandatoryEnums) throws IllegalArgumentException {
     for (T mandatoryEnum : mandatoryEnums) {
