@@ -20,13 +20,11 @@ public enum CustomerField implements ICheckableField {
 
   @Override
   public boolean isValidValue(Object value) {
-    return value == null || value instanceof String;
+    return FieldEnumUtils.isStringObject(value);
   }
 
   @Override
   public String toString() {
     return this.jsonName;
   }
-  
-  
 }

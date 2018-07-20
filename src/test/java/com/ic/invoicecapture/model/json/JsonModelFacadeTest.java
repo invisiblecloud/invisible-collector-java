@@ -10,6 +10,11 @@ import com.ic.invoicecapture.model.json.JsonModelFacade;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.ZonedDateTime;
+import java.util.Date;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.TreeMap;
@@ -84,4 +89,16 @@ public class JsonModelFacadeTest {
     String json = new JsonModelFacade().toJson(companyMap);
     JsonTestUtils.assertJsonEquals(correctJson, json);
   }
+  
+  // tests indirectly for correct gson initialization
+  @Test
+  public void toJson_DateSuccess() throws ParseException {
+    String date = "2013-03-19";
+    String dateJson = String.format("\"%s\"", date);
+    Date time = new SimpleDateFormat(GsonSingleton.DATE_FORMAT).parse(date);
+    String json = new JsonModelFacade().toJson(time);
+    Assertions.assertEquals(dateJson, json);
+  }
+  
+  // TODO: check Date parsing for hours and seconds truncation
 }

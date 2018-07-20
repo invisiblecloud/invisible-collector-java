@@ -1,5 +1,6 @@
 package com.ic.invoicecapture.model;
 
+import java.util.Date;
 import java.util.Map;
 
 final class FieldEnumUtils {
@@ -23,5 +24,17 @@ final class FieldEnumUtils {
         throw new IllegalArgumentException(msg);
       }
     }
+  }
+  
+  public static boolean isStringObject(Object value) {
+    return value == null || value instanceof String;
+  }
+  
+  public static boolean isFloatingPointObject(Object value) {
+    return value == null || value instanceof Float || value instanceof Double;
+  }
+  
+  public static boolean isDateObject(Object value) {
+    return value == null || value instanceof Date;
   }
 }
