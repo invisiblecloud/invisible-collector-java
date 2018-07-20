@@ -30,7 +30,8 @@ public class IcFacadeTestBase {
   private void assertSentCorrectHeadersCommon(RecordedRequest request, String endpoint, URI baseUrl,
       String requestType) throws InterruptedException {
     MockServerFacade.assertApiEndpointHit(request, endpoint);
-    MockServerFacade.assertHeaderContainsValue(request, "X-Api-Token", TEST_API_TOKEN);
+    MockServerFacade.assertHeaderContainsValue(request, "Authorization", TEST_API_TOKEN);
+    MockServerFacade.assertHeaderContainsValue(request, "Authorization", "Bearer");
     MockServerFacade.assertHeaderContainsValue(request, "Accept", "application/json");
     MockServerFacade.assertHeaderContainsValue(request, "Host", baseUrl.getHost());
     MockServerFacade.assertHasHeader(request, "Date");

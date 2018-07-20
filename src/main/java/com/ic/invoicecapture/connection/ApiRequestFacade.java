@@ -13,7 +13,8 @@ import java.time.format.DateTimeFormatter;
 
 public class ApiRequestFacade {
 
-  private static final String X_API_TOKEN_NAME = "X-Api-Token";
+  private static final String X_API_TOKEN_NAME = "Authorization";
+  private static final String X_API_TOKEN_PREFIX = "Bearer ";
   private static final String CONTENT_TYPE = "application/json";
   private static final String SENT_CONTENT_TYPE = CONTENT_TYPE + "; charset=utf-8";
 
@@ -38,7 +39,7 @@ public class ApiRequestFacade {
   }
 
   private ApiRequestFacade addCommonHeaders(HttpRequestBuilder requestBuilder) {
-    requestBuilder.addHeader(X_API_TOKEN_NAME, this.apiToken);
+    requestBuilder.addHeader(X_API_TOKEN_NAME, X_API_TOKEN_PREFIX + this.apiToken);
     String host = this.baseUrl.getHost();
     final int port = this.baseUrl.getPort();
     if (port >= 0) {

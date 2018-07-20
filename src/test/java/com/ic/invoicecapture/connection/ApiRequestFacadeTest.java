@@ -63,7 +63,7 @@ public class ApiRequestFacadeTest {
   public void getRequest_requestBuilder() throws IcException {
     EasyMock.expect(requestBuilder.addHeader(EasyMock.eq("Accept"), EasyMock.anyString()))
         .andReturn(requestBuilder);
-    EasyMock.expect(requestBuilder.addHeader(EasyMock.eq("X-Api-Token"), EasyMock.anyString()))
+    EasyMock.expect(requestBuilder.addHeader(EasyMock.eq("Authorization"), EasyMock.anyString()))
         .andReturn(requestBuilder);
     EasyMock.expect(requestBuilder.setRequestType(RequestType.GET)).andReturn(requestBuilder);
     EasyMock.expect(requestBuilder.setUri(TEST_URI, TEST_ENDPOINT)).andReturn(requestBuilder);
