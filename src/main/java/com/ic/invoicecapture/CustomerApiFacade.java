@@ -61,7 +61,8 @@ public class CustomerApiFacade extends ApiBase {
         (validator) -> apiFacade.postRequest(validator, CUSTOMERS_ENDPOINT, jsonToSend));
   }
 
-  public Customer requestCustomerInfo(String customerId) throws IcException {
+  public Customer requestCustomerInfo(String customerId)
+      throws IcException, IcConflictingException {
     assertCorrectId(customerId);
     String endpoint = CUSTOMERS_ENDPOINT + "/" + customerId;
     ValidatorBuilder builder = this.validatorBuilder.clone();

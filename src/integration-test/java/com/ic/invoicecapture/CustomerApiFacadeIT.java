@@ -9,6 +9,7 @@ import com.ic.invoicecapture.model.builder.CustomerBuilder;
 import java.util.Map;
 import java.util.TreeMap;
 import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.RecordedRequest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -31,7 +32,7 @@ public class CustomerApiFacadeIT extends IcFacadeTestBase {
 
   public void assertCorrectCustomerReturned(CustomerBuilder customerBuilder,
       IThrowingBuilder<Customer, Customer> method) throws IcException {
-    Customer correctCustomer = customerBuilder.buildCustomer();
+    Customer correctCustomer = customerBuilder.buildModel();
     Customer returnedCustomer = method.build(correctCustomer);
     Assertions.assertEquals(correctCustomer, returnedCustomer);
   }
@@ -43,8 +44,10 @@ public class CustomerApiFacadeIT extends IcFacadeTestBase {
 
     this.assertCorrectCustomerReturned(customerBuilder,
         (customer) -> icFacade.registerNewCustomer(customer));
-    this.assertSentCorrectPostHeaders(CustomerApiFacade.CUSTOMERS_ENDPOINT,
-        this.mockServer.getBaseUri());
+    RecordedRequest request = this.mockServer.getRequest();
+    this.assertSentCorrectBodiesHeaders(request, CustomerApiFacade.CUSTOMERS_ENDPOINT,
+        this.mockServer.getBaseUri(), RequestType.POST);
+    assertSentCorrectJson(request, customerBuilder.buildSendableJson());
   }
 
   @Test
@@ -53,7 +56,7 @@ public class CustomerApiFacadeIT extends IcFacadeTestBase {
     String json = buildConflictErrorJson(statusCode);
     MockResponse mockResponse = buildBodiedMockResponse(json).setResponseCode(statusCode);
     CustomerApiFacade icFacade = initMockServer(mockResponse).getCustomerApiFacade();
-    Customer correctCustomer = CustomerBuilder.buildTestCustomerBuilder().buildCustomer();
+    Customer correctCustomer = CustomerBuilder.buildTestCustomerBuilder().buildModel();
     IcConflictingException exception = Assertions.assertThrows(IcConflictingException.class,
         () -> icFacade.registerNewCustomer(correctCustomer));
     Assertions.assertEquals(CONFLICT_GID, exception.getGid());
@@ -69,10 +72,13 @@ public class CustomerApiFacadeIT extends IcFacadeTestBase {
 
     this.assertCorrectCustomerReturned(customerBuilder, (unused) -> {
       Customer updateCustomer =
-          customerBuilder.setVatNumber(null).setExternalId(null).buildCustomer();
+          customerBuilder.setVatNumber(null).setExternalId(null).buildModel();
       return icFacade.updateCustomerInfo(updateCustomer.toEnumMap(), id);
     });
-    this.assertSentCorrectPutHeaders(endpoint, this.mockServer.getBaseUri());
+    RecordedRequest request = this.mockServer.getRequest();
+    this.assertSentCorrectBodiesHeaders(request, endpoint, this.mockServer.getBaseUri(),
+        RequestType.PUT);
+    assertSentCorrectJson(request, customerBuilder.buildSendableJson());
   }
 
   @Test
@@ -83,10 +89,12 @@ public class CustomerApiFacadeIT extends IcFacadeTestBase {
     String endpoint = joinUriPaths(CustomerApiFacade.CUSTOMERS_ENDPOINT, id);
     this.assertCorrectCustomerReturned(customerBuilder,
         (customer) -> icFacade.requestCustomerInfo(id));
-    this.assertSentCorrectGetHeaders(endpoint, this.mockServer.getBaseUri());
+    RecordedRequest request = this.mockServer.getRequest();
+    this.assertSentCorrectBodiesHeaders(request, endpoint, this.mockServer.getBaseUri(),
+        RequestType.GET);
   }
 
-  private void assertCustomerAttributesGuts(RequestType requestType,
+  private String assertCustomerAttributesGuts(RequestType requestType,
       IThrowingBuilder2<Map<String, String>, CustomerApiFacade, String> method) throws Exception {
     MockResponse response = buildBodiedMockResponse(TEST_MAP_JSON);
     CustomerApiFacade facade = initMockServer(response).getCustomerApiFacade();
@@ -95,18 +103,26 @@ public class CustomerApiFacadeIT extends IcFacadeTestBase {
         joinUriPaths(CustomerApiFacade.CUSTOMERS_ENDPOINT, id, CustomerApiFacade.ATTRIBUTES_PATH);
     Map<String, String> returnedMap = method.build(facade, id);
     Assertions.assertEquals(TEST_MAP, returnedMap);
-    this.assertSentCorrectHeaders(endpoint, this.mockServer.getBaseUri(), requestType);
+    return endpoint;
   }
 
   @Test
   public void setCustomerAttributes_success() throws Exception {
-    assertCustomerAttributesGuts(RequestType.POST,
+    String endpoint = assertCustomerAttributesGuts(RequestType.POST,
         (facade, id) -> facade.setCustomerAttributes(id, TEST_MAP));
+    RecordedRequest request = this.mockServer.getRequest();
+    this.assertSentCorrectBodiesHeaders(request, endpoint, this.mockServer.getBaseUri(),
+        RequestType.POST);
+    assertSentCorrectJson(request, TEST_MAP_JSON);
   }
 
   @Test
   public void getCustomerAttributes_success() throws Exception {
-    assertCustomerAttributesGuts(RequestType.GET, (facade, id) -> facade.getCustomerAttributes(id));
+    String endpoint = assertCustomerAttributesGuts(RequestType.GET,
+        (facade, id) -> facade.getCustomerAttributes(id));
+    RecordedRequest request = this.mockServer.getRequest();
+    this.assertSentCorrectBodiesHeaders(request, endpoint, this.mockServer.getBaseUri(),
+        RequestType.GET);
   }
 
 }

@@ -102,6 +102,7 @@ public class Company implements IModel {
     ModelUtils.tryAddObject(map, CompanyField.VAT_NUMBER, getVatNumber());
     ModelUtils.tryAddObject(map, CompanyField.ZIP_CODE, getZipCode());
     ModelUtils.tryAddObject(map, CompanyField.CITY, getCity());
+    ModelUtils.tryAddObject(map, CompanyField.COUNTRY, getCountry());
     
     return map;
   }

@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 import com.ic.invoicecapture.model.Company;
 import com.ic.invoicecapture.model.json.GsonSingleton;
 
-public class CompanyBuilder {
+public class CompanyBuilder extends BuilderBase {
 
   private String address = null;
   private String city = null;
@@ -29,7 +29,8 @@ public class CompanyBuilder {
 
   }
   
-  public Company buildCompany() {
+  @Override
+  public Company buildModel() {
     
     String json = this.buildJsonObject().toString();
 
@@ -41,18 +42,27 @@ public class CompanyBuilder {
     return new CompanyBuilder("testAdress", "testCity", "PT", "7657", "testName", false,
         "7657567", "123");
   }
-
-  public JsonObject buildJsonObject() {
+  
+  @Override
+  public JsonObject buildSendableJsonObject() {
     JsonObject jsonObject = new JsonObject();
 
     jsonObject.addProperty("address", address);
     jsonObject.addProperty("city", city);
     jsonObject.addProperty("country", country);
-    jsonObject.addProperty("gid", gid);
     jsonObject.addProperty("name", name);
-    jsonObject.addProperty("notificationsEnabled", notificationsEnabled);
     jsonObject.addProperty("vatNumber", vatNumber);
     jsonObject.addProperty("zipCode", zipCode);
+
+    return jsonObject;
+  }
+
+  @Override
+  public JsonObject buildJsonObject() {
+    JsonObject jsonObject = buildSendableJsonObject();
+
+    jsonObject.addProperty("gid", gid);
+    jsonObject.addProperty("notificationsEnabled", notificationsEnabled);
 
     return jsonObject;
   }
@@ -96,5 +106,7 @@ public class CompanyBuilder {
     this.zipCode = zipCode;
     return this;
   }
+
+
 
 }

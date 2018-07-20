@@ -3,7 +3,8 @@ package com.ic.invoicecapture.model;
 import java.util.Map;
 
 public enum CompanyField implements ICheckableField {
-  ADDRESS("address"), CITY("city"), NAME("name"), VAT_NUMBER("vatNumber"), ZIP_CODE("zipCode");
+  ADDRESS("address"), CITY("city"), NAME("name"), VAT_NUMBER("vatNumber"), ZIP_CODE(
+      "zipCode"), COUNTRY("country");
 
   public static void assertCorrectlyInitialized(Map<CompanyField, Object> companyInfo)
       throws IllegalArgumentException {

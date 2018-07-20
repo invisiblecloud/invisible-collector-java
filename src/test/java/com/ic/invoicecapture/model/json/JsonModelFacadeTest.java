@@ -35,7 +35,7 @@ public class JsonModelFacadeTest {
   @Test
   public void parseStringStream_companyInstance() throws IcException {
     CompanyBuilder companyBuilder = CompanyBuilder.buildTestCompanyBuilder();
-    Company correctCompany = companyBuilder.buildCompany();
+    Company correctCompany = companyBuilder.buildModel();
 
     String jsonString = companyBuilder.buildJsonObject().toString();
 
@@ -51,7 +51,7 @@ public class JsonModelFacadeTest {
   public void toJson_IModel_correctness() {
     CompanyBuilder companyBuilder = CompanyBuilder.buildTestCompanyBuilder();
 
-    Company correctCompany = companyBuilder.buildCompany();
+    Company correctCompany = companyBuilder.buildModel();
     String returnedJson = new JsonModelFacade().toJson((IModel) correctCompany);
 
     JsonObject returnedJsonObj = JsonTestUtils.jsonStringAsJsonObject(returnedJson);
