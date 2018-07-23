@@ -16,6 +16,7 @@ import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.EnumMap;
+import java.util.GregorianCalendar;
 import java.util.Map;
 import java.util.TreeMap;
 import org.junit.jupiter.api.Assertions;
@@ -23,8 +24,9 @@ import org.junit.jupiter.api.Test;
 
 public class JsonModelFacadeTest {
 
-  private static String TEST_JSON = "{ \"a\":12, \"b\":\"string\", \"c\":null }";
-  private static String CORRECT_JSON = "{ \"a\":\"12\", \"b\":\"string\", \"c\":null }";
+  private static String TEST_MAP_JSON = "{ \"a\":12, \"b\":\"string\", \"c\":null }";
+  private static String CORRECT_MAP_JSON = "{ \"a\":\"12\", \"b\":\"string\", \"c\":null }";
+  private static final String TEST_JSON_DATE = "\"2013-03-19\"";
   private static Map<String, String> CORRECT_MAP = new TreeMap<>();
   
   static {
@@ -32,7 +34,7 @@ public class JsonModelFacadeTest {
     CORRECT_MAP.put("b", "string");
     CORRECT_MAP.put("c", null);
   }
-  
+
   private InputStream stringToInputStream(String string) {
     return new ByteArrayInputStream(string.getBytes(StandardCharsets.UTF_8));
   }
@@ -51,6 +53,15 @@ public class JsonModelFacadeTest {
 
     Assertions.assertEquals(correctCompany, returnedCompany);
   }
+  
+  @Test
+  public void parseStringStream_debtInstance() throws IcException {
+    Date correctDate = new GregorianCalendar(2013, 2, 19).getTime();
+    InputStream inputStream = stringToInputStream(TEST_JSON_DATE);
+    Date returnedDate = new JsonModelFacade().parseStringStream(inputStream, Date.class);
+    Assertions.assertEquals(correctDate, returnedDate);
+  }
+  
 
   @Test
   public void toJson_IModel_correctness() {
@@ -68,7 +79,7 @@ public class JsonModelFacadeTest {
   public void parseStringStreamAsStringMap_correctness() throws IcException {
 
 
-    InputStream inputStream = stringToInputStream(TEST_JSON);
+    InputStream inputStream = stringToInputStream(TEST_MAP_JSON);
     Map<String, String> map = new JsonModelFacade().parseStringStreamAsStringMap(inputStream);
     Assertions.assertEquals(CORRECT_MAP, map);
   }
@@ -76,29 +87,33 @@ public class JsonModelFacadeTest {
   @Test
   public void toJson_stringMap_correctness() {
     String returnedJson = new JsonModelFacade().toJson(CORRECT_MAP);
-    JsonTestUtils.assertJsonEquals(CORRECT_JSON, returnedJson);
+    JsonTestUtils.assertJsonEquals(CORRECT_MAP_JSON, returnedJson);
   }
-  
+
   @Test
   public void toJson_enumMap_correctness() {
     EnumMap<CompanyField, Object> companyMap = new EnumMap<>(CompanyField.class);
     companyMap.put(CompanyField.CITY, "new city");
     companyMap.put(CompanyField.ADDRESS, null);
     String correctJson = "{ 'city':'new city', 'address': null }".replaceAll("'", "\"");
-    
+
     String json = new JsonModelFacade().toJson(companyMap);
     JsonTestUtils.assertJsonEquals(correctJson, json);
   }
-  
+
   // tests indirectly for correct gson initialization
   @Test
   public void toJson_DateSuccess() throws ParseException {
-    String date = "2013-03-19";
-    String dateJson = String.format("\"%s\"", date);
-    Date time = new SimpleDateFormat(GsonSingleton.DATE_FORMAT).parse(date);
+    Date time = new GregorianCalendar(2013, 2, 19).getTime();
     String json = new JsonModelFacade().toJson(time);
-    Assertions.assertEquals(dateJson, json);
+    Assertions.assertEquals(TEST_JSON_DATE, json);
   }
-  
-  // TODO: check Date parsing for hours and seconds truncation
+
+  @Test
+  public void toJson_DateNoExtraFields() {
+    Date date = new GregorianCalendar(2013, 2, 19, 3, 1, 3).getTime();
+    String json = new JsonModelFacade().toJson(date);
+    Assertions.assertEquals(TEST_JSON_DATE, json);
+  }
+
 }

@@ -45,10 +45,10 @@ public class ValidatorBuilder implements Cloneable {
     validatorStack.push(ERROR_404_VALIDATOR);
     return this;
   }
-
-  public ValidatorBuilder addConflictValidator() {
+  
+  public ValidatorBuilder addConflictValidator(String message) {
     validatorStack.push(
-        new GidConflictValidator("Entity already exists with the same VAT number or externalId"));
+        new GidConflictValidator(message));
     return this;
   }
 

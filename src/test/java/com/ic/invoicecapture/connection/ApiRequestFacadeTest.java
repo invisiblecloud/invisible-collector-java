@@ -1,6 +1,6 @@
 package com.ic.invoicecapture.connection;
 
-import com.ic.invoicecapture.StringUtils;
+import com.ic.invoicecapture.StringTestUtils;
 import com.ic.invoicecapture.connection.request.HttpRequestBuilder;
 import com.ic.invoicecapture.connection.request.IRequestBuilder;
 import com.ic.invoicecapture.connection.request.MessageExchanger;
@@ -104,7 +104,7 @@ public class ApiRequestFacadeTest {
         new ApiRequestFacade(TEST_API_TOKEN, TEST_URI, exchanger, requestBuilder)
             .getRequest(this.validator, TEST_ENDPOINT);
 
-    String receivedMessage = StringUtils.inputStreamToString(inputStream);
+    String receivedMessage = StringTestUtils.inputStreamToString(inputStream);
     Assertions.assertTrue(receivedMessage.contains(TEST_MESSAGE));
   }
   
@@ -116,7 +116,7 @@ public class ApiRequestFacadeTest {
         new ApiRequestFacade(TEST_API_TOKEN, TEST_URI, exchanger, requestBuilder)
             .putRequest(this.validator, TEST_ENDPOINT, TEST_JSON);
 
-    String receivedMessage = StringUtils.inputStreamToString(inputStream);
+    String receivedMessage = StringTestUtils.inputStreamToString(inputStream);
     Assertions.assertTrue(receivedMessage.contains(TEST_MESSAGE));
   }
 }

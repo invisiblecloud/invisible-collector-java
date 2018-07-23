@@ -1,14 +1,24 @@
 package com.ic.invoicecapture.model.builder;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.ic.invoicecapture.model.Debt;
 import com.ic.invoicecapture.model.IModel;
+import com.ic.invoicecapture.model.json.GsonSingleton;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
 public abstract class BuilderBase {
   public abstract IModel buildModel();
 
+  protected <T> T buildModel(Class<T> classType) {
+    String json = this.buildJsonObject().toString();
+
+    Gson gson = GsonSingleton.getInstance();
+    return gson.fromJson(json, classType);
+  }
+  
   public abstract JsonObject buildSendableJsonObject();
 
   public JsonObject buildSendableJsonObject(boolean stripNulls) {
@@ -41,4 +51,7 @@ public abstract class BuilderBase {
   public String buildSendableJson() {
     return this.buildSendableJsonObject(true).toString();
   }
+  
+  
+  
 }

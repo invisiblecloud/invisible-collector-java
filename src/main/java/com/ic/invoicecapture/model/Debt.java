@@ -3,7 +3,7 @@ package com.ic.invoicecapture.model;
 import java.util.Date;
 import java.util.EnumMap;
 
-public class Debt implements IModel {
+public class Debt implements IModel, IRoutable {
   // TODO: add fields
   // items
   // attributes
@@ -17,6 +17,11 @@ public class Debt implements IModel {
   private String number;
   private String status;
   private Double tax;
+  /** Can be
+   * "FS", // simplified invoice
+            "SD", // simple debt
+            "RC", "RG", "DG"
+   */
   private String type;
 
   public String getCurrency() {

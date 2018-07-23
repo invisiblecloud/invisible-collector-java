@@ -27,7 +27,7 @@ public class CustomerApiFacadeIT extends IcFacadeTestBase {
   public CustomerApiFacade buildCustomerResponse(CustomerBuilder customerBuilder) throws Exception {
     String json = customerBuilder.buildJson();
     MockResponse mockResponse = buildBodiedMockResponse(json);
-    return initMockServer(mockResponse).getCustomerApiFacade();
+    return initMockServer(mockResponse).getCustomerFacade();
   }
 
   public void assertCorrectCustomerReturned(CustomerBuilder customerBuilder,
@@ -76,7 +76,7 @@ public class CustomerApiFacadeIT extends IcFacadeTestBase {
     int statusCode = 409;
     String json = buildConflictErrorJson(statusCode);
     MockResponse mockResponse = buildBodiedMockResponse(json).setResponseCode(statusCode);
-    CustomerApiFacade icFacade = initMockServer(mockResponse).getCustomerApiFacade();
+    CustomerApiFacade icFacade = initMockServer(mockResponse).getCustomerFacade();
     Customer correctCustomer = CustomerBuilder.buildTestCustomerBuilder().buildModel();
     IcConflictingException exception = Assertions.assertThrows(IcConflictingException.class,
         () -> icFacade.registerNewCustomer(correctCustomer));
@@ -129,7 +129,7 @@ public class CustomerApiFacadeIT extends IcFacadeTestBase {
   private String assertCustomerAttributesGuts(RequestType requestType,
       IThrowingBuilder2<Map<String, String>, CustomerApiFacade, String> method) throws Exception {
     MockResponse response = buildBodiedMockResponse(TEST_MAP_JSON);
-    CustomerApiFacade facade = initMockServer(response).getCustomerApiFacade();
+    CustomerApiFacade facade = initMockServer(response).getCustomerFacade();
     String id = "123";
     String endpoint =
         joinUriPaths(CustomerApiFacade.CUSTOMERS_ENDPOINT, id, CustomerApiFacade.ATTRIBUTES_PATH);

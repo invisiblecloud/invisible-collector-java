@@ -3,7 +3,7 @@ package com.ic.invoicecapture.model;
 import java.util.EnumMap;
 import java.util.Objects;
 
-public class Customer implements IModel, IRoutable {
+public class Customer implements IModel, IInternallyRoutable {
   
   private String address;
   private String city;
@@ -54,7 +54,7 @@ public class Customer implements IModel, IRoutable {
     return externalId;
   }
 
-  public String getGid() {
+  public String getId() {
     return gid;
   }
 

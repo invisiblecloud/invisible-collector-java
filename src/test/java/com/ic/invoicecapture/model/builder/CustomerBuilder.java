@@ -38,10 +38,7 @@ public class CustomerBuilder extends BuilderBase {
   @Override
   public Customer buildModel() {
 
-    String json = this.buildJsonObject().toString();
-
-    Gson gson = GsonSingleton.getInstance();
-    return gson.fromJson(json, Customer.class);
+    return buildModel(Customer.class);
   }
 
   public static CustomerBuilder buildTestCustomerBuilder() {
