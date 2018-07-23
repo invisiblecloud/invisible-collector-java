@@ -2,6 +2,7 @@ package com.ic.invoicecapture.model;
 
 import java.util.Date;
 import java.util.Map;
+import java.util.Map.Entry;
 
 final class FieldEnumUtils {
   @SafeVarargs // mandatoryEnums should be safe, need to check
@@ -54,8 +55,9 @@ final class FieldEnumUtils {
     } else if (value instanceof Map) {
       @SuppressWarnings("unchecked")
       Map<Object, Object> map = (Map<Object, Object>) value;
-      for (Object key : map.keySet()) {
-        Object pairValue = map.get(key);
+      for (Entry<Object, Object> entry  : map.entrySet()) {
+        Object key = entry.getKey();
+        Object pairValue = entry.getValue();
         final boolean isKeyString = key instanceof String;
         final boolean isValueString = pairValue instanceof String;
         if (!isKeyString || !isValueString) {

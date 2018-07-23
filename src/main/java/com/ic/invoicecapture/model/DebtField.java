@@ -2,6 +2,7 @@ package com.ic.invoicecapture.model;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 public enum DebtField implements ICheckableField {
 
@@ -66,15 +67,15 @@ public enum DebtField implements ICheckableField {
           throw new IllegalArgumentException("Item must be of type Map");
         } else {
           Map<Object, Object> itemMap = (Map<Object, Object>) item;
-          for (Object key : itemMap.keySet()) {
+          for (Entry<Object, Object> entry : itemMap.entrySet()) {
+            Object key = entry.getKey();
             if (!(key instanceof ItemField)) { // check if all keys of type ItemField
               String msg = String.format("item map key (type: %s) must be of type ItemField",
                   key.getClass());
               throw new IllegalArgumentException(msg);
             } else { // check if value is valid
-              Object keyValue = itemMap.get(key);
               ItemField field = (ItemField) key;
-              field.assertValueIsValid(keyValue);
+              field.assertValueIsValid(entry.getValue());
             }
           }
         }

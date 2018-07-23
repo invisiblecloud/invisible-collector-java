@@ -1,7 +1,7 @@
 package com.ic.invoicecapture.model.builder;
 
 import com.google.gson.JsonObject;
-import com.ic.invoicecapture.model.Debt.Item;
+import com.ic.invoicecapture.model.Item;
 
 public class ItemBuilder extends BuilderBase {
   

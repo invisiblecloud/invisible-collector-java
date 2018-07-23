@@ -3,6 +3,7 @@ package com.ic.invoicecapture.model.builder;
 import com.google.gson.JsonObject;
 import com.ic.invoicecapture.StringTestUtils;
 import com.ic.invoicecapture.model.Debt;
+import com.ic.invoicecapture.model.Item;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -23,7 +24,7 @@ public class DebtBuilder extends BuilderBase {
         .setDueDate(buildDate(2));
   }
 
-  private List<Debt.Item> items;
+  private List<Item> items;
   private Map<String, String> attributes;
   private String currency;
   private String customerId;
@@ -190,16 +191,16 @@ public class DebtBuilder extends BuilderBase {
     return this;
   }
 
-  public List<Debt.Item> getItems() {
+  public List<Item> getItems() {
     return items;
   }
 
-  public DebtBuilder setItems(List<Debt.Item> items) {
+  public DebtBuilder setItems(List<Item> items) {
     this.items = items;
     return this;
   }
 
-  public DebtBuilder addItem(Debt.Item item) {
+  public DebtBuilder addItem(Item item) {
     if (items == null) {
       items = new ArrayList<>();
     }
