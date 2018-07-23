@@ -1,9 +1,7 @@
 package com.ic.invoicecapture.model.builder;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.ic.invoicecapture.model.Customer;
-import com.ic.invoicecapture.model.json.GsonSingleton;
 
 public class CustomerBuilder extends BuilderBase {
 

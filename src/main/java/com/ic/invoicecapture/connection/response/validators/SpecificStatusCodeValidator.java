@@ -25,7 +25,7 @@ public class SpecificStatusCodeValidator extends JsonValidatorBase implements IV
   }
 
   @Override
-  public void validateAndTryThrowException(IServerResponse responsePair) throws IcException {
+  public void assertValidResponse(IServerResponse responsePair) throws IcException {
     final int statusCode = responsePair.getStatusCode();
     if (statusCode == this.badStatusCode) {
       if (isJsonResponse(responsePair)) {

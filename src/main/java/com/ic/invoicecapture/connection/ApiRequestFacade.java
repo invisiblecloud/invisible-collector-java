@@ -69,7 +69,7 @@ public class ApiRequestFacade {
   private ServerResponseFacade exchangeAndValidateMessages(IValidator validator,
       HttpRequestBuilder requestBuilder) throws IcException {
     ServerResponseFacade responseFacade = exchanger.exchangeMessages(requestBuilder);
-    validator.validateAndTryThrowException(responseFacade);
+    validator.assertValidResponse(responseFacade);
 
     return responseFacade;
   }

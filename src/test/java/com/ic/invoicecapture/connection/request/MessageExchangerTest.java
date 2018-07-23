@@ -65,6 +65,7 @@ public class MessageExchangerTest {
 
     MessageExchanger exchanger = new MessageExchanger(httpClient, responseBuilder);
 
+    @SuppressWarnings("resource")
     MockWebServer server = new MockWebServer();
     MockResponse mockResponse =
         new MockResponse().setHeader("Content-Type", "text/plain").setBody(testString);

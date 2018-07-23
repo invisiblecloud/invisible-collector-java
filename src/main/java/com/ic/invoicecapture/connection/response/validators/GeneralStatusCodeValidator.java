@@ -11,7 +11,7 @@ import com.ic.invoicecapture.exceptions.IcException;
 public class GeneralStatusCodeValidator extends JsonValidatorBase implements IValidator {
 
   @Override
-  public void validateAndTryThrowException(IServerResponse responseStatus) throws IcException {
+  public void assertValidResponse(IServerResponse responseStatus) throws IcException {
     final int statusCode = responseStatus.getStatusCode();
     final int statusFamily = statusCode / 100;
     if (statusFamily != 2) {

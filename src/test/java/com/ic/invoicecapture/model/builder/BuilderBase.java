@@ -3,7 +3,6 @@ package com.ic.invoicecapture.model.builder;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.ic.invoicecapture.model.Debt;
 import com.ic.invoicecapture.model.IModel;
 import com.ic.invoicecapture.model.json.GsonSingleton;
 import java.util.Iterator;

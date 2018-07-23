@@ -87,7 +87,7 @@ public class ApiRequestFacadeTest {
     EasyMock.replay(requestBuilder);
 
     IcException exception = new IcException();
-    this.validator.validateAndTryThrowException(this.serverResponse);
+    this.validator.assertValidResponse(this.serverResponse);
     EasyMock.expectLastCall().andThrow(exception).andVoid();
     EasyMock.replay(this.validator);
 

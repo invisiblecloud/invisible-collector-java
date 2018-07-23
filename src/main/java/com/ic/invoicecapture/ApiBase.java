@@ -28,7 +28,7 @@ public abstract class ApiBase {
   protected ApiBase(String apiToken, URI baseUrl) {
     this(new ApiRequestFacade(apiToken, baseUrl));
   }
-  
+
   protected ApiBase(ApiRequestFacade apiFacade) {
     this(apiFacade, new JsonModelFacade(), new ValidatorBuilder());
   }
@@ -39,7 +39,8 @@ public abstract class ApiBase {
     }
   }
 
-  protected String getAndAssertCorrectId(IInternallyRoutable idContainer) throws IllegalArgumentException {
+  protected String getAndAssertCorrectId(IInternallyRoutable idContainer)
+      throws IllegalArgumentException {
     String gid = idContainer.getId();
     String externalId = idContainer.getExternalId();
     if (gid != null && !gid.isEmpty()) {

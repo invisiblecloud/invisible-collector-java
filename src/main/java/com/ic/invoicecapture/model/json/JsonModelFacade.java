@@ -5,7 +5,6 @@ import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.stream.JsonReader;
 import com.ic.invoicecapture.exceptions.IcException;
-import com.ic.invoicecapture.model.ICheckableField;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;

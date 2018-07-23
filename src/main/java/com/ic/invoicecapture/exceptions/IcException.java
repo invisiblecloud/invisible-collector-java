@@ -2,6 +2,8 @@ package com.ic.invoicecapture.exceptions;
 
 public class IcException extends Exception {
 
+  private static final long serialVersionUID = 1L;
+
   public IcException() {
     super();
   }

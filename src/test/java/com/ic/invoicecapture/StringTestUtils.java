@@ -1,5 +1,6 @@
 package com.ic.invoicecapture;
 
+import com.google.gson.JsonElement;
 import com.ic.invoicecapture.model.json.GsonSingleton;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
@@ -29,5 +30,9 @@ public final class StringTestUtils {
     SimpleDateFormat formatter = new SimpleDateFormat(GsonSingleton.DATE_FORMAT);
     return formatter.format(date);
   }
-  
+
+  public static JsonElement toJsonElement(Object obj) {
+    return GsonSingleton.getInstance().toJsonTree(obj);
+  }
+
 }

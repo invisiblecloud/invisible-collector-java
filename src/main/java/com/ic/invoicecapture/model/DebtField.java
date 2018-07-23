@@ -1,40 +1,53 @@
 package com.ic.invoicecapture.model;
 
+import java.util.List;
 import java.util.Map;
 
 public enum DebtField implements ICheckableField {
-  NUMBER("number"), CUSTOMER_ID("customerId"), TYPE("type"), STATUS("status"), DATE("date") {
-    @Override
-    public boolean isValidValue(Object value) {
-      return FieldEnumUtils.isDateObject(value);
+
+  ATTRIBUTES("attributes", FieldEnumUtils::assertStringMapObject), CURRENCY("currency",
+      FieldEnumUtils::assertStringObject), CUSTOMER_ID("customerId",
+          FieldEnumUtils::assertStringObject), DATE("date",
+              FieldEnumUtils::assertDateObject), DUE_DATE("dueDate",
+                  FieldEnumUtils::assertDateObject), GROSS_TOTAL("grossTotal",
+                      FieldEnumUtils::assertNumberObject), ITEMS("items",
+                          DebtField::assertListOfItemMaps), NET_TOTAL("netTotal",
+                              FieldEnumUtils::assertNumberObject), NUMBER("number",
+                                  FieldEnumUtils::assertStringObject), STATUS("status",
+                                      FieldEnumUtils::assertStringObject), TAX("tax",
+                                          FieldEnumUtils::assertNumberObject), TYPE("type",
+                                              FieldEnumUtils::assertStringObject);
+
+  public enum ItemField implements ICheckableField {
+    DESCRIPTION("description", FieldEnumUtils::assertStringObject), NAME("name",
+        FieldEnumUtils::assertStringObject), PRICE("price",
+            FieldEnumUtils::assertNumberObject), QUANTITY("quantity",
+                FieldEnumUtils::assertNumberObject), VAT("vat", FieldEnumUtils::assertNumberObject);
+
+
+    public static void assertCorrectlyInitialized(Map<ItemField, Object> itemInfo)
+        throws IllegalArgumentException {
+      FieldEnumUtils.assertCorrectlyInitializedEnumMap(itemInfo, "Item", ItemField.NAME);
     }
-  },
-  DUE_DATE("dueDate") {
-    @Override
-    public boolean isValidValue(Object value) {
-      return FieldEnumUtils.isDateObject(value);
+
+    private final String jsonName;
+    private final ICheckableField validator;
+
+    private ItemField(String jsonName, ICheckableField validator) {
+      this.jsonName = jsonName;
+      this.validator = validator;
     }
-  },
-  NET_TOTAL("netTotal") {
+
     @Override
-    public boolean isValidValue(Object value) {
-      return FieldEnumUtils.isFloatingPointObject(value);
+    public void assertValueIsValid(Object value) throws IllegalArgumentException {
+      validator.assertValueIsValid(value);
     }
-  },
-  TAX("tax") {
+
     @Override
-    public boolean isValidValue(Object value) {
-      return FieldEnumUtils.isFloatingPointObject(value);
+    public String toString() {
+      return this.jsonName;
     }
-  },
-  GROSS_TOTAL("grossTotal") {
-    @Override
-    public boolean isValidValue(Object value) {
-      return FieldEnumUtils.isFloatingPointObject(value);
-    }
-  },
-  CURRENCY("currency");
-  // TODO add attributes and items
+  }
 
   public static void assertCorrectlyInitialized(Map<DebtField, Object> debtInfo)
       throws IllegalArgumentException {
@@ -42,15 +55,47 @@ public enum DebtField implements ICheckableField {
         DebtField.CUSTOMER_ID, DebtField.TYPE, DebtField.DATE, DebtField.DUE_DATE);
   }
 
+  @SuppressWarnings("unchecked")
+  private static void assertListOfItemMaps(Object value) {
+    if (value == null) {
+      return;
+    } else if (value instanceof List) {
+      List<Object> items = (List<Object>) value;
+      for (Object item : items) {
+        if (!(item instanceof Map)) {
+          throw new IllegalArgumentException("Item must be of type Map");
+        } else {
+          Map<Object, Object> itemMap = (Map<Object, Object>) item;
+          for (Object key : itemMap.keySet()) {
+            if (!(key instanceof ItemField)) { // check if all keys of type ItemField
+              String msg = String.format("item map key (type: %s) must be of type ItemField",
+                  key.getClass());
+              throw new IllegalArgumentException(msg);
+            } else { // check if value is valid
+              Object keyValue = itemMap.get(key);
+              ItemField field = (ItemField) key;
+              field.assertValueIsValid(keyValue);
+            }
+          }
+        }
+      }
+    } else {
+      throw new IllegalArgumentException("items must be a List type");
+    }
+  }
+
   private final String jsonName;
 
-  private DebtField(String jsonName) {
+  private final ICheckableField validator;
+
+  private DebtField(String jsonName, ICheckableField validator) {
     this.jsonName = jsonName;
+    this.validator = validator;
   }
 
   @Override
-  public boolean isValidValue(Object value) {
-    return FieldEnumUtils.isStringObject(value);
+  public void assertValueIsValid(Object value) throws IllegalArgumentException {
+    validator.assertValueIsValid(value);
   }
 
   @Override

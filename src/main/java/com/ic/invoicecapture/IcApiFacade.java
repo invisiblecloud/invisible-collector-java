@@ -1,7 +1,7 @@
 package com.ic.invoicecapture;
 
-import java.net.URI;
 import com.ic.invoicecapture.connection.ApiRequestFacade;
+import java.net.URI;
 
 public class IcApiFacade {
   

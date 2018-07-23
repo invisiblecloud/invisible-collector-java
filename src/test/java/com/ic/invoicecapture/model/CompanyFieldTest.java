@@ -8,18 +8,18 @@ import org.junit.jupiter.api.Test;
 public class CompanyFieldTest {
   @Test
   public void isValidValue_nullPass() {
-    Assertions.assertTrue(CompanyField.ADDRESS.isValidValue(null));
+    CompanyField.ADDRESS.assertValueIsValid(null);
   }
 
   @Test
   public void isValidValue_stringPass() {
-    Assertions.assertTrue(CompanyField.ADDRESS.isValidValue("hi"));
+    CompanyField.ADDRESS.assertValueIsValid("hi");
   }
 
   @Test
   public void isValidValue_diferentTypeFail() {
-    Integer integer = 123;
-    Assertions.assertFalse(CompanyField.ADDRESS.isValidValue(integer));
+    Assertions.assertThrows(IllegalArgumentException.class,
+        () -> CompanyField.ADDRESS.assertValueIsValid(123));
   }
 
   private Map<CompanyField, Object> buildMap() {
@@ -35,7 +35,7 @@ public class CompanyFieldTest {
     Assertions.assertThrows(IllegalArgumentException.class,
         () -> CompanyField.assertCorrectlyInitialized(companyInfo));
   }
-  
+
   @Test
   public void assertCorrectlyInitialized_invalidType() {
     Map<CompanyField, Object> companyInfo = buildMap();

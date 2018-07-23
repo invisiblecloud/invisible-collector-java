@@ -16,7 +16,7 @@ public class ValidatorCompositeTest {
 
   private IValidator prepareValidatorMock(boolean isValid) throws IcException {
     IValidator validator = EasyMock.createNiceMock(IValidator.class);
-    validator.validateAndTryThrowException(this.serverResponse);
+    validator.assertValidResponse(this.serverResponse);
     if (isValid) {
       EasyMock.expectLastCall().once();
     } else {
@@ -36,7 +36,7 @@ public class ValidatorCompositeTest {
   @Test
   public void validate_empty() throws IcException {
     ValidatorComposite composite = new ValidatorComposite();
-    composite.validateAndTryThrowException(this.serverResponse);
+    composite.assertValidResponse(this.serverResponse);
   }
   
   private ValidatorComposite buildComposite(IValidator... validators) {
@@ -49,7 +49,7 @@ public class ValidatorCompositeTest {
     IValidator validValidator2 = this.prepareValidatorMock(true);
     ValidatorComposite composite = buildComposite(validValidator, validValidator2);
 
-    composite.validateAndTryThrowException(this.serverResponse);
+    composite.assertValidResponse(this.serverResponse);
 
     EasyMock.verify(validValidator);
     EasyMock.verify(validValidator2);
@@ -62,7 +62,7 @@ public class ValidatorCompositeTest {
     ValidatorComposite composite = buildComposite(validValidator, failingValidator);
 
     Assertions.assertThrows(IcException.class,
-        () -> composite.validateAndTryThrowException(this.serverResponse));
+        () -> composite.assertValidResponse(this.serverResponse));
 
     EasyMock.verify(validValidator);
     EasyMock.verify(failingValidator);

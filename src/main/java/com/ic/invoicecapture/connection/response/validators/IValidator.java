@@ -9,5 +9,5 @@ public interface IValidator {
    * Implementing classes should be immutable.
    * @throws IcException exception that describes what went wrong in the 'invalid' case
    */
-  void validateAndTryThrowException(IServerResponse responsePair) throws IcException;
+  void assertValidResponse(IServerResponse responsePair) throws IcException;
 }

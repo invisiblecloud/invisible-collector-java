@@ -18,23 +18,54 @@ final class FieldEnumUtils {
     for (Map.Entry<T, Object> entry : map.entrySet()) {
       Object value = entry.getValue();
       T key = entry.getKey();
-      if (!key.isValidValue(value)) {
-        String msg = String.format("value (%s) or type (%s) for key (%s) is not valid",
-            value, value.getClass().getName(), key);
-        throw new IllegalArgumentException(msg);
+      try {
+        key.assertValueIsValid(value);
+      } catch (IllegalArgumentException e) {
+        String msg = String.format("For '%s' model's field '%s' value is invalid: %s", modelName,
+            key, e.getMessage());
+        throw new IllegalArgumentException(msg, e);
       }
     }
   }
-  
-  public static boolean isStringObject(Object value) {
-    return value == null || value instanceof String;
+
+  public static void assertStringObject(Object value) throws IllegalArgumentException {
+    if (value != null && !(value instanceof String)) {
+      throw new IllegalArgumentException("value must be String");
+    }
   }
-  
-  public static boolean isFloatingPointObject(Object value) {
-    return value == null || value instanceof Float || value instanceof Double;
+
+  public static void assertNumberObject(Object value) throws IllegalArgumentException {
+    if (value != null && !(value instanceof Float) && !(value instanceof Double)
+        && !(value instanceof Integer)) {
+      throw new IllegalArgumentException("value must be a Float, Double or Integer type");
+    }
   }
-  
-  public static boolean isDateObject(Object value) {
-    return value == null || value instanceof Date;
+
+
+  public static void assertDateObject(Object value) throws IllegalArgumentException {
+    if (value != null && !(value instanceof Date)) {
+      throw new IllegalArgumentException("value must be of type Date");
+    }
+  }
+
+  public static void assertStringMapObject(Object value) throws IllegalArgumentException {
+    if (value == null) {
+      return;
+    } else if (value instanceof Map) {
+      @SuppressWarnings("unchecked")
+      Map<Object, Object> map = (Map<Object, Object>) value;
+      for (Object key : map.keySet()) {
+        Object pairValue = map.get(key);
+        final boolean isKeyString = key instanceof String;
+        final boolean isValueString = pairValue instanceof String;
+        if (!isKeyString || !isValueString) {
+          String msg = !isKeyString ? String.format("key (%s)", key)
+              : String.format("value (%s)", pairValue) + " must be of type String";
+          throw new IllegalArgumentException(msg);
+        }
+      }
+    } else {
+      throw new IllegalArgumentException("Value must be a Map type");
+    }
   }
 }

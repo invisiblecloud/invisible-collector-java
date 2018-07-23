@@ -18,7 +18,7 @@ public class GeneralStatusCodeValidatorTest {
   public void validate_success() throws IcException {
     IServerResponse status = this.buildResponseStatusMock(200, "OK", "body");
 
-    new GeneralStatusCodeValidator().validateAndTryThrowException(status);
+    new GeneralStatusCodeValidator().assertValidResponse(status);
   }
 
   @Test
@@ -32,7 +32,7 @@ public class GeneralStatusCodeValidatorTest {
     GeneralStatusCodeValidator statusCodeValidator = new GeneralStatusCodeValidator();
 
     IcException exception = Assertions.assertThrows(IcException.class,
-        () -> statusCodeValidator.validateAndTryThrowException(status));
+        () -> statusCodeValidator.assertValidResponse(status));
 
 
     String exceptionMessage = exception.getMessage();
