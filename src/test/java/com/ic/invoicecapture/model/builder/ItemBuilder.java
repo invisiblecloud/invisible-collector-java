@@ -11,6 +11,10 @@ public class ItemBuilder extends BuilderBase {
   private Double quantity;
   private Double vat;
 
+  public static ItemBuilder buildAnotherTestItemBuilder() {
+    return buildTestItemBuilder().setName("a differenet name");
+  }
+  
   public static ItemBuilder buildTestItemBuilder() {
     return new ItemBuilder().setDescription("a description").setName("A Name")
         .setPrice(123.0).setQuantity(23d).setVat(24d);

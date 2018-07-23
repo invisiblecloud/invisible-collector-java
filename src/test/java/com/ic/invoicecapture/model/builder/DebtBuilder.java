@@ -12,6 +12,21 @@ import java.util.Map;
 import java.util.TreeMap;
 
 public class DebtBuilder extends BuilderBase {
+
+  private Map<String, String> attributes;
+  private String currency;
+  private String customerId;
+  private Date date;
+  private Date dueDate;
+  private Double grossTotal;
+  private String id;
+  private List<Item> items;
+  private Double netTotal;
+  private String number;
+  private String status;
+  private Double tax;
+  private String type;
+
   private static Date buildDate(int yearOffset) {
     Calendar calendarNow = Calendar.getInstance();
     calendarNow.add(Calendar.YEAR, yearOffset);
@@ -24,21 +39,25 @@ public class DebtBuilder extends BuilderBase {
         .setDueDate(buildDate(2));
   }
 
-  private List<Item> items;
-  private Map<String, String> attributes;
-  private String currency;
-  private String customerId;
-  private Date date;
-  private Date dueDate;
-  private Double grossTotal;
-  private String id;
-  private Double netTotal;
-  private String number;
-  private String status;
+  public DebtBuilder addItem(Item item) {
+    if (items == null) {
+      items = new ArrayList<>();
+    }
 
-  private Double tax;
+    items.add(item);
+    return this;
+  }
 
-  private String type;
+  public static DebtBuilder buildTestDebtBuilder() {
+    Map<String, String> attributes = new TreeMap<>();
+    attributes.put("test-key", "test-value");
+    attributes.put("key2", "value2");
+
+    return new DebtBuilder().setNumber("2").setCustomerId("1").setType("FS").setDate(buildDate(0))
+        .setDueDate(buildDate(2)).setAttributes(attributes)
+        .addItem(ItemBuilder.buildTestItemBuilder().buildModel())
+        .addItem(ItemBuilder.buildAnotherTestItemBuilder().buildModel());
+  }
 
   @Override
   public JsonObject buildJsonObject() {
@@ -47,15 +66,6 @@ public class DebtBuilder extends BuilderBase {
     jsonObject.addProperty("id", id);
 
     return jsonObject;
-  }
-
-  public static DebtBuilder buildTestDebtBuilder() {
-    Map<String, String> attributes = new TreeMap<>();
-    attributes.put("test-key", "test-value");
-
-    return new DebtBuilder().setNumber("2").setCustomerId("1").setType("FS").setDate(buildDate(0))
-        .setDueDate(buildDate(2)).setAttributes(attributes)
-        .addItem(ItemBuilder.buildTestItemBuilder().buildModel());
   }
 
   @Override
@@ -109,6 +119,10 @@ public class DebtBuilder extends BuilderBase {
 
   public String getId() {
     return id;
+  }
+
+  public List<Item> getItems() {
+    return items;
   }
 
   public Double getNetTotal() {
@@ -166,6 +180,11 @@ public class DebtBuilder extends BuilderBase {
     return this;
   }
 
+  public DebtBuilder setItems(List<Item> items) {
+    this.items = items;
+    return this;
+  }
+
   public DebtBuilder setNetTotal(Double netTotal) {
     this.netTotal = netTotal;
     return this;
@@ -188,24 +207,6 @@ public class DebtBuilder extends BuilderBase {
 
   public DebtBuilder setType(String type) {
     this.type = type;
-    return this;
-  }
-
-  public List<Item> getItems() {
-    return items;
-  }
-
-  public DebtBuilder setItems(List<Item> items) {
-    this.items = items;
-    return this;
-  }
-
-  public DebtBuilder addItem(Item item) {
-    if (items == null) {
-      items = new ArrayList<>();
-    }
-
-    items.add(item);
     return this;
   }
 
