@@ -1,14 +1,9 @@
 package com.ic.invoicecapture;
 
 import com.ic.invoicecapture.connection.RequestType;
-import com.ic.invoicecapture.connection.builders.IThrowingBuilder;
 import com.ic.invoicecapture.exceptions.IcConflictingException;
-import com.ic.invoicecapture.exceptions.IcException;
 import com.ic.invoicecapture.model.Customer;
-import com.ic.invoicecapture.model.IModel;
-import com.ic.invoicecapture.model.builder.BuilderBase;
 import com.ic.invoicecapture.model.builder.CustomerBuilder;
-import com.ic.invoicecapture.model.json.JsonTestUtils;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,10 +26,11 @@ public class CustomerApiFacadeIT extends IcFacadeTestBase {
     TEST_MAP = Collections.unmodifiableMap(new HashMap<>(map));
   }
 
-  private CustomerApiFacade buildCustomerResponse(CustomerBuilder customerBuilder) throws Exception {
-    return buildIcApiResponse(customerBuilder).getCustomerFacade();
+  private CustomerApiFacade buildCustomerResponse(CustomerBuilder customerBuilder)
+      throws Exception {
+    return buildIcApiResponseAndAddServerReply(customerBuilder).getCustomerFacade();
   }
-  
+
   private String assertCustomerAttributesGuts(RequestType requestType,
       IThrowingBuilder2<Map<String, String>, CustomerApiFacade, String> method) throws Exception {
     MockResponse response = buildBodiedMockResponse(TEST_MAP_JSON);

@@ -52,14 +52,16 @@ public class DebtFieldTest {
 
   @Test
   public void assertValueIsValid_passValidItems() {
+    @SuppressWarnings("unchecked")
     Map<ItemField, Object>[] itemArray = new Map[] {TEST_VALID_ITEM, TEST_ANOTHER_VALID_ITEM};
-    List itemList = Arrays.asList(itemArray);
+    List<Map<ItemField, Object>> itemList = Arrays.asList(itemArray);
     DebtField.ITEMS.assertValueIsValid(itemList);
     DebtField.ITEMS.assertValueIsValid(itemArray);
   }
 
   @Test
   public void assertValueIsValid_failNull() {
+    @SuppressWarnings("unchecked")
     Map<ItemField, Object>[] itemArray = new Map[] {TEST_VALID_ITEM, null};
     Assertions.assertThrows(IllegalArgumentException.class,
         () -> DebtField.ITEMS.assertValueIsValid(itemArray));
@@ -75,7 +77,7 @@ public class DebtFieldTest {
   @Test
   public void assertValueIsValid_failInvalidItemMapType() {
     Map<ItemField, Object> invalidItem = new EnumMap<>(TEST_ANOTHER_VALID_ITEM);
-    invalidItem.put(ItemField.VAT, new ArrayList());
+    invalidItem.put(ItemField.VAT, new ArrayList<Object>());
     
     Object[] itemArray = new Object[] {invalidItem};
     Assertions.assertThrows(IllegalArgumentException.class,

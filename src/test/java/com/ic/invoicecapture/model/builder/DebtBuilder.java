@@ -35,8 +35,8 @@ public class DebtBuilder extends BuilderBase {
   }
 
   public static DebtBuilder buildMinimalTestBuilder() {
-    return new DebtBuilder().setNumber("1").setCustomerId("1").setType("FS").setDate(buildDate(0))
-        .setDueDate(buildDate(2));
+    return new DebtBuilder().setNumber("1").setCustomerId("1").setType("FS")
+        .setDate(buildDate(0)).setDueDate(buildDate(2));
   }
 
   public DebtBuilder addItem(Item item) {
@@ -56,7 +56,7 @@ public class DebtBuilder extends BuilderBase {
     return new DebtBuilder().setNumber("2").setCustomerId("1").setType("FS").setDate(buildDate(0))
         .setDueDate(buildDate(2)).setAttributes(attributes)
         .addItem(ItemBuilder.buildTestItemBuilder().buildModel())
-        .addItem(ItemBuilder.buildAnotherTestItemBuilder().buildModel());
+        .addItem(ItemBuilder.buildAnotherTestItemBuilder().buildModel()).setId("1");
   }
 
   @Override
