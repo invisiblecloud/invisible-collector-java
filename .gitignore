@@ -37,3 +37,4 @@ checkstyle/
 .checkstyle
 .eclipse-pmd
 src/integration-test/java/com/ic/invoicecapture/IcFacadeManualTests.java
+doc/
