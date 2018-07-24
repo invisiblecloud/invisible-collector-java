@@ -26,9 +26,9 @@ public class DebtApiFacade extends ApiBase {
     return this.registerNewDebt(debtMap);
   }
 
-  public Debt registerNewDebt(Map<DebtField, Object> customerInfo) throws IcException {
-    DebtField.assertCorrectlyInitialized(customerInfo);
-    String jsonToSend = this.jsonFacade.toJson(customerInfo);
+  public Debt registerNewDebt(Map<DebtField, Object> debtInfo) throws IcException {
+    DebtField.assertCorrectlyInitialized(debtInfo);
+    String jsonToSend = this.jsonFacade.toJson(debtInfo);
     ValidatorBuilder builder = this.validatorBuilder.clone().addBadClientJsonValidator()
         .addConflictValidator("A debt already exists with the same id");
 
