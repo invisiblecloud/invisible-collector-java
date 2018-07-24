@@ -1,9 +1,7 @@
 package com.ic.invoicecapture.model.builder;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.ic.invoicecapture.model.Customer;
-import com.ic.invoicecapture.model.json.GsonSingleton;
 
 public class CustomerBuilder extends BuilderBase {
 
@@ -38,10 +36,7 @@ public class CustomerBuilder extends BuilderBase {
   @Override
   public Customer buildModel() {
 
-    String json = this.buildJsonObject().toString();
-
-    Gson gson = GsonSingleton.getInstance();
-    return gson.fromJson(json, Customer.class);
+    return buildModel(Customer.class);
   }
 
   public static CustomerBuilder buildTestCustomerBuilder() {

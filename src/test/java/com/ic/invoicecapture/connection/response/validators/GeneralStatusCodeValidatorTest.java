@@ -6,7 +6,7 @@ import com.ic.invoicecapture.exceptions.IcException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class StatusCodeValidatorTest {
+public class GeneralStatusCodeValidatorTest {
 
   protected IServerResponse buildResponseStatusMock(int code, String reason, String body)
       throws IcException {
@@ -18,7 +18,7 @@ public class StatusCodeValidatorTest {
   public void validate_success() throws IcException {
     IServerResponse status = this.buildResponseStatusMock(200, "OK", "body");
 
-    new GeneralStatusCodeValidator().validateAndTryThrowException(status);
+    new GeneralStatusCodeValidator().assertValidResponse(status);
   }
 
   @Test
@@ -32,7 +32,7 @@ public class StatusCodeValidatorTest {
     GeneralStatusCodeValidator statusCodeValidator = new GeneralStatusCodeValidator();
 
     IcException exception = Assertions.assertThrows(IcException.class,
-        () -> statusCodeValidator.validateAndTryThrowException(status));
+        () -> statusCodeValidator.assertValidResponse(status));
 
 
     String exceptionMessage = exception.getMessage();

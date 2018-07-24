@@ -5,7 +5,7 @@ import com.ic.invoicecapture.connection.builders.IThrowingBuilder;
 import com.ic.invoicecapture.connection.response.validators.IValidator;
 import com.ic.invoicecapture.connection.response.validators.ValidatorBuilder;
 import com.ic.invoicecapture.exceptions.IcException;
-import com.ic.invoicecapture.model.IRoutable;
+import com.ic.invoicecapture.model.IInternallyRoutable;
 import com.ic.invoicecapture.model.json.JsonModelFacade;
 import java.io.InputStream;
 import java.net.URI;
@@ -28,7 +28,7 @@ public abstract class ApiBase {
   protected ApiBase(String apiToken, URI baseUrl) {
     this(new ApiRequestFacade(apiToken, baseUrl));
   }
-  
+
   protected ApiBase(ApiRequestFacade apiFacade) {
     this(apiFacade, new JsonModelFacade(), new ValidatorBuilder());
   }
@@ -39,8 +39,9 @@ public abstract class ApiBase {
     }
   }
 
-  protected String getAndAssertCorrectId(IRoutable idContainer) throws IllegalArgumentException {
-    String gid = idContainer.getGid();
+  protected String getAndAssertCorrectId(IInternallyRoutable idContainer)
+      throws IllegalArgumentException {
+    String gid = idContainer.getId();
     String externalId = idContainer.getExternalId();
     if (gid != null && !gid.isEmpty()) {
       return gid;

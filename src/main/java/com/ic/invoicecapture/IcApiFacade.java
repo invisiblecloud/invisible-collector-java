@@ -1,5 +1,6 @@
 package com.ic.invoicecapture;
 
+import com.ic.invoicecapture.connection.ApiRequestFacade;
 import java.net.URI;
 
 public class IcApiFacade {
@@ -7,6 +8,7 @@ public class IcApiFacade {
   public static final URI PRODUCTION_BASE_URL = URI.create("https://api.invisiblecollector.com");
   private CompanyApiFacade companyFacade;
   private CustomerApiFacade customerFacade;
+  private DebtApiFacade debtFacade;
 
   public IcApiFacade(String apiToken) {
     this(apiToken, PRODUCTION_BASE_URL);
@@ -15,21 +17,24 @@ public class IcApiFacade {
   public IcApiFacade(String apiToken, URI baseUrl) {
     this.companyFacade = new CompanyApiFacade(apiToken, baseUrl);
     this.customerFacade = new CustomerApiFacade(apiToken, baseUrl);
+    this.debtFacade = new DebtApiFacade(apiToken, baseUrl);
+  }
+
+  public IcApiFacade(ApiRequestFacade apiFacade) {
+    this.companyFacade = new CompanyApiFacade(apiFacade);
+    this.customerFacade = new CustomerApiFacade(apiFacade);
+    this.debtFacade = new DebtApiFacade(apiFacade);
   }
 
   public CompanyApiFacade getCompanyFacade() {
     return companyFacade;
   }
 
-  public CustomerApiFacade getCustomerApiFacade() {
+  public CustomerApiFacade getCustomerFacade() {
     return customerFacade;
   }
 
-  public void setCompanyFacade(CompanyApiFacade companyFacade) {
-    this.companyFacade = companyFacade;
-  }
-
-  public void setCustomerFacade(CustomerApiFacade customerFacade) {
-    this.customerFacade = customerFacade;
+  public DebtApiFacade getDebtFacade() {
+    return debtFacade;
   }
 }

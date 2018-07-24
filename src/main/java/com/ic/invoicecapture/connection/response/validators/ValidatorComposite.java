@@ -23,10 +23,10 @@ public class ValidatorComposite implements IValidator {
   
 
   @Override
-  public void validateAndTryThrowException(IServerResponse serverResponse) throws IcException {
+  public void assertValidResponse(IServerResponse serverResponse) throws IcException {
 
     for (IValidator validator : this.validators) {
-      validator.validateAndTryThrowException(serverResponse);
+      validator.assertValidResponse(serverResponse);
     }
   }
 

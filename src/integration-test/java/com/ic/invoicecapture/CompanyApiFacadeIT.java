@@ -149,8 +149,8 @@ class CompanyApiFacadeIT extends IcFacadeTestBase {
 
   @Test
   public void updateCompanyInfo_correctness() throws Exception {
-    final String newAddress = StringUtils.randomHexString();
-    final String newCity = StringUtils.randomHexString();
+    final String newAddress = StringTestUtils.randomHexString();
+    final String newCity = StringTestUtils.randomHexString();
 
     CompanyBuilder companyBuilder = CompanyBuilder.buildTestCompanyBuilder();
     companyBuilder.setAddress(newAddress);

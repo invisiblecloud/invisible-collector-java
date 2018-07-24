@@ -1,6 +1,6 @@
 package com.ic.invoicecapture.connection.response;
 
-import com.ic.invoicecapture.StringUtils;
+import com.ic.invoicecapture.StringTestUtils;
 import com.ic.invoicecapture.connection.response.ServerResponseFacade;
 import com.ic.invoicecapture.exceptions.IcException;
 import java.io.IOException;
@@ -114,7 +114,7 @@ public class ServerResponseFacadeTest {
     ServerResponseFacade response = builder.buildResponseFacade();
 
     InputStream inputStream = response.getResponseBodyStream();
-    String bodyString = StringUtils.inputStreamToString(inputStream);
+    String bodyString = StringTestUtils.inputStreamToString(inputStream);
     Assertions.assertTrue(bodyString.contains(TEST_STRING));
   }
 
@@ -138,7 +138,7 @@ public class ServerResponseFacadeTest {
     ServerResponseFacade response = builder.buildResponseFacade();
 
     InputStream inputStream = response.getResponseBodyStream();
-    String bodyString = StringUtils.inputStreamToString(inputStream);
+    String bodyString = StringTestUtils.inputStreamToString(inputStream);
     Assertions.assertTrue(bodyString.contains(TEST_STRING));
   }
 

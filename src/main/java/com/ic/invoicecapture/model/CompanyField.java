@@ -19,8 +19,8 @@ public enum CompanyField implements ICheckableField {
   }
 
   @Override
-  public boolean isValidValue(Object value) {
-    return value == null || value instanceof String;
+  public void assertValueIsValid(Object value) throws IllegalArgumentException {
+    FieldEnumUtils.assertStringObject(value);
   }
 
   @Override

@@ -1,9 +1,7 @@
 package com.ic.invoicecapture.model.builder;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.ic.invoicecapture.model.Company;
-import com.ic.invoicecapture.model.json.GsonSingleton;
 
 public class CompanyBuilder extends BuilderBase {
 
@@ -32,10 +30,7 @@ public class CompanyBuilder extends BuilderBase {
   @Override
   public Company buildModel() {
     
-    String json = this.buildJsonObject().toString();
-
-    Gson gson = GsonSingleton.getInstance();
-    return gson.fromJson(json, Company.class);
+    return buildModel(Company.class);
   }
   
   public static CompanyBuilder buildTestCompanyBuilder() {

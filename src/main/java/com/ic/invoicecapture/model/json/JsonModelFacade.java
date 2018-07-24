@@ -52,5 +52,4 @@ public class JsonModelFacade {
     return GsonSingleton.getInstance().toJson(obj);
   }
 
-
 }

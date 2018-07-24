@@ -7,7 +7,7 @@ import com.ic.invoicecapture.exceptions.IcConflictingException;
 import com.ic.invoicecapture.exceptions.IcException;
 import com.ic.invoicecapture.model.Customer;
 import com.ic.invoicecapture.model.CustomerField;
-import com.ic.invoicecapture.model.IRoutable;
+import com.ic.invoicecapture.model.IInternallyRoutable;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.Map;
@@ -31,7 +31,8 @@ public class CustomerApiFacade extends ApiBase {
     super(apiToken, baseUrl);
   }
 
-  public Map<String, String> getCustomerAttributes(IRoutable idContainer) throws IcException {
+  public Map<String, String> getCustomerAttributes(IInternallyRoutable idContainer)
+      throws IcException {
     String id = getAndAssertCorrectId(idContainer);
     return getCustomerAttributes(id);
   }
@@ -54,8 +55,8 @@ public class CustomerApiFacade extends ApiBase {
       throws IcException, IcConflictingException {
     CustomerField.assertCorrectlyInitialized(customerInfo);
     String jsonToSend = this.jsonFacade.toJson(customerInfo);
-    ValidatorBuilder builder =
-        this.validatorBuilder.clone().addBadClientJsonValidator().addConflictValidator();
+    ValidatorBuilder builder = this.validatorBuilder.clone().addBadClientJsonValidator()
+        .addConflictValidator("Entity already exists with the same VAT number or externalId");
 
     return this.returningRequest(Customer.class, builder,
         (validator) -> apiFacade.postRequest(validator, CUSTOMERS_ENDPOINT, jsonToSend));
@@ -71,7 +72,7 @@ public class CustomerApiFacade extends ApiBase {
         (validator) -> apiFacade.getRequest(validator, endpoint));
   }
 
-  public Map<String, String> setCustomerAttributes(IRoutable idContainer,
+  public Map<String, String> setCustomerAttributes(IInternallyRoutable idContainer,
       Map<String, String> attributes) throws IcException {
     String id = getAndAssertCorrectId(idContainer);
     return setCustomerAttributes(id, attributes);

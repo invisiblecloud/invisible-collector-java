@@ -21,7 +21,7 @@ public class JsonValidatorTest {
     JsonValidator jsonValidator = new JsonValidator();
 
     IServerResponse response = buildResponseMock(TARGET_HEADER, HEADER_VALUE);
-    jsonValidator.validateAndTryThrowException(response);
+    jsonValidator.assertValidResponse(response);
   }
 
   private String exceptionAssertion(String headerName, String headerValue) throws IcException {
@@ -29,7 +29,7 @@ public class JsonValidatorTest {
 
     IServerResponse response = buildResponseMock(headerName, headerValue);
     IcException exception = Assertions.assertThrows(IcException.class,
-        () -> jsonValidator.validateAndTryThrowException(response));
+        () -> jsonValidator.assertValidResponse(response));
 
     return exception.getMessage();
   }

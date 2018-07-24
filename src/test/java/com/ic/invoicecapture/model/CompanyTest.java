@@ -1,6 +1,7 @@
 package com.ic.invoicecapture.model;
 
 import com.ic.invoicecapture.model.Company;
+import com.ic.invoicecapture.model.builder.CompanyBuilder;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -17,6 +18,25 @@ public class CompanyTest {
     company1.setName("12321");
     Assertions.assertNotEquals(company1, company2);
   }
+  
+  @Test
+  public void equals_seeded() {
+    CompanyBuilder builder = CompanyBuilder.buildTestCompanyBuilder();
+    Company company1 = builder.buildModel();
+    Company company2 = builder.buildModel();
+    
+    Assertions.assertEquals(company1, company2);
+    
+    company2.setCity("some city");
+    Assertions.assertNotEquals(company1, company2);
+  }
+  
+  @Test
+  public void equals_identity() {
+    CompanyBuilder builder = CompanyBuilder.buildTestCompanyBuilder();
+    Company company = builder.buildModel();
+    Assertions.assertEquals(company, company);
+  }
 
   @Test
   public void hashCode_correctness() {
@@ -28,22 +48,5 @@ public class CompanyTest {
     company1.setName("some other name");
     Assertions.assertNotEquals(company1.hashCode(), company2.hashCode());
   }
-
-  // TODO: move to JsonFacade
-  // @Test
-  // public void toJson_jsonCorrectness() {
-  // CompanyBuilder companyBuilder = CompanyBuilder.buildTestCompanyBuilder();
-  //
-  // Company company = companyBuilder.buildCompany();
-  // String generatedJsonString = company.asJsonString();
-  // JsonObject generatedJson = JsonConverter.jsonStringAsJsonObject(generatedJsonString);
-  // JsonObject correctJson = companyBuilder.buildJsonObject();
-  //
-  // Assertions.assertEquals(generatedJson, correctJson);
-  //
-  // company.setCity("newCity");
-  // generatedJsonString = company.asJsonString();
-  // generatedJson = JsonConverter.jsonStringAsJsonObject(generatedJsonString);
-  // Assertions.assertNotEquals(generatedJson, correctJson);
-  // }
+  
 }

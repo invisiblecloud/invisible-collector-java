@@ -1,6 +1,8 @@
 package com.ic.invoicecapture.exceptions;
 
 public class IcConflictingException extends IcException {
+
+  private static final long serialVersionUID = 1L;
   private String gid;
 
   public IcConflictingException(String msg, String gid) {

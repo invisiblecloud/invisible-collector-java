@@ -1,6 +1,6 @@
 package com.ic.invoicecapture.connection;
 
-import com.ic.invoicecapture.StringUtils;
+import com.ic.invoicecapture.StringTestUtils;
 import com.ic.invoicecapture.connection.request.HttpRequestBuilder;
 import com.ic.invoicecapture.connection.request.IRequestBuilder;
 import com.ic.invoicecapture.connection.request.MessageExchanger;
@@ -63,7 +63,7 @@ public class ApiRequestFacadeTest {
   public void getRequest_requestBuilder() throws IcException {
     EasyMock.expect(requestBuilder.addHeader(EasyMock.eq("Accept"), EasyMock.anyString()))
         .andReturn(requestBuilder);
-    EasyMock.expect(requestBuilder.addHeader(EasyMock.eq("X-Api-Token"), EasyMock.anyString()))
+    EasyMock.expect(requestBuilder.addHeader(EasyMock.eq("Authorization"), EasyMock.anyString()))
         .andReturn(requestBuilder);
     EasyMock.expect(requestBuilder.setRequestType(RequestType.GET)).andReturn(requestBuilder);
     EasyMock.expect(requestBuilder.setUri(TEST_URI, TEST_ENDPOINT)).andReturn(requestBuilder);
@@ -87,7 +87,7 @@ public class ApiRequestFacadeTest {
     EasyMock.replay(requestBuilder);
 
     IcException exception = new IcException();
-    this.validator.validateAndTryThrowException(this.serverResponse);
+    this.validator.assertValidResponse(this.serverResponse);
     EasyMock.expectLastCall().andThrow(exception).andVoid();
     EasyMock.replay(this.validator);
 
@@ -104,7 +104,7 @@ public class ApiRequestFacadeTest {
         new ApiRequestFacade(TEST_API_TOKEN, TEST_URI, exchanger, requestBuilder)
             .getRequest(this.validator, TEST_ENDPOINT);
 
-    String receivedMessage = StringUtils.inputStreamToString(inputStream);
+    String receivedMessage = StringTestUtils.inputStreamToString(inputStream);
     Assertions.assertTrue(receivedMessage.contains(TEST_MESSAGE));
   }
   
@@ -116,7 +116,7 @@ public class ApiRequestFacadeTest {
         new ApiRequestFacade(TEST_API_TOKEN, TEST_URI, exchanger, requestBuilder)
             .putRequest(this.validator, TEST_ENDPOINT, TEST_JSON);
 
-    String receivedMessage = StringUtils.inputStreamToString(inputStream);
+    String receivedMessage = StringTestUtils.inputStreamToString(inputStream);
     Assertions.assertTrue(receivedMessage.contains(TEST_MESSAGE));
   }
 }
