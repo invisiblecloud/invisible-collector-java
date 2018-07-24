@@ -1,11 +1,11 @@
 package com.ic.invoicecapture.model;
 
-import com.ic.invoicecapture.model.DebtField.ItemField;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class Debt implements IModel, IRoutable {
@@ -21,7 +21,6 @@ public class Debt implements IModel, IRoutable {
   private String number;
   private String status;
   private Double tax;
-
   /**
    * Type can be one of "FS", "SD", "RC", "RG" or "DG".
    */
@@ -31,8 +30,33 @@ public class Debt implements IModel, IRoutable {
     if (items == null) {
       items = new ArrayList<>();
     }
+    
+    if (item == null) {
+      throw new IllegalArgumentException("item cannot be null");
+    }
 
     items.add(item);
+  }
+
+
+  @Override
+  public boolean equals(Object obj) {
+    if (!(obj instanceof Debt)) {
+      return false;
+    } else if (this == obj) {
+      return true;
+    } else {
+      Debt other = (Debt) obj;
+      return Objects.equals(this.attributes, other.attributes)
+          && Objects.equals(this.currency, other.currency)
+          && Objects.equals(this.customerId, other.customerId)
+          && Objects.equals(this.date, other.date) && Objects.equals(this.dueDate, other.dueDate)
+          && Objects.equals(this.grossTotal, other.grossTotal) && Objects.equals(this.id, other.id)
+          && Objects.equals(this.items, other.items)
+          && Objects.equals(this.netTotal, other.netTotal)
+          && Objects.equals(this.number, other.number) && Objects.equals(this.status, other.status)
+          && Objects.equals(this.tax, other.tax);
+    }
   }
 
   public Map<String, String> getAttributes() {
@@ -85,6 +109,12 @@ public class Debt implements IModel, IRoutable {
 
   public String getType() {
     return type;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(attributes, currency, customerId, date, dueDate, grossTotal, id, items,
+        netTotal, number, status, tax);
   }
 
   public void setAttributes(Map<String, String> attributes) {

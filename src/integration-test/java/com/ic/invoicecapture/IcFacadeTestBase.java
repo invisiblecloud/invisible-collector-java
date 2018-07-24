@@ -1,6 +1,9 @@
 package com.ic.invoicecapture;
 
 import com.ic.invoicecapture.connection.RequestType;
+import com.ic.invoicecapture.connection.builders.IThrowingBuilder;
+import com.ic.invoicecapture.exceptions.IcException;
+import com.ic.invoicecapture.model.builder.BuilderBase;
 import com.ic.invoicecapture.model.json.JsonTestUtils;
 import java.io.IOException;
 import java.net.URI;
@@ -17,6 +20,13 @@ public class IcFacadeTestBase {
 
   protected MockServerFacade mockServer;
 
+  protected <T> void assertCorrectModelReturned(BuilderBase modelBuilder,
+      IThrowingBuilder<T, T> method) throws IcException {
+    T correctModel = (T) modelBuilder.buildModel();
+    T returnedModel = method.build(correctModel);
+    JsonTestUtils.assertObjectsEqualsAsJson(correctModel, returnedModel);
+  }
+
   private void assertSentCorrectBodiedHeaders(RecordedRequest request, String endpoint, URI baseUri,
       String requestType) throws Exception {
     MockServerFacade.assertApiEndpointHit(request, endpoint);
@@ -26,19 +36,7 @@ public class IcFacadeTestBase {
     MockServerFacade.assertHasHeader(request, "Content-Length");
 
   }
-
-  private void assertSentCorrectHeadersCommon(RecordedRequest request, String endpoint, URI baseUrl,
-      String requestType) throws InterruptedException {
-    MockServerFacade.assertApiEndpointHit(request, endpoint);
-    MockServerFacade.assertHeaderContainsValue(request, "Authorization", TEST_API_TOKEN);
-    MockServerFacade.assertHeaderContainsValue(request, "Authorization", "Bearer");
-    MockServerFacade.assertHeaderContainsValue(request, "Accept", "application/json");
-    MockServerFacade.assertHeaderContainsValue(request, "Host", baseUrl.getHost());
-    MockServerFacade.assertHasHeader(request, "Date");
-    MockServerFacade.assertRequestLineContains(request, requestType);
-  }
-
-
+  
   protected void assertSentCorrectBodiesHeaders(RecordedRequest request, String endpoint,
       URI baseUrl, RequestType requestType) throws Exception {
     switch (requestType) {
@@ -55,21 +53,33 @@ public class IcFacadeTestBase {
         throw new IllegalArgumentException("Invalid request Type");
     }
   }
-
+  
   protected void assertSentCorrectBodylessHeaders(RecordedRequest request, String endpoint,
       URI baseUrl, RequestType requestType) throws Exception {
     this.assertSentCorrectHeadersCommon(request, endpoint, baseUrl, requestType.toString());
+  }
+
+
+  private void assertSentCorrectHeadersCommon(RecordedRequest request, String endpoint, URI baseUrl,
+      String requestType) throws InterruptedException {
+    MockServerFacade.assertApiEndpointHit(request, endpoint);
+    MockServerFacade.assertHeaderContainsValue(request, "Authorization", TEST_API_TOKEN);
+    MockServerFacade.assertHeaderContainsValue(request, "Authorization", "Bearer");
+    MockServerFacade.assertHeaderContainsValue(request, "Accept", "application/json");
+    MockServerFacade.assertHeaderContainsValue(request, "Host", baseUrl.getHost());
+    MockServerFacade.assertHasHeader(request, "Date");
+    MockServerFacade.assertRequestLineContains(request, requestType);
   }
 
   protected void assertSentCorrectJson(RecordedRequest request, String expectedJson) {
     String returnedJson = request.getBody().readUtf8();
     JsonTestUtils.assertJsonEquals(expectedJson, returnedJson);
   }
-  
 
   protected MockResponse buildBodiedMockResponse(String bodyJson) {
     return new MockResponse().setHeader("Content-Type", "application/json").setBody(bodyJson);
   }
+  
 
   protected String buildConflictErrorJson(int statusCode) {
     return String.format("{\"code\": %d, \"message\": %s, \"gid\": %s}", statusCode,
@@ -78,6 +88,12 @@ public class IcFacadeTestBase {
 
   protected String buildErrorJson(int statusCode) {
     return String.format("{\"code\": %d, \"message\": %s}", statusCode, JSON_ERROR_MESSAGE);
+  }
+
+  protected IcApiFacade buildIcApiResponse(BuilderBase debtBuilder) throws Exception {
+    String json = debtBuilder.buildJson();
+    MockResponse mockResponse = buildBodiedMockResponse(json);
+    return initMockServer(mockResponse);
   }
 
   @AfterEach

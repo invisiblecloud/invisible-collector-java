@@ -20,6 +20,14 @@ public class CompanyTest {
   }
   
   @Test
+  public void equals_null() {
+
+    Company company = new Company();
+
+    Assertions.assertNotEquals(company, null);
+  }
+  
+  @Test
   public void equals_seeded() {
     CompanyBuilder builder = CompanyBuilder.buildTestCompanyBuilder();
     Company company1 = builder.buildModel();

@@ -1,7 +1,7 @@
 package com.ic.invoicecapture.model;
 
 import java.util.EnumMap;
-import com.ic.invoicecapture.model.DebtField.ItemField;
+import java.util.Objects;
 
 public class Item implements IModel {
 
@@ -10,6 +10,27 @@ public class Item implements IModel {
   private Double price;
   private Double quantity;
   private Double vat;
+  
+  @Override
+  public int hashCode() {
+    return Objects.hash(description, name, price, quantity, vat);
+  }
+  
+  @Override
+  public boolean equals(Object obj) {
+    if (!(obj instanceof Item)) {
+      return false;
+    } else if (this == obj) {
+      return true;
+    } else {
+      Item other = (Item) obj;
+      return Objects.equals(this.description, other.description)
+          && Objects.equals(this.name, other.name) 
+          && Objects.equals(this.price, other.price)
+          && Objects.equals(this.quantity, other.quantity)
+          && Objects.equals(this.vat, other.vat);
+    }
+  }
 
   public String getDescription() {
     return description;

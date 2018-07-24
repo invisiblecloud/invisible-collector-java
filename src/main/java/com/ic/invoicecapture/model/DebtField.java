@@ -1,5 +1,6 @@
 package com.ic.invoicecapture.model;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -19,37 +20,6 @@ public enum DebtField implements ICheckableField {
                                           FieldEnumUtils::assertNumberObject), TYPE("type",
                                               FieldEnumUtils::assertStringObject);
 
-  public enum ItemField implements ICheckableField {
-    DESCRIPTION("description", FieldEnumUtils::assertStringObject), NAME("name",
-        FieldEnumUtils::assertStringObject), PRICE("price",
-            FieldEnumUtils::assertNumberObject), QUANTITY("quantity",
-                FieldEnumUtils::assertNumberObject), VAT("vat", FieldEnumUtils::assertNumberObject);
-
-
-    public static void assertCorrectlyInitialized(Map<ItemField, Object> itemInfo)
-        throws IllegalArgumentException {
-      FieldEnumUtils.assertCorrectlyInitializedEnumMap(itemInfo, "Item", ItemField.NAME);
-    }
-
-    private final String jsonName;
-    private final ICheckableField validator;
-
-    private ItemField(String jsonName, ICheckableField validator) {
-      this.jsonName = jsonName;
-      this.validator = validator;
-    }
-
-    @Override
-    public void assertValueIsValid(Object value) throws IllegalArgumentException {
-      validator.assertValueIsValid(value);
-    }
-
-    @Override
-    public String toString() {
-      return this.jsonName;
-    }
-  }
-
   public static void assertCorrectlyInitialized(Map<DebtField, Object> debtInfo)
       throws IllegalArgumentException {
     FieldEnumUtils.assertCorrectlyInitializedEnumMap(debtInfo, "Debt", DebtField.NUMBER,
@@ -60,8 +30,10 @@ public enum DebtField implements ICheckableField {
   private static void assertListOfItemMaps(Object value) {
     if (value == null) {
       return;
-    } else if (value instanceof List) {
-      List<Object> items = (List<Object>) value;
+    } else if (value instanceof List || value instanceof Object[]) {
+      List<Object> items =
+          value instanceof Object[] ? Arrays.asList((Object[]) value) : (List<Object>) value;
+
       for (Object item : items) {
         if (!(item instanceof Map)) {
           throw new IllegalArgumentException("Item must be of type Map");
@@ -81,7 +53,7 @@ public enum DebtField implements ICheckableField {
         }
       }
     } else {
-      throw new IllegalArgumentException("items must be a List type");
+      throw new IllegalArgumentException("items must be a List or Array type");
     }
   }
 

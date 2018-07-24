@@ -12,11 +12,19 @@ public class JsonTestUtils {
     return parser.parse(json).getAsJsonObject();
   }
  
-  public static void assertJsonEquals(String expectedJson, String returnedJson) {
+  public static void assertJsonEquals(String expectedJson, String actualJson) {
     Gson gson = GsonSingleton.getInstance();
     JsonElement expected = gson.fromJson(expectedJson, JsonElement.class);
-    JsonElement obj = gson.fromJson(returnedJson, JsonElement.class);
+    JsonElement obj = gson.fromJson(actualJson, JsonElement.class);
     Assertions.assertEquals(expected, obj);
+  }
+  
+  public static void assertObjectsEqualsAsJson(Object expected, Object actual) {
+    Gson gson = GsonSingleton.getInstance();
+    String expectedJson = gson.toJson(expected);
+    String actualJson = gson.toJson(actual);
+
+    assertJsonEquals(expectedJson, actualJson);
   }
   
 }
