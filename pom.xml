@@ -6,8 +6,8 @@
 	<artifactId>invisible-collector-client</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Invisible Collector Java Client</name>
-  <description>JAVA Library to communicate with Invisible Collector's public API.</description>
-  <url>https://github.com/invisiblecloud/invoice-capture-client</url>
+    <description>JAVA Library to communicate with Invisible Collector's public API.</description>
+    <url>https://github.com/invisiblecloud/invisible-collector-java</url>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -224,14 +224,14 @@
     <licenses>
       <license>
         <name>MIT License</name>
-        <url>https://raw.githubusercontent.com/invisiblecloud/invoice-capture-client/master/LICENSE</url>
+        <url>https://raw.githubusercontent.com/invisiblecloud/invisible-collector-java/master/LICENSE</url>
       </license>
     </licenses>
 
     <scm>
-      <connection>scm:git:git://github.com/invisiblecloud/invoice-capture-client.git</connection>
-      <developerConnection>scm:git:ssh://github.com/invisiblecloud/invoice-capture-client.git</developerConnection>
-      <url>https://github.com/invisiblecloud/invoice-capture-client/tree/master</url>
+      <connection>scm:git:git://github.com/invisiblecloud/invisible-collector-java.git</connection>
+      <developerConnection>scm:git:ssh://github.com/invisiblecloud/invisible-collector-java.git</developerConnection>
+      <url>https://github.com/invisiblecloud/invisible-collector-java/tree/master</url>
     </scm>
 
     <developers>
