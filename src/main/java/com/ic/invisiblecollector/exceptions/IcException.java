@@ -1,5 +1,11 @@
 package com.ic.invisiblecollector.exceptions;
 
+/**
+ * A General library exception. Usually used to wrap 
+ * around other exceptions caused by 3rd party libraries.
+ * 
+ * @author ros
+ */
 public class IcException extends Exception {
 
   private static final long serialVersionUID = 1L;

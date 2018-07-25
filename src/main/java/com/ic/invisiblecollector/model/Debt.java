@@ -152,7 +152,7 @@ public class Debt implements IModel, IRoutable {
   /**
    * See {@link DebtField#CUSTOMER_ID} for more details.
    * 
-   * @see #setCustomerId(IInternallyRoutable)
+   * @see #setCustomerId(IRoutable)
    */
   public void setCustomerId(String customerId) {
     this.customerId = customerId;
@@ -165,9 +165,8 @@ public class Debt implements IModel, IRoutable {
    *        Can be a {@link Customer} object.
    * @see #setCustomerId(String)
    */
-  public void setCustomerId(IInternallyRoutable customerInfo) {
-    String customerId = ModelUtils.getAndAssertCorrectId(customerInfo);
-    this.customerId = customerId;
+  public void setCustomerId(IRoutable customerInfo) {
+    this.customerId = customerInfo.getRoutableId();
   }
 
   /**
@@ -244,5 +243,11 @@ public class Debt implements IModel, IRoutable {
     }
 
     return map;
+  }
+
+  @Override
+  public String getRoutableId() {
+    // TODO Auto-generated method stub
+    return null;
   }
 }

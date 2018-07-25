@@ -70,7 +70,7 @@ public class DebtApiFacade extends ApiBase {
    * @param routable an object (such as a {@link Debt} object) containing the id of the debt.
    */
   public Debt requestDebtInfo(IRoutable routable) throws IcException {
-    return requestDebtInfo(routable.getId());
+    return requestDebtInfo(routable.getRoutableId());
   }
   
   /**

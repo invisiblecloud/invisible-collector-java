@@ -7,7 +7,6 @@ import com.ic.invisiblecollector.connection.response.validators.ValidatorBuilder
 import com.ic.invisiblecollector.exceptions.IcException;
 import com.ic.invisiblecollector.model.Company;
 import com.ic.invisiblecollector.model.CompanyField;
-import com.ic.invisiblecollector.model.CustomerField;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.Map;

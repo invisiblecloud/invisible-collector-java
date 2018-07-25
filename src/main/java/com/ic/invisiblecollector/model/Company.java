@@ -115,4 +115,9 @@ public class Company implements IModel, IRoutable {
     
     return map;
   }
+
+  @Override
+  public String getRoutableId() {
+    return getId();
+  }
 }

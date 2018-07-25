@@ -5,7 +5,6 @@ import com.ic.invisiblecollector.connection.builders.IThrowingBuilder;
 import com.ic.invisiblecollector.connection.response.validators.IValidator;
 import com.ic.invisiblecollector.connection.response.validators.ValidatorBuilder;
 import com.ic.invisiblecollector.exceptions.IcException;
-import com.ic.invisiblecollector.model.IInternallyRoutable;
 import com.ic.invisiblecollector.model.json.JsonModelFacade;
 import java.io.InputStream;
 import java.net.URI;

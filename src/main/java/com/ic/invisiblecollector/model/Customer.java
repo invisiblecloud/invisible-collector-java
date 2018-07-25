@@ -11,7 +11,7 @@ import java.util.Objects;
  * 
  * @author ros
  */
-public class Customer implements IModel, IInternallyRoutable {
+public class Customer implements IModel, IRoutable {
   
   private String address;
   private String city;
@@ -61,6 +61,9 @@ public class Customer implements IModel, IInternallyRoutable {
     return email;
   }
 
+  /**
+   * See {@link #getExternalId()} for more detials.
+   */
   public String getExternalId() {
     return externalId;
   }
@@ -75,6 +78,19 @@ public class Customer implements IModel, IInternallyRoutable {
 
   public String getPhone() {
     return phone;
+  }
+
+  @Override
+  public String getRoutableId() {
+    String gid = getId();
+    String externalId = getExternalId();
+    if (gid != null && !gid.isEmpty()) {
+      return gid;
+    } else if (externalId != null && !externalId.isEmpty()) {
+      return externalId;
+    } else {
+      throw new IllegalArgumentException("no valid id contained in object");
+    }
   }
 
   public String getVatNumber() {
@@ -111,7 +127,10 @@ public class Customer implements IModel, IInternallyRoutable {
   }
 
   /**
-   * See {@link CustomerField#EXTERNAL_ID} for more details.
+   * Set the external id of the model. The external id can be for example the id of the 
+   * corresponding model in the local database.
+   * 
+   * @param externalId the external id
    */
   public void setExternalId(String externalId) {
     this.externalId = externalId;

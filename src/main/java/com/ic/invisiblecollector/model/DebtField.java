@@ -24,8 +24,9 @@ public enum DebtField implements ICheckableField {
   ATTRIBUTES("attributes", FieldEnumUtils::assertStringMapObject), 
   /** 
    * The Debt's currency. 
-   * Expected value is a {@link String} 
-   * Value must be in <a href="https://en.wikipedia.org/wiki/ISO_4217">ISO 4217</a> format.
+   * Expected value is a {@link String}. Default value is "EUR".
+   * 
+   * <p>Value must be in <a href="https://en.wikipedia.org/wiki/ISO_4217">ISO 4217</a> format.
    */
   CURRENCY("currency", FieldEnumUtils::assertStringObject), 
   /** The id of the customer to whom the debt is issued. Can be the customer's id or external id.
@@ -51,8 +52,8 @@ public enum DebtField implements ICheckableField {
    * The debt items.
    * Expected value is an array ({@code Object[]}) or {@link List} 
    * of maps ({@link Map}) of item attributes. 
-   * See {@link ItemField} for the possible map attributes or use {@link Item} to 
-   * create the maps.
+   * See {@link ItemField} for the possible map attributes and the ones that are 
+   * <b>mandatory</b> or use {@link Item} to create the maps.
    */
   ITEMS("items", DebtField::assertListOfItemMaps), 
   /** The net total.
