@@ -5,7 +5,9 @@
 	<groupId>com.ic.invisiblecollector</groupId>
 	<artifactId>invisible-collector-client</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Invoice Capture Java Client</name>
+	<name>Invisible Collector Java Client</name>
+    <description>JAVA Library to communication with Invisible Collector's public API.</description>
+    <url>https://github.com/invisiblecloud/invoice-capture-client</url>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -218,5 +220,32 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+
+    <licenses>
+      <license>
+        <name>MIT License</name>
+        <url>https://raw.githubusercontent.com/invisiblecloud/invoice-capture-client/master/LICENSE</url>
+      </license>
+    </licenses>
+
+    <scm>
+      <connection>scm:git:git://github.com/invisiblecloud/invoice-capture-client.git</connection>
+      <developerConnection>scm:git:ssh://github.com/invisiblecloud/invoice-capture-client.git</developerConnection>
+      <url>https://github.com/invisiblecloud/invoice-capture-client/tree/master</url>
+    </scm>
+
+    <developers>
+      <developer>
+        <name>João Madureira</name>
+        <email>jpmadureira@gmail.com</email>
+        <organization>Invisible Cloud</organization>
+        <organizationUrl>https://www.invisiblecloud.pt</organizationUrl>
+      </developer>
+      <developer>
+        <name>Rostyslav Khoptiy</name>
+        <email>ros65536@gmail.com</email>
+        <organizationUrl>http://rostyslav-khoptiy.me</organizationUrl>
+      </developer>
+    </developers>
 
 </project>
