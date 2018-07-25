@@ -3,11 +3,11 @@ package com.ic.invisiblecollector.model;
 import java.util.Map;
 
 public enum ItemField implements ICheckableField {
-  DESCRIPTION("description", FieldEnumUtils::assertStringObject), NAME("name",
-      FieldEnumUtils::assertStringObject), PRICE("price",
-          FieldEnumUtils::assertNumberObject), QUANTITY("quantity",
-              FieldEnumUtils::assertNumberObject), VAT("vat", FieldEnumUtils::assertNumberObject);
-
+  DESCRIPTION("description", FieldEnumUtils::assertStringObject), 
+  NAME("name", FieldEnumUtils::assertStringObject), 
+  PRICE("price", FieldEnumUtils::assertNumberObject), 
+  QUANTITY("quantity", FieldEnumUtils::assertNumberObject), 
+  VAT("vat", FieldEnumUtils::assertNumberObject);
 
   public static void assertCorrectlyInitialized(Map<ItemField, Object> itemInfo)
       throws IllegalArgumentException {

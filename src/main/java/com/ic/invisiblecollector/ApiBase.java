@@ -39,19 +39,6 @@ public abstract class ApiBase {
     }
   }
 
-  protected String getAndAssertCorrectId(IInternallyRoutable idContainer)
-      throws IllegalArgumentException {
-    String gid = idContainer.getId();
-    String externalId = idContainer.getExternalId();
-    if (gid != null && !gid.isEmpty()) {
-      return gid;
-    } else if (externalId != null && !externalId.isEmpty()) {
-      return externalId;
-    } else {
-      throw new IllegalArgumentException("no valid id contained in object");
-    }
-  }
-
   protected <T> T returningRequest(Class<T> returnType, ValidatorBuilder validatorBuilder,
       IThrowingBuilder<InputStream, IValidator> requestMethod) throws IcException {
     IValidator validator = validatorBuilder.addServerJsonValidator().build();

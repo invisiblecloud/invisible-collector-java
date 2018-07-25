@@ -10,6 +10,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class Debt implements IModel, IRoutable {
+  
   private Map<String, String> attributes;
   private String currency;
   private String customerId;
@@ -22,9 +23,6 @@ public class Debt implements IModel, IRoutable {
   private String number;
   private String status;
   private Double tax;
-  /**
-   * Type can be one of "FS", "SD", "RC", "RG" or "DG".
-   */
   private String type;
 
   public void addItem(Item item) {
@@ -71,6 +69,9 @@ public class Debt implements IModel, IRoutable {
     return attributes;
   }
 
+  /**
+   * See {@link DebtField#CURRENCY} for more details. 
+   */
   public String getCurrency() {
     return currency;
   }
@@ -79,10 +80,16 @@ public class Debt implements IModel, IRoutable {
     return customerId;
   }
 
+  /**
+   * See {@link DebtField#DATE} for more details. 
+   */
   public Date getDate() {
     return new Date(date.getTime());
   }
 
+  /**
+   * See {@link DebtField#DUE_DATE} for more details. 
+   */
   public Date getDueDate() {
     return new Date(dueDate.getTime());
   }
@@ -107,6 +114,9 @@ public class Debt implements IModel, IRoutable {
     return number;
   }
 
+  /**
+   * See {@link DebtField#STATUS} for more details. 
+   */
   public String getStatus() {
     return status;
   }
@@ -115,6 +125,9 @@ public class Debt implements IModel, IRoutable {
     return tax;
   }
 
+  /**
+   * See {@link DebtField#TYPE} for more details. 
+   */
   public String getType() {
     return type;
   }
@@ -129,18 +142,44 @@ public class Debt implements IModel, IRoutable {
     this.attributes = attributes;
   }
 
+  /**
+   * See {@link DebtField#CURRENCY} for more details. 
+   */
   public void setCurrency(String currency) {
     this.currency = currency;
   }
 
+  /**
+   * See {@link DebtField#CUSTOMER_ID} for more details.
+   * 
+   * @see #setCustomerId(IInternallyRoutable)
+   */
   public void setCustomerId(String customerId) {
     this.customerId = customerId;
   }
+  
+  /**
+   * See {@link DebtField#CUSTOMER_ID} for more details.
+   * 
+   * @param customerInfo the object that has the id or external id of the customer.
+   *        Can be a {@link Customer} object.
+   * @see #setCustomerId(String)
+   */
+  public void setCustomerId(IInternallyRoutable customerInfo) {
+    String customerId = ModelUtils.getAndAssertCorrectId(customerInfo);
+    this.customerId = customerId;
+  }
 
+  /**
+   * See {@link DebtField#DATE} for more details. 
+   */
   public void setDate(Date date) {
     this.date = new Date(date.getTime());
   }
 
+  /**
+   * See {@link DebtField#DUE_DATE} for more details. 
+   */
   public void setDueDate(Date dueDate) {
     this.dueDate = new Date(dueDate.getTime());
   }
@@ -165,6 +204,9 @@ public class Debt implements IModel, IRoutable {
     this.number = number;
   }
 
+  /**
+   * See {@link DebtField#STATUS} for possible values. 
+   */
   public void setStatus(String status) {
     this.status = status;
   }
@@ -173,6 +215,9 @@ public class Debt implements IModel, IRoutable {
     this.tax = tax;
   }
 
+  /**
+   * See {@link DebtField#TYPE} for possible values. 
+   */
   public void setType(String type) {
     this.type = type;
   }

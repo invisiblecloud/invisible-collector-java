@@ -3,6 +3,14 @@ package com.ic.invisiblecollector.model;
 import java.util.EnumMap;
 import java.util.Objects;
 
+/**
+ * A model for the customer. 
+ * 
+ * <p>Can be converted into an enum map, 
+ * see {@link #toEnumMap()} and {@link CustomerField} for more details.
+ * 
+ * @author ros
+ */
 public class Customer implements IModel, IInternallyRoutable {
   
   private String address;
@@ -42,6 +50,9 @@ public class Customer implements IModel, IInternallyRoutable {
     return city;
   }
 
+  /**
+   * See {@link CustomerField#COUNTRY} for more details.
+   */
   public String getCountry() {
     return country;
   }
@@ -88,6 +99,9 @@ public class Customer implements IModel, IInternallyRoutable {
     this.city = city;
   }
 
+  /**
+   * See {@link CustomerField#COUNTRY} for more details.
+   */
   public void setCountry(String country) {
     this.country = country;
   }
@@ -96,6 +110,9 @@ public class Customer implements IModel, IInternallyRoutable {
     this.email = email;
   }
 
+  /**
+   * See {@link CustomerField#EXTERNAL_ID} for more details.
+   */
   public void setExternalId(String externalId) {
     this.externalId = externalId;
   }

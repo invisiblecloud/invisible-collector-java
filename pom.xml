@@ -6,7 +6,7 @@
 	<artifactId>invisible-collector-client</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Invisible Collector Java Client</name>
-    <description>JAVA Library to communication with Invisible Collector's public API.</description>
+    <description>JAVA Library to communicate with Invisible Collector's public API.</description>
     <url>https://github.com/invisiblecloud/invoice-capture-client</url>
 
 	<properties>

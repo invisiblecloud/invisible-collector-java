@@ -8,6 +8,7 @@ import com.ic.invisiblecollector.exceptions.IcException;
 import com.ic.invisiblecollector.model.Customer;
 import com.ic.invisiblecollector.model.CustomerField;
 import com.ic.invisiblecollector.model.IInternallyRoutable;
+import com.ic.invisiblecollector.model.ModelUtils;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.Map;
@@ -42,7 +43,7 @@ public class CustomerApiFacade extends ApiBase {
    */
   public Map<String, String> getCustomerAttributes(IInternallyRoutable idContainer)
       throws IcException {
-    String id = getAndAssertCorrectId(idContainer);
+    String id = ModelUtils.getAndAssertCorrectId(idContainer);
     return getCustomerAttributes(id);
   }
 
@@ -117,7 +118,7 @@ public class CustomerApiFacade extends ApiBase {
    */
   public Customer requestCustomerInfo(IInternallyRoutable idContainer)
       throws IcException {
-    String id = getAndAssertCorrectId(idContainer);
+    String id = ModelUtils.getAndAssertCorrectId(idContainer);
     return requestCustomerInfo(id);
   }
   
@@ -149,7 +150,7 @@ public class CustomerApiFacade extends ApiBase {
    */
   public Map<String, String> setCustomerAttributes(IInternallyRoutable idContainer,
       Map<String, String> attributes) throws IcException {
-    String id = getAndAssertCorrectId(idContainer);
+    String id = ModelUtils.getAndAssertCorrectId(idContainer);
     return setCustomerAttributes(id, attributes);
   }
 
@@ -188,12 +189,12 @@ public class CustomerApiFacade extends ApiBase {
    *        an id or externalId that indicates the customer to update. null values will be discarded
    */
   public Customer updateCustomerInfo(Customer customerInfo) throws IcException {
-    String id = getAndAssertCorrectId(customerInfo);
+    String id = ModelUtils.getAndAssertCorrectId(customerInfo);
     return this.updateCustomerInfo(customerInfo.toEnumMap(), id);
   }
 
   /**
-   * Same as {@link #updateCustomerInfo(Customer)} but with the customer id pre-extracted.
+   * Update the customer's info in the database.
    * 
    * @param customerInfo the new customer info. null values will <b>not</b> be discarded. 
    *        See {@link CustomerField} for a list and description of the fields of a customer.
