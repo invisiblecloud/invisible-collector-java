@@ -7,15 +7,17 @@ import com.ic.invisiblecollector.connection.response.validators.ValidatorBuilder
 import com.ic.invisiblecollector.exceptions.IcException;
 import com.ic.invisiblecollector.model.Company;
 import com.ic.invisiblecollector.model.CompanyField;
+import com.ic.invisiblecollector.model.CustomerField;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.Map;
 
 /**
- * Immutable and Thread safe class. 
+ * Immutable and thread safe class for making operations on the {@code /companies } API endpoint.
+ * 
+ * <p>For object construction see {@link IcApiFacade}
  * 
  * @author ros
- *
  */
 public class CompanyApiFacade extends ApiBase {
 
@@ -31,12 +33,25 @@ public class CompanyApiFacade extends ApiBase {
     super(apiFacade);
   }
 
+  /**
+   * Request the company info from the database.
+   * 
+   * @return up-to-date company info.
+   * @throws IcException on any general exception
+   */
   public Company requestCompanyInfo() throws IcException {
     ValidatorBuilder builder = this.validatorBuilder.clone();
     return this.returningRequest(Company.class, builder,
         (validator) -> apiFacade.getRequest(validator, COMPANIES_ENDPOINT));
   }
 
+  /**
+   * Enable or disable notifications for the company's customer.
+   * 
+   * @param enableNotifications true: enable notifications, false: disable notifications
+   * @return up-to-date company info.
+   * @throws IcException on any general exception
+   */
   public Company setCompanyNotifications(boolean enableNotifications) throws IcException {
     IThrowingBuilder<InputStream, IValidator> requestMethod = enableNotifications
         ? (validator) -> apiFacade.putRequest(validator, ENABLE_NOTIFICATIONS_ENDPOINT, null)
@@ -46,10 +61,30 @@ public class CompanyApiFacade extends ApiBase {
     return this.returningRequest(Company.class, builder, requestMethod);
   }
 
+  /**
+   * Update company info.
+   * 
+   * <p>See {@link #updateCompanyInfo(Map)} for more details.
+   * 
+   * @param companyInfo the company info. null values will be discarded.
+   */
   public Company updateCompanyInfo(Company companyInfo) throws IcException {
     return updateCompanyInfo(companyInfo.toEnumMap());
   }
 
+  /**
+   * Update company info.
+   * 
+   * <p>You should use {@link #requestCompanyInfo()} before using this since some 
+   * mandatory company fields are used to validate the update request.
+   * 
+   * @param companyInfo the company info attribute map. null values will <b>not</b> be discarded.
+   *        See {@link CompanyField#assertCorrectlyInitialized(Map)} for a list of the 
+   *        <b>mandatory</b> attributes.
+   * @return up-to-date company info
+   * @throws IcException on any general exception
+   * @see #updateCompanyInfo(Company)
+   */
   public Company updateCompanyInfo(Map<CompanyField, Object> companyInfo) throws IcException {
     CompanyField.assertCorrectlyInitialized(companyInfo);
     ValidatorBuilder builder = this.validatorBuilder.clone().addBadClientJsonValidator();

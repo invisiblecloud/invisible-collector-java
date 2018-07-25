@@ -15,7 +15,7 @@ import java.net.URI;
  */
 public class IcApiFacade {
 
-  public static final URI PRODUCTION_BASE_URL = URI.create("https://api.invisiblecollector.com");
+  private static final URI PRODUCTION_BASE_URL = URI.create("https://api.invisiblecollector.com");
   private CompanyApiFacade companyFacade;
   private CustomerApiFacade customerFacade;
   private DebtApiFacade debtFacade;
@@ -55,7 +55,6 @@ public class IcApiFacade {
     this.customerFacade = new CustomerApiFacade(apiFacade);
     this.debtFacade = new DebtApiFacade(apiFacade);
   }
-
   
   /**
    * Creates an IcApiFacade with custom facades for the endpoints.

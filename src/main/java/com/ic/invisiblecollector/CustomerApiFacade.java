@@ -18,7 +18,6 @@ import java.util.Map;
  * <p>For object construction see {@link IcApiFacade}
  * 
  * @author ros
- *
  */
 public class CustomerApiFacade extends ApiBase {
 
@@ -49,8 +48,6 @@ public class CustomerApiFacade extends ApiBase {
 
   /**
    * Get the customer attributes string map.
-   * 
-   * <p>Wrapper for a {@code GET /customers/:id/attributes } request.
    * 
    * <p>Use {@link #setCustomerAttributes(IInternallyRoutable, Map)} 
    * or {@link #setCustomerAttributes(String, Map)} 
@@ -87,11 +84,11 @@ public class CustomerApiFacade extends ApiBase {
   /**
    * Register a new customer in the database. 
    * 
-   * <p>Wrapper for a {@code POST /customers} request.
-   * 
    * @param customerInfo a map containing the fields of the customer to be created. 
-   *        See {@link CustomerField} for a description of the fields and their possible values.
+   *        See {@link CustomerField} for a description of the attributes and their possible values.
    *        null values are <b>not</b> discarded.
+   *        See {@link CustomerField#assertCorrectlyInitialized(Map)} for a list of the 
+   *        <b>mandatory</b> attributes.
    * @return an up to date {@link Customer} containing the customer's information
    * @throws IcException any general exception
    * @throws IcConflictingException in case the vatNumber or externalId already exists 
@@ -200,6 +197,8 @@ public class CustomerApiFacade extends ApiBase {
    * 
    * @param customerInfo the new customer info. null values will <b>not</b> be discarded. 
    *        See {@link CustomerField} for a list and description of the fields of a customer.
+   *        See {@link CustomerField#assertCorrectlyInitialized(Map)} for a list of the 
+   *        <b>mandatory</b> attributes.
    * @param customerId the id or externalId of the customer.
    * @return the up-to-date customer info.
    * @throws IcException any general exception

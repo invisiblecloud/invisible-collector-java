@@ -3,6 +3,7 @@ package com.ic.invisiblecollector.model;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -38,6 +39,13 @@ public class Debt implements IModel, IRoutable {
     items.add(item);
   }
 
+  public void addAttribute(String key, String value) {
+    if (attributes == null) {
+      attributes = new HashMap<>();
+    }
+    
+    attributes.put(key, value);
+  }
 
   @Override
   public boolean equals(Object obj) {
