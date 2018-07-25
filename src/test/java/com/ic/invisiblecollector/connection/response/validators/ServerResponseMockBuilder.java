@@ -1,11 +1,11 @@
 package com.ic.invisiblecollector.connection.response.validators;
 
+import com.ic.invisiblecollector.connection.response.IServerResponse;
+import com.ic.invisiblecollector.exceptions.IcException;
 import java.util.ArrayList;
 import java.util.List;
 import org.easymock.EasyMock;
 import org.javatuples.Pair;
-import com.ic.invisiblecollector.connection.response.IServerResponse;
-import com.ic.invisiblecollector.exceptions.IcException;
 
 public class ServerResponseMockBuilder {
 

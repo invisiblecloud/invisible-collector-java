@@ -1,15 +1,15 @@
 package com.ic.invisiblecollector.connection;
 
-import java.io.InputStream;
-import java.net.URI;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import com.ic.invisiblecollector.connection.request.HttpRequestBuilder;
 import com.ic.invisiblecollector.connection.request.MessageExchanger;
 import com.ic.invisiblecollector.connection.response.ServerResponseFacade;
 import com.ic.invisiblecollector.connection.response.validators.IValidator;
 import com.ic.invisiblecollector.exceptions.IcException;
+import java.io.InputStream;
+import java.net.URI;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class ApiRequestFacade {
 

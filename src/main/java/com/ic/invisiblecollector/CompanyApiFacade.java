@@ -1,8 +1,5 @@
 package com.ic.invisiblecollector;
 
-import java.io.InputStream;
-import java.net.URI;
-import java.util.Map;
 import com.ic.invisiblecollector.connection.ApiRequestFacade;
 import com.ic.invisiblecollector.connection.builders.IThrowingBuilder;
 import com.ic.invisiblecollector.connection.response.validators.IValidator;
@@ -10,6 +7,9 @@ import com.ic.invisiblecollector.connection.response.validators.ValidatorBuilder
 import com.ic.invisiblecollector.exceptions.IcException;
 import com.ic.invisiblecollector.model.Company;
 import com.ic.invisiblecollector.model.CompanyField;
+import java.io.InputStream;
+import java.net.URI;
+import java.util.Map;
 
 /**
  * Immutable and Thread safe class. 
@@ -19,9 +19,9 @@ import com.ic.invisiblecollector.model.CompanyField;
  */
 public class CompanyApiFacade extends ApiBase {
 
-  public static final String COMPANIES_ENDPOINT = "companies";
-  public static final String DISABLE_NOTIFICATIONS_ENDPOINT = "companies/disableNotifications";
-  public static final String ENABLE_NOTIFICATIONS_ENDPOINT = "companies/enableNotifications";
+  private static final String COMPANIES_ENDPOINT = "companies";
+  private static final String DISABLE_NOTIFICATIONS_ENDPOINT = "companies/disableNotifications";
+  private static final String ENABLE_NOTIFICATIONS_ENDPOINT = "companies/enableNotifications";
 
   public CompanyApiFacade(String apiToken, URI baseUrl) {
     super(apiToken, baseUrl);

@@ -19,6 +19,8 @@ public class CustomerApiFacadeIT extends IcFacadeTestBase {
   // same as TEST_MAP in json form
   private static final String TEST_MAP_JSON = "{ \"a\":\"12\", \"b\":\"string\" }";
   private static final Map<String, String> TEST_MAP;
+  private static final String ATTRIBUTES_PATH = "attributes";
+  private static final String CUSTOMERS_ENDPOINT = "customers";
 
   static {
     Map<String, String> map = new TreeMap<>();
@@ -38,7 +40,7 @@ public class CustomerApiFacadeIT extends IcFacadeTestBase {
     CustomerApiFacade facade = initMockServer(response).getCustomerFacade();
     String id = "123";
     String endpoint =
-        joinUriPaths(CustomerApiFacade.CUSTOMERS_ENDPOINT, id, CustomerApiFacade.ATTRIBUTES_PATH);
+        joinUriPaths(CUSTOMERS_ENDPOINT, id, ATTRIBUTES_PATH);
     Map<String, String> returnedMap = method.build(facade, id);
     Assertions.assertEquals(TEST_MAP, returnedMap);
     return endpoint;
@@ -52,7 +54,7 @@ public class CustomerApiFacadeIT extends IcFacadeTestBase {
     this.assertCorrectModelReturned(customerBuilder,
         (Customer customer) -> icFacade.registerNewCustomer(customer));
     RecordedRequest request = this.mockServer.getRequest();
-    this.assertSentCorrectBodiesHeaders(request, CustomerApiFacade.CUSTOMERS_ENDPOINT,
+    this.assertSentCorrectBodiesHeaders(request, CUSTOMERS_ENDPOINT,
         this.mockServer.getBaseUri(), RequestType.POST);
     assertSentCorrectJson(request, customerBuilder.buildSendableJson());
   }
@@ -95,7 +97,7 @@ public class CustomerApiFacadeIT extends IcFacadeTestBase {
     CustomerBuilder customerBuilder =
         CustomerBuilder.buildTestCustomerBuilder().setName("Brand new new Name");
     String id = customerBuilder.getExternalId();
-    String endpoint = joinUriPaths(CustomerApiFacade.CUSTOMERS_ENDPOINT, id);
+    String endpoint = joinUriPaths(CUSTOMERS_ENDPOINT, id);
     CustomerApiFacade icFacade = buildCustomerResponse(customerBuilder);
 
     this.assertCorrectModelReturned(customerBuilder, (unused) -> {
@@ -125,7 +127,7 @@ public class CustomerApiFacadeIT extends IcFacadeTestBase {
     CustomerBuilder customerBuilder = CustomerBuilder.buildTestCustomerBuilder();
     CustomerApiFacade icFacade = buildCustomerResponse(customerBuilder);
     String id = customerBuilder.getExternalId();
-    String endpoint = joinUriPaths(CustomerApiFacade.CUSTOMERS_ENDPOINT, id);
+    String endpoint = joinUriPaths(CUSTOMERS_ENDPOINT, id);
     this.assertCorrectModelReturned(customerBuilder,
         (customer) -> icFacade.requestCustomerInfo(id));
     RecordedRequest request = this.mockServer.getRequest();

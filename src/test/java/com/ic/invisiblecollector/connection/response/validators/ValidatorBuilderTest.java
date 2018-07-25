@@ -1,8 +1,8 @@
 package com.ic.invisiblecollector.connection.response.validators;
 
+import com.ic.invisiblecollector.connection.response.validators.ValidatorBuilder;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import com.ic.invisiblecollector.connection.response.validators.ValidatorBuilder;
 
 public class ValidatorBuilderTest {
   

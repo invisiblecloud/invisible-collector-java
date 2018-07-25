@@ -1,5 +1,10 @@
 package com.ic.invisiblecollector.connection.request;
 
+import com.ic.invisiblecollector.connection.builders.IBuilder;
+import com.ic.invisiblecollector.connection.request.IRequestBuilder;
+import com.ic.invisiblecollector.connection.request.MessageExchanger;
+import com.ic.invisiblecollector.connection.response.ServerResponseFacade;
+import com.ic.invisiblecollector.exceptions.IcException;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
@@ -16,11 +21,6 @@ import org.apache.http.util.EntityUtils;
 import org.easymock.EasyMock;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import com.ic.invisiblecollector.connection.builders.IBuilder;
-import com.ic.invisiblecollector.connection.request.IRequestBuilder;
-import com.ic.invisiblecollector.connection.request.MessageExchanger;
-import com.ic.invisiblecollector.connection.response.ServerResponseFacade;
-import com.ic.invisiblecollector.exceptions.IcException;
 
 public class MessageExchangerTest {
 

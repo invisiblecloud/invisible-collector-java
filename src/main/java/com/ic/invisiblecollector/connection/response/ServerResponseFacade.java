@@ -1,5 +1,7 @@
 package com.ic.invisiblecollector.connection.response;
 
+import com.ic.invisiblecollector.connection.CloseableBufferedInputStream;
+import com.ic.invisiblecollector.exceptions.IcException;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,8 +10,6 @@ import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.util.EntityUtils;
-import com.ic.invisiblecollector.connection.CloseableBufferedInputStream;
-import com.ic.invisiblecollector.exceptions.IcException;
 
 public class ServerResponseFacade implements IServerResponse {
 

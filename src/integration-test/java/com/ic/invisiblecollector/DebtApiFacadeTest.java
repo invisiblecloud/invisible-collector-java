@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Test;
 
 public class DebtApiFacadeTest extends IcFacadeTestBase {
 
+  private static final String DEBTS_ENDPOINT = "debts";
+  
   @Test
   public void registerNewCustomer_success() throws Exception {
     DebtBuilder debtBuilder = DebtBuilder.buildTestDebtBuilder();
@@ -16,7 +18,7 @@ public class DebtApiFacadeTest extends IcFacadeTestBase {
 
     this.assertCorrectModelReturned(debtBuilder, (Debt debt) -> icFacade.registerNewDebt(debt));
     RecordedRequest request = this.mockServer.getRequest();
-    this.assertSentCorrectBodiesHeaders(request, DebtApiFacade.DEBTS_ENDPOINT,
+    this.assertSentCorrectBodiesHeaders(request, DEBTS_ENDPOINT,
         this.mockServer.getBaseUri(), RequestType.POST);
     assertSentCorrectJson(request, debtBuilder.buildSendableJson());
   }
@@ -30,7 +32,7 @@ public class DebtApiFacadeTest extends IcFacadeTestBase {
   public void requestDebtInfo() throws Exception {
     DebtBuilder debtBuilder = DebtBuilder.buildTestDebtBuilder();
     DebtApiFacade icFacade = buildDebtResponseAndAddServerReply(debtBuilder);
-    String endpoint = DebtApiFacade.DEBTS_ENDPOINT + "/" + debtBuilder.getId();
+    String endpoint = DEBTS_ENDPOINT + "/" + debtBuilder.getId();
 
     this.assertCorrectModelReturned(debtBuilder,
         (Debt unused) -> icFacade.requestDebtInfo(debtBuilder.getId()));

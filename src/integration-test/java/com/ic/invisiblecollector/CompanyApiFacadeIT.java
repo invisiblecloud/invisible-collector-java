@@ -18,7 +18,10 @@ import org.junit.jupiter.api.Test;
 class CompanyApiFacadeIT extends IcFacadeTestBase {
 
   private static final String REDIRECT_URL = "redirect";
-
+  private static final String COMPANIES_ENDPOINT = "companies";
+  private static final String DISABLE_NOTIFICATIONS_ENDPOINT = "companies/disableNotifications";
+  private static final String ENABLE_NOTIFICATIONS_ENDPOINT = "companies/enableNotifications";
+  
   private Pair<MockResponse, Company> buildCompanyConfiguration(CompanyBuilder companyBuilder) {
     String companyJson = companyBuilder.buildJsonObject().toString();
     MockResponse mockResponse = buildBodiedMockResponse(companyJson);
@@ -63,7 +66,7 @@ class CompanyApiFacadeIT extends IcFacadeTestBase {
         (icFacade, company) -> icFacade.requestCompanyInfo());
 
     RecordedRequest request = this.mockServer.getRequest();
-    this.assertSentCorrectBodiesHeaders(request, CompanyApiFacade.COMPANIES_ENDPOINT,
+    this.assertSentCorrectBodiesHeaders(request, COMPANIES_ENDPOINT,
         this.mockServer.getBaseUri(), RequestType.GET);
   }
 
@@ -78,7 +81,7 @@ class CompanyApiFacadeIT extends IcFacadeTestBase {
         (icFacade, company) -> icFacade.requestCompanyInfo());
 
     RecordedRequest request = this.mockServer.getRequest();
-    this.assertSentCorrectBodiesHeaders(request, CompanyApiFacade.COMPANIES_ENDPOINT,
+    this.assertSentCorrectBodiesHeaders(request, COMPANIES_ENDPOINT,
         this.mockServer.getBaseUri(), RequestType.GET);
   }
 
@@ -92,7 +95,7 @@ class CompanyApiFacadeIT extends IcFacadeTestBase {
         (icFacade, company) -> icFacade.requestCompanyInfo());
 
     RecordedRequest request = this.mockServer.getRequest();
-    this.assertSentCorrectBodiesHeaders(request, CompanyApiFacade.COMPANIES_ENDPOINT,
+    this.assertSentCorrectBodiesHeaders(request, COMPANIES_ENDPOINT,
         this.mockServer.getBaseUri(), RequestType.GET);
   }
 
@@ -143,7 +146,7 @@ class CompanyApiFacadeIT extends IcFacadeTestBase {
     Company receivedCompany = icFacade.requestCompanyInfo();
     Assertions.assertEquals(receivedCompany, correctCompany);
     RecordedRequest request = this.mockServer.getRequest();
-    this.assertSentCorrectBodiesHeaders(request, CompanyApiFacade.COMPANIES_ENDPOINT, connectionUrl,
+    this.assertSentCorrectBodiesHeaders(request, COMPANIES_ENDPOINT, connectionUrl,
         RequestType.GET);
     RecordedRequest request2 = this.mockServer.getRequest();
     this.assertSentCorrectBodiesHeaders(request2, REDIRECT_URL, connectionUrl, RequestType.GET);
@@ -161,7 +164,7 @@ class CompanyApiFacadeIT extends IcFacadeTestBase {
     assertRequestWithReturnedCompany(companyBuilder,
         (icFacade, company) -> icFacade.updateCompanyInfo(company));
     RecordedRequest request = this.mockServer.getRequest();
-    this.assertSentCorrectBodiesHeaders(request, CompanyApiFacade.COMPANIES_ENDPOINT,
+    this.assertSentCorrectBodiesHeaders(request, COMPANIES_ENDPOINT,
         this.mockServer.getBaseUri(), RequestType.PUT);
     assertSentCorrectJson(request, companyBuilder.buildSendableJson());
   }
@@ -174,7 +177,7 @@ class CompanyApiFacadeIT extends IcFacadeTestBase {
     assertRequestWithReturnedCompany(companyBuilder,
         (icFacade, unused) -> icFacade.setCompanyNotifications(true));
     RecordedRequest request = this.mockServer.getRequest();
-    this.assertSentCorrectBodylessHeaders(request, CompanyApiFacade.ENABLE_NOTIFICATIONS_ENDPOINT,
+    this.assertSentCorrectBodylessHeaders(request, ENABLE_NOTIFICATIONS_ENDPOINT,
         this.mockServer.getBaseUri(), RequestType.PUT);
   }
 
@@ -186,7 +189,7 @@ class CompanyApiFacadeIT extends IcFacadeTestBase {
     assertRequestWithReturnedCompany(companyBuilder,
         (icFacade, unused) -> icFacade.setCompanyNotifications(false));
     RecordedRequest request = this.mockServer.getRequest();
-    this.assertSentCorrectBodylessHeaders(request, CompanyApiFacade.DISABLE_NOTIFICATIONS_ENDPOINT,
+    this.assertSentCorrectBodylessHeaders(request, DISABLE_NOTIFICATIONS_ENDPOINT,
         this.mockServer.getBaseUri(), RequestType.PUT);
   }
 

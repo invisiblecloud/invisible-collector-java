@@ -1,8 +1,5 @@
 package com.ic.invisiblecollector;
 
-import java.io.InputStream;
-import java.net.URI;
-import java.util.Map;
 import com.ic.invisiblecollector.connection.ApiRequestFacade;
 import com.ic.invisiblecollector.connection.response.validators.IValidator;
 import com.ic.invisiblecollector.connection.response.validators.ValidatorBuilder;
@@ -11,9 +8,12 @@ import com.ic.invisiblecollector.exceptions.IcException;
 import com.ic.invisiblecollector.model.Customer;
 import com.ic.invisiblecollector.model.CustomerField;
 import com.ic.invisiblecollector.model.IInternallyRoutable;
+import java.io.InputStream;
+import java.net.URI;
+import java.util.Map;
 
 /**
- * Immutable and thread safe class for making operations on the {@code /customers } endpoint.
+ * Immutable and thread safe class for making operations on the {@code /customers } API endpoint.
  * 
  * <p>For object construction see {@link IcApiFacade}
  * 
@@ -22,8 +22,8 @@ import com.ic.invisiblecollector.model.IInternallyRoutable;
  */
 public class CustomerApiFacade extends ApiBase {
 
-  public static final String ATTRIBUTES_PATH = "attributes";
-  public static final String CUSTOMERS_ENDPOINT = "customers";
+  private static final String ATTRIBUTES_PATH = "attributes";
+  private static final String CUSTOMERS_ENDPOINT = "customers";
 
   public CustomerApiFacade(ApiRequestFacade apiFacade) {
     super(apiFacade);
@@ -36,19 +36,10 @@ public class CustomerApiFacade extends ApiBase {
   /**
    * Get the customer attributes string map.
    * 
-   * <p>Wrapper for a {@code GET /customers/:id/attributes } request.
+   * <p>See {@link #getCustomerAttributes(String)} for more details.
    * 
-   * <p>See also {@link #getCustomerAttributes(String)}.
-   * 
-   * <p>Use {@link #setCustomerAttributes(IInternallyRoutable, Map)} 
-   * or {@link #setCustomerAttributes(String, Map)} 
-   * for a way to the attributes returned by this method.
-   * 
-   * @param idContainer An object (such as an {@link Customer} object) that constains the id or
+   * @param idContainer An object (such as a {@link Customer} object) that contains the id or
    *        externalId of the customer
-   * @return a map containing up-to-date string:string attribute 
-   *         pairs which correspond to the customer.
-   * @throws IcException in case of any error
    */
   public Map<String, String> getCustomerAttributes(IInternallyRoutable idContainer)
       throws IcException {
@@ -57,11 +48,19 @@ public class CustomerApiFacade extends ApiBase {
   }
 
   /**
-   * Same as {@link #getCustomerAttributes(IInternallyRoutable)} but with the id pre-extracted.
+   * Get the customer attributes string map.
+   * 
+   * <p>Wrapper for a {@code GET /customers/:id/attributes } request.
+   * 
+   * <p>Use {@link #setCustomerAttributes(IInternallyRoutable, Map)} 
+   * or {@link #setCustomerAttributes(String, Map)} 
+   * to set the attributes returned by this method.
    * 
    * @param customerId the id of the customer (can be the id or externalId).
-   * @return same as {@link #registerNewCustomer(Customer)}
-   * @throws IcException same as {@link #registerNewCustomer(Customer)}
+   * @return a map containing up-to-date string:string attribute 
+   *         pairs which correspond to the customer.
+   * @throws IcException in case of any error
+   * @see #getCustomerAttributes(IInternallyRoutable)
    */
   public Map<String, String> getCustomerAttributes(String customerId) throws IcException {
     assertCorrectId(customerId);
@@ -75,17 +74,10 @@ public class CustomerApiFacade extends ApiBase {
   /**
    * Register a new customer in the database. 
    * 
-   * <p>Wrapper for a {@code POST /customers} request.
-   * 
-   * <p>See also {@link #registerNewCustomer(Map)}
+   * <p>See {@link #registerNewCustomer(Map)} for more details.
    * 
    * @param customerInfo the object containing the customer information. 
    *        null values will be discarded
-   * @return an up to date object containing the customer's information
-   * @throws IcException any general exception
-   * @throws IcConflictingException in case the vatNumber or externalId already exists 
-   *         for another customer in the database. In that case this object contains the 
-   *         id of the conflicting customer.
    */
   public Customer registerNewCustomer(Customer customerInfo)
       throws IcException, IcConflictingException {
@@ -93,13 +85,19 @@ public class CustomerApiFacade extends ApiBase {
   }
 
   /**
-   * Same as {@link #registerNewCustomer(Customer)} but with the abillity to send null fields.
+   * Register a new customer in the database. 
+   * 
+   * <p>Wrapper for a {@code POST /customers} request.
    * 
    * @param customerInfo a map containing the fields of the customer to be created. 
    *        See {@link CustomerField} for a description of the fields and their possible values.
-   * @return same as {@link #registerNewCustomer(Customer)}
-   * @throws IcException same as {@link #registerNewCustomer(Customer)}
-   * @throws IcConflictingException same as {@link #registerNewCustomer(Customer)}
+   *        null values are <b>not</b> discarded.
+   * @return an up to date {@link Customer} containing the customer's information
+   * @throws IcException any general exception
+   * @throws IcConflictingException in case the vatNumber or externalId already exists 
+   *         for another customer in the database. In that case this object contains the 
+   *         id of the conflicting customer.
+   * @see #registerNewCustomer(Customer)
    */
   public Customer registerNewCustomer(Map<CustomerField, Object> customerInfo)
       throws IcException, IcConflictingException {
@@ -115,12 +113,10 @@ public class CustomerApiFacade extends ApiBase {
   /**
    * Get customer info from the database.
    * 
-   * <p>See also {@link #requestCustomerInfo(String)}
+   * <p>See {@link #requestCustomerInfo(String)} for more details.
    * 
    * @param idContainer an object containing the id or externalId of 
    *        the customer (can be a {@link Customer} object).
-   * @return the up-to-date customer info
-   * @throws IcException any general error
    */
   public Customer requestCustomerInfo(IInternallyRoutable idContainer)
       throws IcException {
@@ -129,11 +125,12 @@ public class CustomerApiFacade extends ApiBase {
   }
   
   /**
-   * Same as {@link #requestCustomerInfo(IInternallyRoutable)} but with the id pre-extracted.
+   * Get customer info from the database.
    * 
    * @param customerId the id or externalId of the customer.
-   * @return same as {@link #requestCustomerInfo(IInternallyRoutable)}
-   * @throws IcException same as {@link #requestCustomerInfo(IInternallyRoutable)}
+   * @return the up-to-date customer info
+   * @throws IcException any general error
+   * @see #requestCustomerInfo(IInternallyRoutable)
    */
   public Customer requestCustomerInfo(String customerId)
       throws IcException {
@@ -148,19 +145,10 @@ public class CustomerApiFacade extends ApiBase {
   /**
    * Set the customer's string map attributes.
    * 
-   * <p>Same as {@link #setCustomerAttributes(String, Map)}.
+   * <p>See {@link #setCustomerAttributes(String, Map)} for more details.
    * 
-   * <p>Use {@link #getCustomerAttributes(String)} or 
-   * {@link #getCustomerAttributes(IInternallyRoutable)} to get the attributes that are set.
-   * 
-   * @param idContainer idContainer an object containing the id or externalId of 
+   * @param idContainer an object containing the id or externalId of 
    *        the customer (can be a {@link Customer} object).
-   * @param attributes the map with the attributes to set. 
-   *        Duplicate values in the database are updated, 
-   *        while pre-existing values in the database are unaffected.
-   * @return a map containing up-to-date string:string attribute 
-   *         pairs which correspond to the customer.
-   * @throws IcException any general error
    */
   public Map<String, String> setCustomerAttributes(IInternallyRoutable idContainer,
       Map<String, String> attributes) throws IcException {
@@ -169,13 +157,19 @@ public class CustomerApiFacade extends ApiBase {
   }
 
   /**
-   * Same as {@link #setCustomerAttributes(IInternallyRoutable, Map)} but with the
-   * id or externalId pre-extracted.
+   * Set the customer's string map attributes.
+   * 
+   * <p>Use {@link #getCustomerAttributes(String)} or 
+   * {@link #getCustomerAttributes(IInternallyRoutable)} to get the attributes that are set.
    * 
    * @param customerId the id or externalId of the customer.
-   * @param attributes same as {@link #setCustomerAttributes(IInternallyRoutable, Map)}
-   * @return same as {@link #setCustomerAttributes(IInternallyRoutable, Map)}
-   * @throws IcException same as {@link #setCustomerAttributes(IInternallyRoutable, Map)}
+   * @param attributes the map with the attributes to set. 
+   *        Duplicate values in the database are updated, 
+   *        while pre-existing values in the database are unaffected.
+   * @return a map containing up-to-date string:string attribute 
+   *         pairs which correspond to the customer.
+   * @throws IcException any general error
+   * @see #setCustomerAttributes(IInternallyRoutable, Map)
    */
   public Map<String, String> setCustomerAttributes(String customerId,
       Map<String, String> attributes) throws IcException {
@@ -189,14 +183,12 @@ public class CustomerApiFacade extends ApiBase {
   }
 
   /**
-   * Updates the customer's info in the database.
+   * Update the customer's info in the database.
    * 
-   * <p>See also {@link #updateCustomerInfo(Map, String)}
+   * <p>See {@link #updateCustomerInfo(Map, String)} for more details.
    * 
    * @param customerInfo the customer info. Must contain as well 
    *        an id or externalId that indicates the customer to update. null values will be discarded
-   * @return the up-to-date customer info.
-   * @throws IcException any general exception
    */
   public Customer updateCustomerInfo(Customer customerInfo) throws IcException {
     String id = getAndAssertCorrectId(customerInfo);
@@ -206,11 +198,12 @@ public class CustomerApiFacade extends ApiBase {
   /**
    * Same as {@link #updateCustomerInfo(Customer)} but with the customer id pre-extracted.
    * 
-   * @param customerInfo the new customer info. null values will be sent. 
+   * @param customerInfo the new customer info. null values will <b>not</b> be discarded. 
    *        See {@link CustomerField} for a list and description of the fields of a customer.
    * @param customerId the id or externalId of the customer.
-   * @return same as {@link #updateCustomerInfo(Map, String)}
-   * @throws IcException same as {@link #updateCustomerInfo(Map, String)}
+   * @return the up-to-date customer info.
+   * @throws IcException any general exception
+   * @see #updateCustomerInfo(Customer)
    */
   public Customer updateCustomerInfo(Map<CustomerField, Object> customerInfo, String customerId)
       throws IcException {

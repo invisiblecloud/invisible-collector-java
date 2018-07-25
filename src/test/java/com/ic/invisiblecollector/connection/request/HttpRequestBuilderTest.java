@@ -1,5 +1,7 @@
 package com.ic.invisiblecollector.connection.request;
 
+import com.ic.invisiblecollector.connection.RequestType;
+import com.ic.invisiblecollector.connection.request.HttpRequestBuilder;
 import java.net.URI;
 import java.net.URISyntaxException;
 import org.apache.http.Header;
@@ -7,8 +9,6 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import com.ic.invisiblecollector.connection.RequestType;
-import com.ic.invisiblecollector.connection.request.HttpRequestBuilder;
 
 public class HttpRequestBuilderTest {
 

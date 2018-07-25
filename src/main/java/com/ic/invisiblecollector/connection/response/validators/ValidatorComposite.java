@@ -1,9 +1,9 @@
 package com.ic.invisiblecollector.connection.response.validators;
 
-import java.util.ArrayList;
-import java.util.List;
 import com.ic.invisiblecollector.connection.response.IServerResponse;
 import com.ic.invisiblecollector.exceptions.IcException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * IResponseValidator order matters.

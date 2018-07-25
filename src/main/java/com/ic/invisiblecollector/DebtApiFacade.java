@@ -1,17 +1,17 @@
 package com.ic.invisiblecollector;
 
-import java.net.URI;
-import java.util.Map;
 import com.ic.invisiblecollector.connection.ApiRequestFacade;
 import com.ic.invisiblecollector.connection.response.validators.ValidatorBuilder;
 import com.ic.invisiblecollector.exceptions.IcException;
 import com.ic.invisiblecollector.model.Debt;
 import com.ic.invisiblecollector.model.DebtField;
 import com.ic.invisiblecollector.model.IRoutable;
+import java.net.URI;
+import java.util.Map;
 
 public class DebtApiFacade extends ApiBase {
 
-  public static final String DEBTS_ENDPOINT = "debts";
+  private static final String DEBTS_ENDPOINT = "debts";
 
   public DebtApiFacade(ApiRequestFacade apiFacade) {
     super(apiFacade);

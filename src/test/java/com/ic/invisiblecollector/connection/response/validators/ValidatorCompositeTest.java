@@ -1,14 +1,14 @@
 package com.ic.invisiblecollector.connection.response.validators;
 
+import com.ic.invisiblecollector.connection.response.IServerResponse;
+import com.ic.invisiblecollector.connection.response.validators.IValidator;
+import com.ic.invisiblecollector.connection.response.validators.ValidatorComposite;
+import com.ic.invisiblecollector.exceptions.IcException;
 import java.util.Arrays;
 import org.easymock.EasyMock;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import com.ic.invisiblecollector.connection.response.IServerResponse;
-import com.ic.invisiblecollector.connection.response.validators.IValidator;
-import com.ic.invisiblecollector.connection.response.validators.ValidatorComposite;
-import com.ic.invisiblecollector.exceptions.IcException;
 
 public class ValidatorCompositeTest {
 

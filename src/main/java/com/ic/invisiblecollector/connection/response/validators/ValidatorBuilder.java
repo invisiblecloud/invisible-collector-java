@@ -1,10 +1,10 @@
 package com.ic.invisiblecollector.connection.response.validators;
 
+import com.ic.invisiblecollector.exceptions.IcRuntimeException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
-import com.ic.invisiblecollector.exceptions.IcRuntimeException;
 
 /**
  * Validator builder. Order of added validator checking is stack based (LIFO).
