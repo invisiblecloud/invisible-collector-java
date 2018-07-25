@@ -1,5 +1,7 @@
 package com.ic.invisiblecollector.connection.request;
 
+import com.ic.invisiblecollector.connection.RequestType;
+import com.ic.invisiblecollector.exceptions.IcRuntimeException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
@@ -11,8 +13,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.StringEntity;
-import com.ic.invisiblecollector.connection.RequestType;
-import com.ic.invisiblecollector.exceptions.IcRuntimeException;
 
 
 public class HttpRequestBuilder implements Cloneable, IRequestBuilder {

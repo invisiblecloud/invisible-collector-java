@@ -3,7 +3,15 @@ package com.ic.invisiblecollector.model;
 import java.util.EnumMap;
 import java.util.Objects;
 
-public class Customer implements IModel, IInternallyRoutable {
+/**
+ * A model for the customer. 
+ * 
+ * <p>Can be converted into an enum map, 
+ * see {@link #toEnumMap()} and {@link CustomerField} for more details.
+ * 
+ * @author ros
+ */
+public class Customer implements IModel, IRoutable {
   
   private String address;
   private String city;
@@ -42,6 +50,9 @@ public class Customer implements IModel, IInternallyRoutable {
     return city;
   }
 
+  /**
+   * See {@link CustomerField#COUNTRY} for more details.
+   */
   public String getCountry() {
     return country;
   }
@@ -50,6 +61,9 @@ public class Customer implements IModel, IInternallyRoutable {
     return email;
   }
 
+  /**
+   * See {@link #getExternalId()} for more detials.
+   */
   public String getExternalId() {
     return externalId;
   }
@@ -64,6 +78,19 @@ public class Customer implements IModel, IInternallyRoutable {
 
   public String getPhone() {
     return phone;
+  }
+
+  @Override
+  public String getRoutableId() {
+    String gid = getId();
+    String externalId = getExternalId();
+    if (gid != null && !gid.isEmpty()) {
+      return gid;
+    } else if (externalId != null && !externalId.isEmpty()) {
+      return externalId;
+    } else {
+      throw new IllegalArgumentException("no valid id contained in object");
+    }
   }
 
   public String getVatNumber() {
@@ -88,6 +115,9 @@ public class Customer implements IModel, IInternallyRoutable {
     this.city = city;
   }
 
+  /**
+   * See {@link CustomerField#COUNTRY} for more details.
+   */
   public void setCountry(String country) {
     this.country = country;
   }
@@ -96,6 +126,12 @@ public class Customer implements IModel, IInternallyRoutable {
     this.email = email;
   }
 
+  /**
+   * Set the external id of the model. The external id can be for example the id of the 
+   * corresponding model in the local database.
+   * 
+   * @param externalId the external id
+   */
   public void setExternalId(String externalId) {
     this.externalId = externalId;
   }

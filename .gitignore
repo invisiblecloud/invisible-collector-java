@@ -37,4 +37,4 @@ checkstyle/
 .checkstyle
 .eclipse-pmd
 src/integration-test/java/com/ic/invisiblecollector/IcFacadeManualTests.java
-doc/
+

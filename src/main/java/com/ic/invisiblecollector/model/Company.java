@@ -3,6 +3,15 @@ package com.ic.invisiblecollector.model;
 import java.util.EnumMap;
 import java.util.Objects;
 
+/**
+ * A model for the company. 
+ * 
+ * <p>Can be converted into an enum map, 
+ * see {@link #toEnumMap()} and {@link CompanyField} for more details.
+ * 
+ * @author ros
+ *
+ */
 public class Company implements IModel, IRoutable {
 
   private String address;
@@ -105,5 +114,10 @@ public class Company implements IModel, IRoutable {
     ModelUtils.tryAddObject(map, CompanyField.COUNTRY, getCountry());
     
     return map;
+  }
+
+  @Override
+  public String getRoutableId() {
+    return getId();
   }
 }

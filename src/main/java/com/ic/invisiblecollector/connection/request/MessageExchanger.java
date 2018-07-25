@@ -1,14 +1,14 @@
 package com.ic.invisiblecollector.connection.request;
 
+import com.ic.invisiblecollector.connection.builders.IBuilder;
+import com.ic.invisiblecollector.connection.response.ServerResponseFacade;
+import com.ic.invisiblecollector.exceptions.IcException;
 import java.io.IOException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.LaxRedirectStrategy;
-import com.ic.invisiblecollector.connection.builders.IBuilder;
-import com.ic.invisiblecollector.connection.response.ServerResponseFacade;
-import com.ic.invisiblecollector.exceptions.IcException;
 
 public class MessageExchanger {
 

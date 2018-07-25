@@ -1,14 +1,13 @@
 package com.ic.invisiblecollector;
 
-import java.io.InputStream;
-import java.net.URI;
 import com.ic.invisiblecollector.connection.ApiRequestFacade;
 import com.ic.invisiblecollector.connection.builders.IThrowingBuilder;
 import com.ic.invisiblecollector.connection.response.validators.IValidator;
 import com.ic.invisiblecollector.connection.response.validators.ValidatorBuilder;
 import com.ic.invisiblecollector.exceptions.IcException;
-import com.ic.invisiblecollector.model.IInternallyRoutable;
 import com.ic.invisiblecollector.model.json.JsonModelFacade;
+import java.io.InputStream;
+import java.net.URI;
 
 public abstract class ApiBase {
 
@@ -36,19 +35,6 @@ public abstract class ApiBase {
   protected void assertCorrectId(String id) throws IllegalArgumentException {
     if (id == null || id.isEmpty()) {
       throw new IllegalArgumentException("Id cannot be null");
-    }
-  }
-
-  protected String getAndAssertCorrectId(IInternallyRoutable idContainer)
-      throws IllegalArgumentException {
-    String gid = idContainer.getId();
-    String externalId = idContainer.getExternalId();
-    if (gid != null && !gid.isEmpty()) {
-      return gid;
-    } else if (externalId != null && !externalId.isEmpty()) {
-      return externalId;
-    } else {
-      throw new IllegalArgumentException("no valid id contained in object");
     }
   }
 

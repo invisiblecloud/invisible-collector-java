@@ -1,9 +1,9 @@
 package com.ic.invisiblecollector.connection.response.validators;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 import com.ic.invisiblecollector.connection.response.validators.ServerErrorFacade;
 import com.ic.invisiblecollector.exceptions.IcException;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 public class ServerErrorFacadeTest {
 

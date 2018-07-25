@@ -1,10 +1,10 @@
 package com.ic.invisiblecollector.model;
 
+import com.ic.invisiblecollector.model.CompanyField;
 import java.util.EnumMap;
 import java.util.Map;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import com.ic.invisiblecollector.model.CompanyField;
 
 public class CompanyFieldTest {
   @Test

@@ -1,12 +1,12 @@
 package com.ic.invisiblecollector;
 
-import java.net.URI;
 import com.ic.invisiblecollector.connection.ApiRequestFacade;
+import java.net.URI;
 
 /**
- * A Thread-Safe and Immutable Container for the various api InvisibleCollector operations.
+ * A Thread-Safe and Immutable Container for the various api Invisible Collector operations.
  *  
- * <p>Used to split the method surface area along logical divisions.
+ * <p>Used to split the API surface area along logical divisions.
  * 
  * <p>Use this as the entry point into the Library.
  * 
@@ -15,15 +15,16 @@ import com.ic.invisiblecollector.connection.ApiRequestFacade;
  */
 public class IcApiFacade {
 
-  public static final URI PRODUCTION_BASE_URL = URI.create("https://api.invisiblecollector.com");
+  private static final URI PRODUCTION_BASE_URL = URI.create("https://api.invisiblecollector.com");
   private CompanyApiFacade companyFacade;
   private CustomerApiFacade customerFacade;
   private DebtApiFacade debtFacade;
 
   /**
-   * Creates an object with the default hostname.
+   * Creates an object with the default hostname (https://api.invisiblecollector.com).
    * 
    * @param apiToken the company's Api Token
+   * @see #IcApiFacade(String, URI)
    */
   public IcApiFacade(String apiToken) {
     this(apiToken, PRODUCTION_BASE_URL);
@@ -54,7 +55,6 @@ public class IcApiFacade {
     this.customerFacade = new CustomerApiFacade(apiFacade);
     this.debtFacade = new DebtApiFacade(apiFacade);
   }
-
   
   /**
    * Creates an IcApiFacade with custom facades for the endpoints.
