@@ -1,7 +1,7 @@
-# invoice-capture-client - Invoice Capture's Java client
+# Invisible Collector Java client
 
 Master:
-[![Build Status](https://travis-ci.org/invisiblecloud/invoice-capture-client.svg?branch=master)](https://travis-ci.org/invisiblecloud/invoice-capture-client)
+[![Build Status](https://travis-ci.org/invisiblecloud/invisible-collector-java.svg?branch=master)](https://travis-ci.org/invisiblecloud/invisible-collector-java)
 
 
 ## Contributions

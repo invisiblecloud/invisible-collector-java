@@ -3,11 +3,12 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.ic.invisiblecollector</groupId>
-	<artifactId>invisible-collector-client</artifactId>
+	<artifactId>invisible-collector-api</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Invisible Collector Java Client</name>
   <description>JAVA Library to communicate with Invisible Collector's public API.</description>
   <url>https://github.com/invisiblecloud/invisible-collector-java</url>
+
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -224,7 +225,7 @@
     <licenses>
       <license>
         <name>MIT License</name>
-        <url>https://raw.githubusercontent.com/invisiblecloud/invoice-capture-client/master/LICENSE</url>
+        <url>https://raw.githubusercontent.com/invisiblecloud/invisible-collector-java/master/LICENSE</url>
       </license>
     </licenses>
 
