@@ -6,8 +6,8 @@
 	<artifactId>invisible-collector-api</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Invisible Collector Java Client</name>
-  <description>JAVA Library to communicate with Invisible Collector's public API.</description>
-  <url>https://github.com/invisiblecloud/invisible-collector-java</url>
+	<description>JAVA Library to communicate with Invisible Collector's public API.</description>
+	<url>https://github.com/invisiblecloud/invisible-collector-java</url>
 
 
 	<properties>
@@ -148,6 +148,30 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 
@@ -222,31 +246,31 @@
 		</dependency>
 	</dependencies>
 
-    <licenses>
-      <license>
-        <name>MIT License</name>
-        <url>https://raw.githubusercontent.com/invisiblecloud/invisible-collector-java/master/LICENSE</url>
-      </license>
-    </licenses>
+	<licenses>
+		<license>
+			<name>MIT License</name>
+			<url>https://raw.githubusercontent.com/invisiblecloud/invisible-collector-java/master/LICENSE</url>
+		</license>
+	</licenses>
 
-    <scm>
-      <connection>scm:git:git://github.com/invisiblecloud/invisible-collector-java.git</connection>
-      <developerConnection>scm:git:ssh://github.com/invisiblecloud/invisible-collector-java.git</developerConnection>
-      <url>https://github.com/invisiblecloud/invisible-collector-java/tree/master</url>
-    </scm>
+	<scm>
+		<connection>scm:git:git://github.com/invisiblecloud/invisible-collector-java.git</connection>
+		<developerConnection>scm:git:ssh://github.com/invisiblecloud/invisible-collector-java.git</developerConnection>
+		<url>https://github.com/invisiblecloud/invisible-collector-java/tree/master</url>
+	</scm>
 
-    <developers>
-      <developer>
-        <name>João Madureira</name>
-        <email>jpmadureira@gmail.com</email>
-        <organization>Invisible Cloud</organization>
-        <organizationUrl>https://www.invisiblecloud.pt</organizationUrl>
-      </developer>
-      <developer>
-        <name>Rostyslav Khoptiy</name>
-        <email>ros65536@gmail.com</email>
-        <organizationUrl>http://rostyslav-khoptiy.me</organizationUrl>
-      </developer>
-    </developers>
+	<developers>
+		<developer>
+			<name>João Madureira</name>
+			<email>jpmadureira@gmail.com</email>
+			<organization>Invisible Cloud</organization>
+			<organizationUrl>https://www.invisiblecloud.pt</organizationUrl>
+		</developer>
+		<developer>
+			<name>Rostyslav Khoptiy</name>
+			<email>ros65536@gmail.com</email>
+			<organizationUrl>http://rostyslav-khoptiy.me</organizationUrl>
+		</developer>
+	</developers>
 
 </project>
