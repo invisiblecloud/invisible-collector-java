@@ -62,12 +62,15 @@ public class Customer implements IModel, IRoutable {
   }
 
   /**
-   * See {@link #getExternalId()} for more detials.
+   * See {@link #setExternalId(String)} for more details.
    */
   public String getExternalId() {
     return externalId;
   }
 
+  /**
+   * See {@link #setId(String)} for more details.
+   */
   public String getId() {
     return gid;
   }
@@ -134,6 +137,15 @@ public class Customer implements IModel, IRoutable {
    */
   public void setExternalId(String externalId) {
     this.externalId = externalId;
+  }
+
+  /**
+   * The id of the model in the external database (as returned by any request).
+   * 
+   * @param id the id.
+   */
+  public void setId(String id) {
+    this.gid = id;
   }
 
   public void setName(String name) {

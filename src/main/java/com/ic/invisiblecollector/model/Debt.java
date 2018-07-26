@@ -25,6 +25,14 @@ public class Debt implements IModel, IRoutable {
   private Double tax;
   private String type;
 
+  public void addAttribute(String key, String value) {
+    if (attributes == null) {
+      attributes = new HashMap<>();
+    }
+    
+    attributes.put(key, value);
+  }
+
   public void addItem(Item item) {
     if (items == null) {
       items = new ArrayList<>();
@@ -35,14 +43,6 @@ public class Debt implements IModel, IRoutable {
     }
 
     items.add(item);
-  }
-
-  public void addAttribute(String key, String value) {
-    if (attributes == null) {
-      attributes = new HashMap<>();
-    }
-    
-    attributes.put(key, value);
   }
 
   @Override
@@ -114,6 +114,11 @@ public class Debt implements IModel, IRoutable {
     return number;
   }
 
+  @Override
+  public String getRoutableId() {
+    return getId();
+  }
+
   /**
    * See {@link DebtField#STATUS} for more details. 
    */
@@ -148,15 +153,6 @@ public class Debt implements IModel, IRoutable {
   public void setCurrency(String currency) {
     this.currency = currency;
   }
-
-  /**
-   * See {@link DebtField#CUSTOMER_ID} for more details.
-   * 
-   * @see #setCustomerId(IRoutable)
-   */
-  public void setCustomerId(String customerId) {
-    this.customerId = customerId;
-  }
   
   /**
    * See {@link DebtField#CUSTOMER_ID} for more details.
@@ -167,6 +163,15 @@ public class Debt implements IModel, IRoutable {
    */
   public void setCustomerId(IRoutable customerInfo) {
     this.customerId = customerInfo.getRoutableId();
+  }
+
+  /**
+   * See {@link DebtField#CUSTOMER_ID} for more details.
+   * 
+   * @see #setCustomerId(IRoutable)
+   */
+  public void setCustomerId(String customerId) {
+    this.customerId = customerId;
   }
 
   /**
@@ -243,11 +248,5 @@ public class Debt implements IModel, IRoutable {
     }
 
     return map;
-  }
-
-  @Override
-  public String getRoutableId() {
-    // TODO Auto-generated method stub
-    return null;
   }
 }

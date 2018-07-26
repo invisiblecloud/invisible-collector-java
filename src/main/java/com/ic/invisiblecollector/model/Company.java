@@ -64,6 +64,11 @@ public class Company implements IModel, IRoutable {
     return name;
   }
 
+  @Override
+  public String getRoutableId() {
+    return getId();
+  }
+
   public String getVatNumber() {
     return vatNumber;
   }
@@ -71,13 +76,13 @@ public class Company implements IModel, IRoutable {
   public String getZipCode() {
     return zipCode;
   }
-
+  
   @Override
   public int hashCode() {
     return Objects.hash(this.vatNumber, this.name, this.address, this.zipCode, this.city,
         this.country, this.gid, this.notificationsEnabled);
   }
-  
+
   public Boolean isNotificationsEnabled() {
     return notificationsEnabled;
   }
@@ -88,6 +93,10 @@ public class Company implements IModel, IRoutable {
 
   public void setCity(String city) {
     this.city = city;
+  }
+  
+  public void setId(String id) {
+    this.gid = id;
   }
 
   public void setName(String name) {
@@ -114,10 +123,5 @@ public class Company implements IModel, IRoutable {
     ModelUtils.tryAddObject(map, CompanyField.COUNTRY, getCountry());
     
     return map;
-  }
-
-  @Override
-  public String getRoutableId() {
-    return getId();
   }
 }
