@@ -7,9 +7,11 @@ import com.ic.invisiblecollector.exceptions.IcConflictingException;
 import com.ic.invisiblecollector.exceptions.IcException;
 import com.ic.invisiblecollector.model.Customer;
 import com.ic.invisiblecollector.model.CustomerField;
+import com.ic.invisiblecollector.model.Debt;
 import com.ic.invisiblecollector.model.IRoutable;
 import java.io.InputStream;
 import java.net.URI;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -23,7 +25,10 @@ public class CustomerApiFacade extends ApiBase {
 
   private static final String ATTRIBUTES_PATH = "attributes";
   private static final String CUSTOMERS_ENDPOINT = "customers";
+  private static final String DEBTS_PATH = "debts";
 
+  private interface DebtList extends List<Debt> {} //used to get type of List<Debt>
+  
   public CustomerApiFacade(ApiRequestFacade apiFacade) {
     super(apiFacade);
   }
@@ -35,15 +40,15 @@ public class CustomerApiFacade extends ApiBase {
   /**
    * Get the customer attributes string map.
    * 
-   * <p>See {@link #getCustomerAttributes(String)} for more details.
+   * <p>See {@link #requestCustomerAttributes(String)} for more details.
    * 
    * @param idContainer An object (such as a {@link Customer} object) that contains the id or
    *        externalId of the customer
    */
-  public Map<String, String> getCustomerAttributes(IRoutable idContainer)
+  public Map<String, String> requestCustomerAttributes(IRoutable idContainer)
       throws IcException {
     String id = idContainer.getRoutableId();
-    return getCustomerAttributes(id);
+    return requestCustomerAttributes(id);
   }
 
   /**
@@ -57,9 +62,9 @@ public class CustomerApiFacade extends ApiBase {
    * @return a map containing up-to-date string:string attribute 
    *         pairs which correspond to the customer.
    * @throws IcException in case of any error
-   * @see #getCustomerAttributes(IRoutable)
+   * @see #requestCustomerAttributes(IRoutable)
    */
-  public Map<String, String> getCustomerAttributes(String customerId) throws IcException {
+  public Map<String, String> requestCustomerAttributes(String customerId) throws IcException {
     assertCorrectId(customerId);
     String endpoint = String.join("/", CUSTOMERS_ENDPOINT, customerId, ATTRIBUTES_PATH);
     IValidator validator = this.validatorBuilder.clone().build();
@@ -156,8 +161,8 @@ public class CustomerApiFacade extends ApiBase {
   /**
    * Set the customer's string map attributes.
    * 
-   * <p>Use {@link #getCustomerAttributes(String)} or 
-   * {@link #getCustomerAttributes(IRoutable)} to get the attributes that are set.
+   * <p>Use {@link #requestCustomerAttributes(String)} or 
+   * {@link #requestCustomerAttributes(IRoutable)} to get the attributes that are set.
    * 
    * @param customerId the id or externalId of the customer.
    * @param attributes the map with the attributes to set. 
@@ -215,4 +220,34 @@ public class CustomerApiFacade extends ApiBase {
         (validator) -> apiFacade.putRequest(validator, endpoint, json));
   }
 
+  /**
+   * Get the customer's debts.
+   * 
+   * <p>See {@link #requestCustomerDebts(String)} for more details.
+   * 
+   * @param idContainer an object containing the id or externalId of 
+   *        the customer (can be a {@link Customer} object).
+   */
+  public List<Debt> requestCustomerDebts(IRoutable idContainer) throws IcException {
+    String id = idContainer.getRoutableId();
+    return requestCustomerDebts(id);
+  }
+  
+  /**
+   * Get the customer's debts.
+   * 
+   * @param customerId the id or external id of the customer
+   * @return the customer's up-to-date list of debts
+   * @throws IcException on any general error
+   */
+  public List<Debt> requestCustomerDebts(String customerId) throws IcException {
+    assertCorrectId(customerId);
+    String endpoint = String.join("/", CUSTOMERS_ENDPOINT, customerId, DEBTS_PATH);
+    ValidatorBuilder builder = this.validatorBuilder.clone().addCommonValidators();
+
+    return this.returningRequest(DebtList.class, builder,
+        (validator) -> apiFacade.getRequest(validator, endpoint));
+  }
+  
+  
 }
