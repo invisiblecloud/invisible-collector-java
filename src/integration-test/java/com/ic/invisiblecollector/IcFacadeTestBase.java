@@ -25,7 +25,7 @@ public class IcFacadeTestBase {
       IThrowingBuilder<T, T> method) throws IcException {
     @SuppressWarnings("unchecked")
     T correctModel = (T) modelBuilder.buildModel();
-    T returnedModel = method.build(correctModel);
+    T returnedModel = (T) method.build(correctModel);
     JsonTestUtils.assertObjectsEqualsAsJson(correctModel, returnedModel);
   }
 
@@ -39,7 +39,7 @@ public class IcFacadeTestBase {
 
   }
   
-  protected void assertSentCorrectBodiesHeaders(RecordedRequest request, String endpoint,
+  protected void assertSentCorrectHeaders(RecordedRequest request, String endpoint,
       URI baseUrl, RequestType requestType) throws Exception {
     switch (requestType) {
       case GET:
@@ -92,9 +92,9 @@ public class IcFacadeTestBase {
     return String.format("{\"code\": %d, \"message\": %s}", statusCode, JSON_ERROR_MESSAGE);
   }
 
-  protected IcApiFacade buildIcApiResponseAndAddServerReply(BuilderBase debtBuilder)
+  protected IcApiFacade buildIcApiResponseAndAddServerReply(BuilderBase modelBuilder)
       throws Exception {
-    String json = debtBuilder.buildJson();
+    String json = modelBuilder.buildJson();
     MockResponse mockResponse = buildBodiedMockResponse(json);
     return initMockServer(mockResponse);
   }

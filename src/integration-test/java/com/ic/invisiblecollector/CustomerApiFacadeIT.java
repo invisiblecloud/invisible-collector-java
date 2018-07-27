@@ -4,9 +4,14 @@ import com.ic.invisiblecollector.CustomerApiFacade;
 import com.ic.invisiblecollector.connection.RequestType;
 import com.ic.invisiblecollector.exceptions.IcConflictingException;
 import com.ic.invisiblecollector.model.Customer;
+import com.ic.invisiblecollector.model.Debt;
 import com.ic.invisiblecollector.model.builder.CustomerBuilder;
+import com.ic.invisiblecollector.model.builder.DebtBuilder;
+import com.ic.invisiblecollector.model.json.JsonTestUtils;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import okhttp3.mockwebserver.MockResponse;
@@ -21,6 +26,8 @@ public class CustomerApiFacadeIT extends IcFacadeTestBase {
   private static final Map<String, String> TEST_MAP;
   private static final String ATTRIBUTES_PATH = "attributes";
   private static final String CUSTOMERS_ENDPOINT = "customers";
+  private static final String DEBTS_PATH = "debts";
+
 
   static {
     Map<String, String> map = new TreeMap<>();
@@ -29,7 +36,7 @@ public class CustomerApiFacadeIT extends IcFacadeTestBase {
     TEST_MAP = Collections.unmodifiableMap(new HashMap<>(map));
   }
 
-  private CustomerApiFacade buildCustomerResponse(CustomerBuilder customerBuilder)
+  private CustomerApiFacade buildCustomerResponseAndAddMockReponse(CustomerBuilder customerBuilder)
       throws Exception {
     return buildIcApiResponseAndAddServerReply(customerBuilder).getCustomerFacade();
   }
@@ -39,8 +46,7 @@ public class CustomerApiFacadeIT extends IcFacadeTestBase {
     MockResponse response = buildBodiedMockResponse(TEST_MAP_JSON);
     CustomerApiFacade facade = initMockServer(response).getCustomerFacade();
     String id = "123";
-    String endpoint =
-        joinUriPaths(CUSTOMERS_ENDPOINT, id, ATTRIBUTES_PATH);
+    String endpoint = joinUriPaths(CUSTOMERS_ENDPOINT, id, ATTRIBUTES_PATH);
     Map<String, String> returnedMap = method.build(facade, id);
     Assertions.assertEquals(TEST_MAP, returnedMap);
     return endpoint;
@@ -49,20 +55,20 @@ public class CustomerApiFacadeIT extends IcFacadeTestBase {
   @Test
   public void registerNewCustomer_success() throws Exception {
     CustomerBuilder customerBuilder = CustomerBuilder.buildTestCustomerBuilder();
-    CustomerApiFacade icFacade = buildCustomerResponse(customerBuilder);
+    CustomerApiFacade icFacade = buildCustomerResponseAndAddMockReponse(customerBuilder);
 
     this.assertCorrectModelReturned(customerBuilder,
         (Customer customer) -> icFacade.registerNewCustomer(customer));
     RecordedRequest request = this.mockServer.getRequest();
-    this.assertSentCorrectBodiesHeaders(request, CUSTOMERS_ENDPOINT,
-        this.mockServer.getBaseUri(), RequestType.POST);
+    this.assertSentCorrectHeaders(request, CUSTOMERS_ENDPOINT, this.mockServer.getBaseUri(),
+        RequestType.POST);
     assertSentCorrectJson(request, customerBuilder.buildSendableJson());
   }
 
   @Test
   public void registerNewCustomer_failMissingMandatoryField() throws Exception {
     CustomerBuilder customerBuilder = new CustomerBuilder().setGid("1232132");
-    CustomerApiFacade icFacade = buildCustomerResponse(customerBuilder);
+    CustomerApiFacade icFacade = buildCustomerResponseAndAddMockReponse(customerBuilder);
 
     Customer correctCustomer = customerBuilder.buildModel();
     Assertions.assertThrows(IllegalArgumentException.class,
@@ -73,7 +79,7 @@ public class CustomerApiFacadeIT extends IcFacadeTestBase {
   public void registerNewCustomer_onlyMandatoryFields() throws Exception {
     CustomerBuilder customerBuilder = new CustomerBuilder().setGid("shouldn't appear")
         .setName("A Name").setVatNumber("1234").setCity(null);
-    CustomerApiFacade icFacade = buildCustomerResponse(customerBuilder);
+    CustomerApiFacade icFacade = buildCustomerResponseAndAddMockReponse(customerBuilder);
     Customer customer = customerBuilder.buildModel();
     icFacade.registerNewCustomer(customer);
     RecordedRequest request = this.mockServer.getRequest();
@@ -98,15 +104,14 @@ public class CustomerApiFacadeIT extends IcFacadeTestBase {
         CustomerBuilder.buildTestCustomerBuilder().setName("Brand new new Name");
     String id = customerBuilder.getExternalId();
     String endpoint = joinUriPaths(CUSTOMERS_ENDPOINT, id);
-    CustomerApiFacade icFacade = buildCustomerResponse(customerBuilder);
+    CustomerApiFacade icFacade = buildCustomerResponseAndAddMockReponse(customerBuilder);
 
     this.assertCorrectModelReturned(customerBuilder, (unused) -> {
       Customer updateCustomer = customerBuilder.setVatNumber(null).setExternalId(null).buildModel();
       return icFacade.updateCustomerInfo(updateCustomer.toEnumMap(), id);
     });
     RecordedRequest request = this.mockServer.getRequest();
-    this.assertSentCorrectBodiesHeaders(request, endpoint, this.mockServer.getBaseUri(),
-        RequestType.PUT);
+    this.assertSentCorrectHeaders(request, endpoint, this.mockServer.getBaseUri(), RequestType.PUT);
     assertSentCorrectJson(request, customerBuilder.buildSendableJson());
   }
 
@@ -115,7 +120,7 @@ public class CustomerApiFacadeIT extends IcFacadeTestBase {
     CustomerBuilder customerBuilder =
         CustomerBuilder.buildTestCustomerBuilder().setName("Brand new new Name");
     String id = "";
-    CustomerApiFacade icFacade = buildCustomerResponse(customerBuilder);
+    CustomerApiFacade icFacade = buildCustomerResponseAndAddMockReponse(customerBuilder);
     Customer correctCustomer = customerBuilder.buildModel();
 
     Assertions.assertThrows(IllegalArgumentException.class,
@@ -125,14 +130,13 @@ public class CustomerApiFacadeIT extends IcFacadeTestBase {
   @Test
   public void requestCustomerInfo_success() throws Exception {
     CustomerBuilder customerBuilder = CustomerBuilder.buildTestCustomerBuilder();
-    CustomerApiFacade icFacade = buildCustomerResponse(customerBuilder);
+    CustomerApiFacade icFacade = buildCustomerResponseAndAddMockReponse(customerBuilder);
     String id = customerBuilder.getExternalId();
     String endpoint = joinUriPaths(CUSTOMERS_ENDPOINT, id);
     this.assertCorrectModelReturned(customerBuilder,
         (customer) -> icFacade.requestCustomerInfo(id));
     RecordedRequest request = this.mockServer.getRequest();
-    this.assertSentCorrectBodiesHeaders(request, endpoint, this.mockServer.getBaseUri(),
-        RequestType.GET);
+    this.assertSentCorrectHeaders(request, endpoint, this.mockServer.getBaseUri(), RequestType.GET);
   }
 
   @Test
@@ -140,7 +144,7 @@ public class CustomerApiFacadeIT extends IcFacadeTestBase {
     String endpoint = assertCustomerAttributesGuts(RequestType.POST,
         (facade, id) -> facade.setCustomerAttributes(id, TEST_MAP));
     RecordedRequest request = this.mockServer.getRequest();
-    this.assertSentCorrectBodiesHeaders(request, endpoint, this.mockServer.getBaseUri(),
+    this.assertSentCorrectHeaders(request, endpoint, this.mockServer.getBaseUri(),
         RequestType.POST);
     assertSentCorrectJson(request, TEST_MAP_JSON);
   }
@@ -148,9 +152,49 @@ public class CustomerApiFacadeIT extends IcFacadeTestBase {
   @Test
   public void getCustomerAttributes_success() throws Exception {
     String endpoint = assertCustomerAttributesGuts(RequestType.GET,
-        (facade, id) -> facade.getCustomerAttributes(id));
+        (facade, id) -> facade.requestCustomerAttributes(id));
     RecordedRequest request = this.mockServer.getRequest();
-    this.assertSentCorrectBodiesHeaders(request, endpoint, this.mockServer.getBaseUri(),
-        RequestType.GET);
+    this.assertSentCorrectHeaders(request, endpoint, this.mockServer.getBaseUri(), RequestType.GET);
   }
+
+  private static final String TEST_ID = "1234";
+
+  private interface DebtList extends List<Debt> {};
+
+  @Test
+  public void requestCustomerDebts_successMultipleDebts() throws Exception {
+
+    DebtBuilder builder1 = DebtBuilder.buildMinimalTestBuilder();
+    DebtBuilder builder2 = DebtBuilder.buildTestDebtBuilder();
+
+    String json = "[" + builder1.buildJson() + "," + builder2.buildJson() + "]";
+    MockResponse mockResponse = buildBodiedMockResponse(json);
+    CustomerApiFacade customerFacade = initMockServer(mockResponse).getCustomerFacade();
+
+    List<Debt> returnedDebts = customerFacade.requestCustomerDebts(TEST_ID);
+    List<Debt> debts = new ArrayList<>();
+    debts.add(builder1.buildModel());
+    debts.add(builder2.buildModel());
+    JsonTestUtils.assertObjectsEqualsAsJson(debts, returnedDebts);
+    RecordedRequest request = this.mockServer.getRequest();
+    String endpoint = joinUriPaths(CUSTOMERS_ENDPOINT, TEST_ID, DEBTS_PATH);
+    this.assertSentCorrectHeaders(request, endpoint, this.mockServer.getBaseUri(), RequestType.GET);
+  }
+  
+  @Test
+  public void requestCustomerDebts_successEmptyList() throws Exception {
+
+    String json = "[ ]";
+    MockResponse mockResponse = buildBodiedMockResponse(json);
+    CustomerApiFacade customerFacade = initMockServer(mockResponse).getCustomerFacade();
+
+    List<Debt> returnedDebts = customerFacade.requestCustomerDebts(TEST_ID);
+    List<Debt> debts = new ArrayList<>();
+    JsonTestUtils.assertObjectsEqualsAsJson(debts, returnedDebts);
+    RecordedRequest request = this.mockServer.getRequest();
+    String endpoint = joinUriPaths(CUSTOMERS_ENDPOINT, TEST_ID, DEBTS_PATH);
+    this.assertSentCorrectHeaders(request, endpoint, this.mockServer.getBaseUri(), RequestType.GET);
+  }
+
+
 }

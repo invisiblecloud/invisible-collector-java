@@ -66,7 +66,7 @@ class CompanyApiFacadeIT extends IcFacadeTestBase {
         (icFacade, company) -> icFacade.requestCompanyInfo());
 
     RecordedRequest request = this.mockServer.getRequest();
-    this.assertSentCorrectBodiesHeaders(request, COMPANIES_ENDPOINT,
+    this.assertSentCorrectHeaders(request, COMPANIES_ENDPOINT,
         this.mockServer.getBaseUri(), RequestType.GET);
   }
 
@@ -81,7 +81,7 @@ class CompanyApiFacadeIT extends IcFacadeTestBase {
         (icFacade, company) -> icFacade.requestCompanyInfo());
 
     RecordedRequest request = this.mockServer.getRequest();
-    this.assertSentCorrectBodiesHeaders(request, COMPANIES_ENDPOINT,
+    this.assertSentCorrectHeaders(request, COMPANIES_ENDPOINT,
         this.mockServer.getBaseUri(), RequestType.GET);
   }
 
@@ -95,7 +95,7 @@ class CompanyApiFacadeIT extends IcFacadeTestBase {
         (icFacade, company) -> icFacade.requestCompanyInfo());
 
     RecordedRequest request = this.mockServer.getRequest();
-    this.assertSentCorrectBodiesHeaders(request, COMPANIES_ENDPOINT,
+    this.assertSentCorrectHeaders(request, COMPANIES_ENDPOINT,
         this.mockServer.getBaseUri(), RequestType.GET);
   }
 
@@ -146,10 +146,10 @@ class CompanyApiFacadeIT extends IcFacadeTestBase {
     Company receivedCompany = icFacade.requestCompanyInfo();
     Assertions.assertEquals(receivedCompany, correctCompany);
     RecordedRequest request = this.mockServer.getRequest();
-    this.assertSentCorrectBodiesHeaders(request, COMPANIES_ENDPOINT, connectionUrl,
+    this.assertSentCorrectHeaders(request, COMPANIES_ENDPOINT, connectionUrl,
         RequestType.GET);
     RecordedRequest request2 = this.mockServer.getRequest();
-    this.assertSentCorrectBodiesHeaders(request2, REDIRECT_URL, connectionUrl, RequestType.GET);
+    this.assertSentCorrectHeaders(request2, REDIRECT_URL, connectionUrl, RequestType.GET);
   }
 
   @Test
@@ -164,7 +164,7 @@ class CompanyApiFacadeIT extends IcFacadeTestBase {
     assertRequestWithReturnedCompany(companyBuilder,
         (icFacade, company) -> icFacade.updateCompanyInfo(company));
     RecordedRequest request = this.mockServer.getRequest();
-    this.assertSentCorrectBodiesHeaders(request, COMPANIES_ENDPOINT,
+    this.assertSentCorrectHeaders(request, COMPANIES_ENDPOINT,
         this.mockServer.getBaseUri(), RequestType.PUT);
     assertSentCorrectJson(request, companyBuilder.buildSendableJson());
   }

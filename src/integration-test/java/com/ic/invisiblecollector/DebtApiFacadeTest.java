@@ -18,7 +18,7 @@ public class DebtApiFacadeTest extends IcFacadeTestBase {
 
     this.assertCorrectModelReturned(debtBuilder, (Debt debt) -> icFacade.registerNewDebt(debt));
     RecordedRequest request = this.mockServer.getRequest();
-    this.assertSentCorrectBodiesHeaders(request, DEBTS_ENDPOINT,
+    this.assertSentCorrectHeaders(request, DEBTS_ENDPOINT,
         this.mockServer.getBaseUri(), RequestType.POST);
     assertSentCorrectJson(request, debtBuilder.buildSendableJson());
   }
@@ -37,7 +37,7 @@ public class DebtApiFacadeTest extends IcFacadeTestBase {
     this.assertCorrectModelReturned(debtBuilder,
         (Debt unused) -> icFacade.requestDebtInfo(debtBuilder.getId()));
     RecordedRequest request = this.mockServer.getRequest();
-    this.assertSentCorrectBodiesHeaders(request, endpoint, this.mockServer.getBaseUri(),
+    this.assertSentCorrectHeaders(request, endpoint, this.mockServer.getBaseUri(),
         RequestType.GET);
   }
 }
