@@ -255,8 +255,8 @@
 	</licenses>
 
 	<scm>
-		<connection>scm:git:ssh://github.com/invisiblecloud/invisible-collector-java.git</connection>
-		<developerConnection>scm:git:ssh://github.com/invisiblecloud/invisible-collector-java.git</developerConnection>
+		<connection>scm:git:git@github.com:invisiblecloud/invisible-collector-java.git</connection>
+		<developerConnection>scm:git:git@github.com:invisiblecloud/invisible-collector-java.git</developerConnection>
 		<url>https://github.com/invisiblecloud/invisible-collector-java/tree/master</url>
 	</scm>
 
