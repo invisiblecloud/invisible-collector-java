@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.invisiblecollector</groupId>
 	<artifactId>invisible-collector-api</artifactId>
-	<version>0.0.1</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<name>Invisible Collector Java Client</name>
 	<description>JAVA Library to communicate with Invisible Collector's public API.</description>
 	<url>https://github.com/invisiblecloud/invisible-collector-java</url>
@@ -256,7 +256,7 @@
 		<connection>scm:git:git@github.com:invisiblecloud/invisible-collector-java.git</connection>
 		<developerConnection>scm:git:git@github.com:invisiblecloud/invisible-collector-java.git</developerConnection>
 		<url>https://github.com/invisiblecloud/invisible-collector-java/tree/master</url>
-	  <tag>v0.0.1</tag>
+	  <tag>HEAD</tag>
   </scm>
 
 	<developers>
