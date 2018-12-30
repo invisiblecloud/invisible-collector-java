@@ -1,20 +1,18 @@
 package com.invisiblecollector;
 
-import java.net.URI;
-import java.util.concurrent.TimeUnit;
-
+import com.invisiblecollector.connection.RequestType;
+import com.invisiblecollector.exceptions.IcException;
+import com.invisiblecollector.model.Company;
+import com.invisiblecollector.model.builder.CompanyBuilder;
+import okhttp3.mockwebserver.MockResponse;
+import okhttp3.mockwebserver.RecordedRequest;
 import org.javatuples.Pair;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import com.invisiblecollector.connection.RequestType;
-import com.invisiblecollector.connection.builders.IBuilder;
-import com.invisiblecollector.exceptions.IcException;
-import com.invisiblecollector.model.Company;
-import com.invisiblecollector.model.builder.CompanyBuilder;
-
-import okhttp3.mockwebserver.MockResponse;
-import okhttp3.mockwebserver.RecordedRequest;
+import java.net.URI;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 class CompanyApiFacadeIT extends IcFacadeTestBase {
 
@@ -31,17 +29,17 @@ class CompanyApiFacadeIT extends IcFacadeTestBase {
   }
 
   private Pair<MockResponse, Company> buildCompanyConfiguration(
-      IBuilder<MockResponse, String> mockBuilder) {
+      Function<String, MockResponse> mockBuilder) {
     CompanyBuilder companyBuilder = CompanyBuilder.buildTestCompanyBuilder();
     String companyJson = companyBuilder.buildJsonObject().toString();
-    MockResponse mockResponse = mockBuilder.build(companyJson);
+    MockResponse mockResponse = mockBuilder.apply(companyJson);
     Company correctCompany = companyBuilder.buildModel();
     return Pair.with(mockResponse, correctCompany);
   }
 
   private Pair<MockResponse, Company> buildCompanyConfiguration() {
 
-    IBuilder<MockResponse, String> mockBuilder =
+    Function<String, MockResponse> mockBuilder =
         (companyJson) -> buildBodiedMockResponse(companyJson);
     return this.buildCompanyConfiguration(mockBuilder);
   }
@@ -75,7 +73,7 @@ class CompanyApiFacadeIT extends IcFacadeTestBase {
   public void requestCompanyInfo_extraMessageSuffix() throws Exception {
     String extraMessage = CompanyBuilder.buildTestCompanyBuilder().setCity("/").setGid("//")
         .buildJsonObject().toString();
-    IBuilder<MockResponse, String> mockBuilder = (companyJson) -> new MockResponse()
+    Function<String, MockResponse> mockBuilder = (companyJson) -> new MockResponse()
         .setHeader("Content-Type", "application/json").setBody(companyJson + "\n" + extraMessage);
     Pair<MockResponse, Company> pair = this.buildCompanyConfiguration(mockBuilder);
     this.assertRequestWithReturnedCompany(pair,
@@ -113,7 +111,7 @@ class CompanyApiFacadeIT extends IcFacadeTestBase {
 
   @Test
   public void requestCompanyInfo_failOnNoContentTypeHeader() throws Exception {
-    IBuilder<MockResponse, String> mockBuilder =
+    Function<String, MockResponse> mockBuilder =
         (companyJson) -> new MockResponse().setBody(companyJson);
     Pair<MockResponse, Company> pair = this.buildCompanyConfiguration(mockBuilder);
     CompanyApiFacade icFacade = initMockServer(pair.getValue0()).getCompanyFacade();
