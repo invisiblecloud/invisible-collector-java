@@ -1,11 +1,11 @@
 package com.invisiblecollector;
 
 import com.invisiblecollector.connection.ApiRequestFacade;
-import com.invisiblecollector.connection.response.validators.ValidatorBuilder;
 import com.invisiblecollector.exceptions.IcException;
 import com.invisiblecollector.model.Debt;
 import com.invisiblecollector.model.DebtField;
 import com.invisiblecollector.model.IRoutable;
+
 import java.net.URI;
 import java.util.Map;
 
@@ -55,11 +55,9 @@ public class DebtApiFacade extends ApiBase {
   public Debt registerNewDebt(Map<DebtField, Object> debtInfo) throws IcException {
     DebtField.assertCorrectlyInitialized(debtInfo);
     String jsonToSend = this.jsonFacade.toJson(debtInfo);
-    ValidatorBuilder builder = this.validatorBuilder.clone().addBadClientJsonValidator()
-        .addConflictValidator("A debt already exists with the same id");
 
-    return this.returningRequest(Debt.class, builder,
-        (validator) -> apiFacade.postRequest(validator, DEBTS_ENDPOINT, jsonToSend));
+    return this.returningRequest(Debt.class,
+            () -> apiFacade.postRequest(DEBTS_ENDPOINT, jsonToSend));
   }
 
   /**
@@ -83,10 +81,9 @@ public class DebtApiFacade extends ApiBase {
    */
   public Debt requestDebtInfo(String debtId) throws IcException {
     assertCorrectId(debtId);
-    ValidatorBuilder builder = this.validatorBuilder.clone();
     String endpoint = DEBTS_ENDPOINT + "/" + debtId;
-    return this.returningRequest(Debt.class, builder,
-        (validator) -> apiFacade.getRequest(validator, endpoint));
+    return this.returningRequest(Debt.class,
+            () -> apiFacade.getRequest(endpoint));
   }
 }
 

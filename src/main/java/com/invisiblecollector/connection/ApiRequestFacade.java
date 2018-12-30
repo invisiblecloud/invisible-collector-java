@@ -1,7 +1,5 @@
 package com.invisiblecollector.connection;
 
-import com.invisiblecollector.connection.response.ServerResponseFacade;
-import com.invisiblecollector.connection.response.validators.IValidator;
 import com.invisiblecollector.exceptions.IcException;
 import org.glassfish.jersey.client.ClientProperties;
 
@@ -88,7 +86,7 @@ public class ApiRequestFacade {
   }
 
   private InputStream requestGuts(
-      IValidator validator, String urlEndpoint, RequestType requestType, String bodyToSend)
+          String urlEndpoint, RequestType requestType, String bodyToSend)
       throws IcException {
     Invocation.Builder request =
         client.target(baseUrl).path(urlEndpoint).request(MediaType.APPLICATION_JSON);
@@ -101,17 +99,17 @@ public class ApiRequestFacade {
     return response.readEntity(InputStream.class);
   }
 
-  public InputStream getRequest(IValidator validator, String urlEndpoint) throws IcException {
-    return this.requestGuts(validator, urlEndpoint, RequestType.GET, null);
+  public InputStream getRequest(String urlEndpoint) throws IcException {
+    return this.requestGuts(urlEndpoint, RequestType.GET, null);
   }
 
-  public InputStream putRequest(IValidator validator, String urlEndpoint, String bodyToSend)
+  public InputStream putRequest(String urlEndpoint, String bodyToSend)
       throws IcException {
-    return this.requestGuts(validator, urlEndpoint, RequestType.PUT, bodyToSend);
+    return this.requestGuts(urlEndpoint, RequestType.PUT, bodyToSend);
   }
 
-  public InputStream postRequest(IValidator validator, String urlEndpoint, String bodyToSend)
+  public InputStream postRequest(String urlEndpoint, String bodyToSend)
       throws IcException {
-    return this.requestGuts(validator, urlEndpoint, RequestType.POST, bodyToSend);
+    return this.requestGuts(urlEndpoint, RequestType.POST, bodyToSend);
   }
 }
