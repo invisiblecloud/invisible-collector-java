@@ -24,18 +24,30 @@ public class ApiRequestFacade {
   private static final String CONTENT_TYPE = "application/json";
   private static final String SENT_CONTENT_TYPE = CONTENT_TYPE + "; charset=utf-8";
 
+  private static Client clientInstance = null; // assumed to be thread-safe
+
   private final String apiToken;
   private final URI baseUrl;
-
-    // assumed to be thread-safe
-  private static final Client client = ClientBuilder.newClient();
-  static {
-    client.property(ClientProperties.FOLLOW_REDIRECTS, true);
-  }
+  private final Client client;
 
   public ApiRequestFacade(String apiToken, URI baseUrl) {
+    this(apiToken, baseUrl, getClientInstance());
+  }
+
+  public ApiRequestFacade(String apiToken, URI baseUrl, Client client) {
     this.apiToken = apiToken;
     this.baseUrl = baseUrl;
+    this.client = client;
+  }
+
+  private static Client getClientInstance() {
+    if (clientInstance != null) {
+      return clientInstance;
+    }
+
+    clientInstance = ClientBuilder.newClient();
+    clientInstance.property(ClientProperties.FOLLOW_REDIRECTS, true);
+    return clientInstance;
   }
 
   private ApiRequestFacade addCommonHeaders(Invocation.Builder requestBuilder) {
