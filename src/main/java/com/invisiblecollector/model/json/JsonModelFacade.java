@@ -11,6 +11,7 @@ import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.stream.JsonReader;
 import com.invisiblecollector.exceptions.IcException;
+import com.invisiblecollector.model.Model;
 
 /**
  * Thread-safe.
@@ -51,6 +52,10 @@ public class JsonModelFacade {
 
   public String toJson(Object obj) {
     return GsonSingleton.getInstance().toJson(obj);
+  }
+
+  public String toJson(Model model) {
+    return toJson(model.getFields());
   }
 
 }

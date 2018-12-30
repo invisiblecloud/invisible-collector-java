@@ -60,33 +60,20 @@ public class CompanyApiFacade extends ApiBase {
     return this.returningRequest(Company.class, builder, requestMethod);
   }
 
-  /**
-   * Update company info.
-   * 
-   * <p>See {@link #updateCompanyInfo(Map)} for more details.
-   * 
-   * @param companyInfo the company info. null values will be discarded.
-   */
-  public Company updateCompanyInfo(Company companyInfo) throws IcException {
-    return updateCompanyInfo(companyInfo.toEnumMap());
-  }
 
   /**
    * Update company info.
    * 
    * <p>You should use {@link #requestCompanyInfo()} before using this method to request company 
-   * info since the {@link CompanyField#NAME} and {@link CompanyField#VAT_NUMBER} mandatory 
+   * info since the name and vatNumber mandatory
    * company fields cannot be changed and are needed for validation and consistency purposes.
    * 
-   * @param companyInfo the company info attribute map. null values will <b>not</b> be discarded.
-   *        See {@link CompanyField#assertCorrectlyInitialized(Map)} for a list of the 
-   *        <b>mandatory</b> attributes.
+   * @param companyInfo the company info. name and vatNumber are <b>mandatory</b> attributes.
    * @return up-to-date company info
    * @throws IcException on any general exception
-   * @see #updateCompanyInfo(Company)
    */
-  public Company updateCompanyInfo(Map<CompanyField, Object> companyInfo) throws IcException {
-    CompanyField.assertCorrectlyInitialized(companyInfo);
+  public Company updateCompanyInfo(Company companyInfo) throws IcException {
+    companyInfo.assertConstainsKeys("name", "vatNumber");
     ValidatorBuilder builder = this.validatorBuilder.clone().addBadClientJsonValidator();
     String jsonToSend = this.jsonFacade.toJson(companyInfo);
     return this.returningRequest(Company.class, builder,

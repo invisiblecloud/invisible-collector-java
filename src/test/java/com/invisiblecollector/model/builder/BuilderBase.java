@@ -1,13 +1,13 @@
 package com.invisiblecollector.model.builder;
 
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
-import com.google.gson.Gson;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.invisiblecollector.model.IModel;
-import com.invisiblecollector.model.json.GsonSingleton;
 
 public abstract class BuilderBase {
   public abstract IModel buildModel();
@@ -15,11 +15,15 @@ public abstract class BuilderBase {
   protected <T> T buildModel(Class<T> classType) {
     String json = this.buildJsonObject().toString();
 
-    Gson gson = GsonSingleton.getInstance();
-    return gson.fromJson(json, classType);
+    ObjectMapper objectMapper = new ObjectMapper();
+    try {
+      return objectMapper.readValue(json, classType);
+    } catch (IOException e) {
+      throw new IllegalArgumentException(e);
+    }
   }
   
-  public abstract JsonObject buildSendableJsonObject();
+  protected abstract JsonObject buildSendableJsonObject();
 
   public JsonObject buildSendableJsonObject(boolean stripNulls) {
     JsonObject obj = buildSendableJsonObject();

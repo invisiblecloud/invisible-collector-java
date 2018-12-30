@@ -12,17 +12,8 @@ import java.util.Objects;
  * @author ros
  *
  */
-public class Company implements IModel, IRoutable {
+public class Company extends Model implements IModel, IRoutable {
 
-  private String address;
-  private String city;
-  private String country;
-  private String gid;
-  private String name;
-  private Boolean notificationsEnabled;
-  private String vatNumber;
-  private String zipCode;
-  
   @Override
   public boolean equals(Object obj) {
     if (!(obj instanceof Company)) {
@@ -34,34 +25,34 @@ public class Company implements IModel, IRoutable {
     }
 
     Company other = (Company) obj;
-    return Objects.equals(this.vatNumber, other.vatNumber)
-        && Objects.equals(this.name, other.name)
-        && Objects.equals(this.address, other.address)
-        && Objects.equals(this.zipCode, other.zipCode) 
-        && Objects.equals(this.city, other.city)
-        && Objects.equals(this.country, other.country) 
-        && Objects.equals(this.gid, other.gid)
-        && Objects.equals(this.notificationsEnabled, other.notificationsEnabled);
+    return Objects.equals(this.getVatNumber(), other.getVatNumber())
+        && Objects.equals(this.getName(), other.getName())
+        && Objects.equals(this.getAddress(), other.getAddress())
+        && Objects.equals(this.getZipCode(), other.getZipCode())
+        && Objects.equals(this.getCity(), other.getCity())
+        && Objects.equals(this.getCountry(), other.getCountry())
+        && Objects.equals(this.getId(), other.getId())
+        && Objects.equals(this.isNotificationsEnabled(), other.isNotificationsEnabled());
   }
 
   public String getAddress() {
-    return address;
+    return getString("address");
   }
 
   public String getCity() {
-    return city;
+    return getString("city");
   }
 
   public String getCountry() {
-    return country;
+    return getString("country");
   }
 
   public String getId() {
-    return gid;
+    return getString("gid");
   }
 
   public String getName() {
-    return name;
+    return getString("name");
   }
 
   @Override
@@ -70,45 +61,45 @@ public class Company implements IModel, IRoutable {
   }
 
   public String getVatNumber() {
-    return vatNumber;
+    return getString("vatNumber");
   }
 
   public String getZipCode() {
-    return zipCode;
+    return getString("zipCode");
   }
   
   @Override
   public int hashCode() {
-    return Objects.hash(this.vatNumber, this.name, this.address, this.zipCode, this.city,
-        this.country, this.gid, this.notificationsEnabled);
+    return Objects.hash(this.getVatNumber(), this.getName(), this.getAddress(), this.getZipCode(), this.getCity(),
+        this.getCountry(), this.getId(), this.isNotificationsEnabled());
   }
 
   public Boolean isNotificationsEnabled() {
-    return notificationsEnabled;
+    return getBoolean("notificationsEnabled");
   }
 
   public void setAddress(String address) {
-    this.address = address;
+    fields.put("address", address);
   }
 
   public void setCity(String city) {
-    this.city = city;
+    fields.put("city", city);
   }
   
   public void setId(String id) {
-    this.gid = id;
+    fields.put("gid", id);
   }
 
   public void setName(String name) {
-    this.name = name;
+    fields.put("name", name);
   }
 
   public void setVatNumber(String vatNumber) {
-    this.vatNumber = vatNumber;
+    fields.put("vatNumber", vatNumber);
   }
 
   public void setZipCode(String zipCode) {
-    this.zipCode = zipCode;
+    fields.put("zipCode", zipCode);
   }
 
   @Override
