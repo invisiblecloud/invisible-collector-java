@@ -1,5 +1,6 @@
 package com.invisiblecollector.connection;
 
+import com.invisiblecollector.connection.response.ResponseValidator;
 import com.invisiblecollector.exceptions.IcException;
 import org.glassfish.jersey.client.ClientProperties;
 

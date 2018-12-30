@@ -1,4 +1,4 @@
-package com.invisiblecollector.connection;
+package com.invisiblecollector.connection.response;
 
 public class ErrorObject {
   private Integer code;
