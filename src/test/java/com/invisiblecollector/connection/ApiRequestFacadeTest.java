@@ -42,8 +42,8 @@ public class ApiRequestFacadeTest {
         .andReturn(serverResponse);
     EasyMock.replay(exchanger);
 
-    HttpEntity entity = new StringEntity(TEST_MESSAGE);
-    EasyMock.expect(serverResponse.getResponseBodyStream()).andReturn(entity.getContent());
+//    HttpEntity entity = new StringEntity(TEST_MESSAGE);
+//    EasyMock.expect(serverResponse.getResponseBodyStream()).andReturn(entity.getContent());
     EasyMock.expect(serverResponse.consumeConnectionAsString()).andReturn(TEST_MESSAGE);
     EasyMock.replay(serverResponse);
   }

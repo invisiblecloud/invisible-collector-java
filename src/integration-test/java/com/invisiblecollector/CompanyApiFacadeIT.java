@@ -134,7 +134,7 @@ class CompanyApiFacadeIT extends IcFacadeTestBase {
   @Test
   public void requestCompanyInfo_followRedirect() throws Exception {
     URI connectionUrl = this.mockServer.getBaseUri();
-    String redirectUrl = this.mockServer.getBaseUri().toString() + "/" + REDIRECT_URL;
+    String redirectUrl = this.mockServer.getBaseUri().toString() + REDIRECT_URL;
     MockResponse response =
         new MockResponse().setHeader("Location", redirectUrl).setResponseCode(301);
     this.mockServer.addMockResponse(response);

@@ -13,73 +13,24 @@ import org.apache.http.util.EntityUtils;
 import com.invisiblecollector.connection.CloseableBufferedInputStream;
 import com.invisiblecollector.exceptions.IcException;
 
+import javax.ws.rs.core.Response;
+
 public class ServerResponseFacade implements IServerResponse {
 
-  private boolean isConnectionOpen;
-  private CloseableHttpResponse response;
+  private Response response;
 
-  public ServerResponseFacade(CloseableHttpResponse response) {
-    if (response == null) {
-      throw new IllegalArgumentException("response cannot be null");
-    }
+  public ServerResponseFacade(Response response) {
 
     this.response = response;
-    this.isConnectionOpen = true;
   }
 
-  private void close() throws IcException {
-    if (this.isConnectionOpen) {
-      try {
-        EntityUtils.consume(this.getBodyEntity());
-        this.response.close();
-      } catch (IOException e) {
-        throw new IcException(e);
-      }
-    }
-    
-    this.isConnectionOpen = false;
+  public ServerResponseFacade(CloseableHttpResponse response) {
+
   }
 
-  /**
-   * Dangerous. This method will consume the connection and close it.
-   * @return the response string body
-   * @throws IcException in case of connection error or parsing error
-   */
-  public String consumeConnectionAsString() throws IcException {
-    try {
-      String bodyString = EntityUtils.toString(this.getBodyEntity(), StandardCharsets.UTF_8);
-      this.close();
-      return bodyString;
-    } catch (IOException e) {
-      throw new IcException("Failed to parse response body", e);
-    }
-  }
-
-  private HttpEntity getBodyEntity() throws IcException {
-    HttpEntity entity = response.getEntity();
-    if (entity == null) {
-      throw new IcException("No entity body");
-    }
-    return entity;
-  }
-  
-  public InputStream getResponseBodyStream() throws IcException {
-    InputStream is;
-    try {
-      is = this.getBodyEntity().getContent();
-    } catch (IOException e) {
-      throw new IcException(e);
-    }
-
-    Closeable closeable = () -> {
-      try {
-        this.close();
-      } catch (IcException e) {
-        throw new IOException(e);
-      }
-    };
-
-    return new CloseableBufferedInputStream(is, closeable);
+  @Override
+  public String consumeConnectionAsString() {
+    return this.response.readEntity(String.class);
   }
 
   /**
@@ -88,28 +39,21 @@ public class ServerResponseFacade implements IServerResponse {
    * @param headerName name of the HTTP header
    * @return the header value(s)
    */
+  @Override
   public String getHeaderValues(String headerName) {
-    Header[] headers = this.response.getHeaders(headerName);
-    StringBuilder stringBuilder = new StringBuilder();
-    for (int i = 0; i < headers.length; i++) {
-      stringBuilder.append(headers[i].getValue());
-      if (i < headers.length - 1) {
-        stringBuilder.append(",");
-      }
-    }
-
-    return stringBuilder.toString();
+    return this.response.getHeaderString(headerName);
   }
 
-  
+  @Override
   public int getStatusCode() {
-    return this.response.getStatusLine().getStatusCode();
+    return this.response.getStatus();
   }
 
+  @Override
   public String getStatusCodeReasonPhrase() {
-    return this.response.getStatusLine().getReasonPhrase();
+    return this.response.getStatusInfo().getReasonPhrase();
   }
-  
-  
-  
+
+
+
 }
