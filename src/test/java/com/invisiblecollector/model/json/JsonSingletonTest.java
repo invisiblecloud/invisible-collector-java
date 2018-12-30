@@ -6,12 +6,12 @@ import org.junit.jupiter.api.Test;
 import com.google.gson.Gson;
 
 
-public class GsonSingletonTest {
+public class JsonSingletonTest {
 
   @Test 
   public void getInstance_correctness() {
-    Gson gson1 = GsonSingleton.getInstance();
-    Gson gson2 = GsonSingleton.getInstance();
+    Gson gson1 = JsonSingleton.getInstance();
+    Gson gson2 = JsonSingleton.getInstance();
     
     Assertions.assertEquals(gson1, gson2);
   }

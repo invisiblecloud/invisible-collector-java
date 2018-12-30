@@ -1,51 +1,38 @@
 package com.invisiblecollector.model.builder;
 
-import java.io.IOException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.invisiblecollector.model.Model;
+import com.invisiblecollector.model.json.JsonSingleton;
+
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Map.Entry;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.invisiblecollector.model.IModel;
-
 public abstract class BuilderBase {
-  public abstract IModel buildModel();
 
-  protected <T> T buildModel(Class<T> classType) {
-    String json = this.buildJsonObject().toString();
-
-    ObjectMapper objectMapper = new ObjectMapper();
-    try {
-      return objectMapper.readValue(json, classType);
-    } catch (IOException e) {
-      throw new IllegalArgumentException(e);
-    }
-  }
+  public abstract Model buildModel();
   
-  protected abstract JsonObject buildSendableJsonObject();
+  protected abstract Map<String, Object> buildSendableObject();
 
-  public JsonObject buildSendableJsonObject(boolean stripNulls) {
-    JsonObject obj = buildSendableJsonObject();
+  public Map<String, Object> buildSendableObject(boolean stripNulls) {
+    Map<String, Object> obj = buildSendableObject();
 
     if (stripNulls) {
-      Iterator<Entry<String, JsonElement>> it = obj.entrySet().iterator();
-      while (it.hasNext()) {
-        Entry<String, JsonElement> entry = it.next();
-        if (entry.getValue().isJsonNull()) {
-          it.remove();
-        }
-      }
+      obj.entrySet().removeIf(entry -> entry.getValue() == null);
     }
 
     return obj;
   }
 
-  public abstract JsonObject buildJsonObject();
+  public abstract Map<String, Object> buildObject();
 
 
   public String buildJson() {
-    return this.buildJsonObject().toString();
+    try {
+      return JsonSingleton.getInstance2().writeValueAsString(this.buildObject());
+    } catch (JsonProcessingException e) {
+      throw new IllegalStateException(e);
+    }
   }
 
   /**
@@ -53,7 +40,11 @@ public abstract class BuilderBase {
    * @return
    */
   public String buildSendableJson() {
-    return this.buildSendableJsonObject(true).toString();
+    try {
+      return JsonSingleton.getInstance2().writeValueAsString(this.buildSendableObject(true));
+    } catch (JsonProcessingException e) {
+      throw new IllegalStateException(e);
+    }
   }
   
   

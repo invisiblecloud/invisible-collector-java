@@ -11,7 +11,7 @@ import java.util.Objects;
  * 
  * @author ros
  */
-public class Customer implements IModel, IRoutable {
+public class Customer extends Model implements IModel, IRoutable {
   
   private String address;
   private String city;

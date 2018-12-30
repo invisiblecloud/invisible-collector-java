@@ -85,8 +85,12 @@ public class Company extends Model implements IModel, IRoutable {
   public void setCity(String city) {
     fields.put("city", city);
   }
-  
-  public void setId(String id) {
+
+  public void setCountry(String country) {
+    fields.put("country", country);
+  }
+
+  public void setGid(String id) {
     fields.put("gid", id);
   }
 
@@ -100,6 +104,10 @@ public class Company extends Model implements IModel, IRoutable {
 
   public void setZipCode(String zipCode) {
     fields.put("zipCode", zipCode);
+  }
+
+  public void setNotificationsEnabled(Boolean notificationsEnabled) {
+    fields.put("notificationsEnabled", notificationsEnabled);
   }
 
   @Override

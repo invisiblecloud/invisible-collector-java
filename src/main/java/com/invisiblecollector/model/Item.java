@@ -3,7 +3,7 @@ package com.invisiblecollector.model;
 import java.util.EnumMap;
 import java.util.Objects;
 
-public class Item implements IModel {
+public class Item extends Model implements IModel {
 
   private String description;
   private String name;

@@ -6,6 +6,9 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.gson.Gson;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
@@ -27,22 +30,12 @@ public class JsonModelFacade {
 
   public <T> T parseStringStream(InputStream inputStream, Class<T> classType) throws IcException {
 
-    InputStreamReader inputStreamReader =
-        new InputStreamReader(inputStream, StandardCharsets.UTF_8);
-    JsonReader reader = new JsonReader(inputStreamReader);
-    Gson gson = GsonSingleton.getInstance();
-    T value;
     try {
-      value = gson.fromJson(reader, classType);
-    } catch (JsonIOException | JsonSyntaxException e) {
+      return JsonSingleton.getInstance2()
+              .readValue(inputStream, classType);
+    } catch (IOException e) {
       throw new IcException("Failed to parse Json");
     }
-    try {
-      reader.close();
-    } catch (IOException e) {
-      throw new IcException(e);
-    }
-    return value;
   }
 
   public Map<String, String> parseStringStreamAsStringMap(InputStream inputStream)
@@ -51,11 +44,12 @@ public class JsonModelFacade {
   }
 
   public String toJson(Object obj) {
-    return GsonSingleton.getInstance().toJson(obj);
-  }
-
-  public String toJson(Model model) {
-    return toJson(model.getFields());
+    try {
+      return JsonSingleton.getInstance2()
+              .writeValueAsString(obj);
+    } catch (JsonProcessingException e) {
+      throw new IllegalArgumentException(e);
+    }
   }
 
 }

@@ -1,9 +1,11 @@
 package com.invisiblecollector.model.json;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-public class GsonSingleton {
+public class JsonSingleton {
 
   private static Gson instance = null;
   /**
@@ -18,4 +20,16 @@ public class GsonSingleton {
     
     return instance;
   }
+
+  private static ObjectMapper instance2 = null;
+
+  public static ObjectMapper getInstance2() {
+    if (instance2 == null) {
+      instance2 = new ObjectMapper();
+      instance2.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+    }
+
+    return instance2;
+  }
+
 }

@@ -1,11 +1,15 @@
 package com.invisiblecollector.model.json;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
+import java.io.IOException;
 
 public class JsonTestUtils {
   public static final JsonObject jsonStringAsJsonObject(String json) {
@@ -14,14 +18,19 @@ public class JsonTestUtils {
   }
  
   public static void assertJsonEquals(String expectedJson, String actualJson) {
-    Gson gson = GsonSingleton.getInstance();
-    JsonElement expected = gson.fromJson(expectedJson, JsonElement.class);
-    JsonElement obj = gson.fromJson(actualJson, JsonElement.class);
-    Assertions.assertEquals(expected, obj);
+    ObjectMapper mapper = JsonSingleton.getInstance2();
+
+    try {
+      JsonNode expected = mapper.readTree(expectedJson);
+      JsonNode actual = mapper.readTree(actualJson);
+      Assertions.assertEquals(expected, actual);
+    } catch (IOException e) {
+      throw new IllegalStateException(e);
+    }
   }
   
   public static void assertObjectsEqualsAsJson(Object expected, Object actual) {
-    Gson gson = GsonSingleton.getInstance();
+    Gson gson = JsonSingleton.getInstance();
     String expectedJson = gson.toJson(expected);
     String actualJson = gson.toJson(actual);
 

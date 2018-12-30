@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class Debt implements IModel, IRoutable {
+public class Debt extends Model implements IModel, IRoutable {
   
   private Map<String, String> attributes;
   private String currency;

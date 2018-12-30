@@ -74,8 +74,9 @@ public class CompanyApiFacade extends ApiBase {
    */
   public Company updateCompanyInfo(Company companyInfo) throws IcException {
     companyInfo.assertConstainsKeys("name", "vatNumber");
+    Map<String, Object> company = companyInfo.getOnlyFields("name", "vatNumber", "address", "zipCode", "city");
     ValidatorBuilder builder = this.validatorBuilder.clone().addBadClientJsonValidator();
-    String jsonToSend = this.jsonFacade.toJson(companyInfo);
+    String jsonToSend = this.jsonFacade.toJson(company);
     return this.returningRequest(Company.class, builder,
         (validator) -> apiFacade.putRequest(validator, COMPANIES_ENDPOINT, jsonToSend));
   }

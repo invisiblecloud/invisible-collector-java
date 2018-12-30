@@ -1,7 +1,10 @@
 package com.invisiblecollector.model.builder;
 
-import com.google.gson.JsonObject;
 import com.invisiblecollector.model.Company;
+import com.invisiblecollector.model.Customer;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class CompanyBuilder extends BuilderBase {
 
@@ -26,11 +29,17 @@ public class CompanyBuilder extends BuilderBase {
     this.zipCode = zipCode;
 
   }
-  
+
+  private class ExtraCompany extends Company {
+    private ExtraCompany(Map<String, Object> map) {
+      fields = map;
+    }
+  }
+
   @Override
   public Company buildModel() {
-    
-    return buildModel(Company.class);
+
+    return new ExtraCompany(buildObject());
   }
   
   public static CompanyBuilder buildTestCompanyBuilder() {
@@ -39,25 +48,25 @@ public class CompanyBuilder extends BuilderBase {
   }
   
   @Override
-  public JsonObject buildSendableJsonObject() {
-    JsonObject jsonObject = new JsonObject();
+  public Map<String, Object> buildSendableObject() {
+    Map<String, Object> jsonObject = new HashMap<>();
 
-    jsonObject.addProperty("address", address);
-    jsonObject.addProperty("city", city);
-    jsonObject.addProperty("country", country);
-    jsonObject.addProperty("name", name);
-    jsonObject.addProperty("vatNumber", vatNumber);
-    jsonObject.addProperty("zipCode", zipCode);
+    jsonObject.put("address", address);
+    jsonObject.put("city", city);
+    jsonObject.put("country", country);
+    jsonObject.put("name", name);
+    jsonObject.put("vatNumber", vatNumber);
+    jsonObject.put("zipCode", zipCode);
 
     return jsonObject;
   }
 
   @Override
-  public JsonObject buildJsonObject() {
-    JsonObject jsonObject = buildSendableJsonObject();
+  public Map<String, Object> buildObject() {
+    Map<String, Object> jsonObject = buildSendableObject();
 
-    jsonObject.addProperty("gid", gid);
-    jsonObject.addProperty("notificationsEnabled", notificationsEnabled);
+    jsonObject.put("gid", gid);
+    jsonObject.put("notificationsEnabled", notificationsEnabled);
 
     return jsonObject;
   }

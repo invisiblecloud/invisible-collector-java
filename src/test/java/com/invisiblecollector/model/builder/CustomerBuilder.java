@@ -1,7 +1,10 @@
 package com.invisiblecollector.model.builder;
 
-import com.google.gson.JsonObject;
 import com.invisiblecollector.model.Customer;
+import com.invisiblecollector.model.Debt;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class CustomerBuilder extends BuilderBase {
 
@@ -33,10 +36,15 @@ public class CustomerBuilder extends BuilderBase {
 
   }
 
-  @Override
+  private class ExtraCustomer extends Customer {
+    private ExtraCustomer(Map<String, Object> map) {
+      fields = map;
+    }
+  }
+
   public Customer buildModel() {
 
-    return buildModel(Customer.class);
+    return new ExtraCustomer(buildObject());
   }
 
   public static CustomerBuilder buildTestCustomerBuilder() {
@@ -45,27 +53,27 @@ public class CustomerBuilder extends BuilderBase {
   }
   
   @Override
-  public JsonObject buildSendableJsonObject() {
-    JsonObject jsonObject = new JsonObject();
+  public Map<String, Object> buildSendableObject() {
+    Map<String, Object> jsonObject = new HashMap<>();
 
-    jsonObject.addProperty("name", name);
-    jsonObject.addProperty("externalId", externalId);
-    jsonObject.addProperty("vatNumber", vatNumber);
-    jsonObject.addProperty("address", address);
-    jsonObject.addProperty("zipCode", zipCode);
-    jsonObject.addProperty("city", city);
-    jsonObject.addProperty("country", country);
-    jsonObject.addProperty("email", email);
-    jsonObject.addProperty("phone", phone);
+    jsonObject.put("name", name);
+    jsonObject.put("externalId", externalId);
+    jsonObject.put("vatNumber", vatNumber);
+    jsonObject.put("address", address);
+    jsonObject.put("zipCode", zipCode);
+    jsonObject.put("city", city);
+    jsonObject.put("country", country);
+    jsonObject.put("email", email);
+    jsonObject.put("phone", phone);
 
     return jsonObject;
   }
 
   @Override
-  public JsonObject buildJsonObject() {
-    JsonObject jsonObject = buildSendableJsonObject();
+  public Map<String, Object> buildObject() {
+    Map<String, Object>  jsonObject = buildSendableObject();
 
-    jsonObject.addProperty("gid", gid);
+    jsonObject.put("gid", gid);
 
     return jsonObject;
   }

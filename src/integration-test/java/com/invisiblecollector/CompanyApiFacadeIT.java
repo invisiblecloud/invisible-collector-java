@@ -24,7 +24,7 @@ class CompanyApiFacadeIT extends IcFacadeTestBase {
   private static final String ENABLE_NOTIFICATIONS_ENDPOINT = "companies/enableNotifications";
   
   private Pair<MockResponse, Company> buildCompanyConfiguration(CompanyBuilder companyBuilder) {
-    String companyJson = companyBuilder.buildJsonObject().toString();
+    String companyJson = companyBuilder.buildJson();
     MockResponse mockResponse = buildBodiedMockResponse(companyJson);
     Company correctCompany = companyBuilder.buildModel();
     return Pair.with(mockResponse, correctCompany);
@@ -33,7 +33,7 @@ class CompanyApiFacadeIT extends IcFacadeTestBase {
   private Pair<MockResponse, Company> buildCompanyConfiguration(
       IBuilder<MockResponse, String> mockBuilder) {
     CompanyBuilder companyBuilder = CompanyBuilder.buildTestCompanyBuilder();
-    String companyJson = companyBuilder.buildJsonObject().toString();
+    String companyJson = companyBuilder.buildJson();
     MockResponse mockResponse = mockBuilder.build(companyJson);
     Company correctCompany = companyBuilder.buildModel();
     return Pair.with(mockResponse, correctCompany);
@@ -52,7 +52,7 @@ class CompanyApiFacadeIT extends IcFacadeTestBase {
     CompanyApiFacade icFacade = initMockServer(pair.getValue0()).getCompanyFacade();
     Company returnedCompany = facadeMethod.build(icFacade, pair.getValue1());
     Company companyToReceive = pair.getValue1();
-    Assertions.assertEquals(companyToReceive, returnedCompany);
+    Assertions.assertEquals(companyToReceive.getFields(), returnedCompany.getFields());
   }
 
   private void assertRequestWithReturnedCompany(CompanyBuilder companyBuilder,
@@ -74,7 +74,7 @@ class CompanyApiFacadeIT extends IcFacadeTestBase {
   @Test
   public void requestCompanyInfo_extraMessageSuffix() throws Exception {
     String extraMessage = CompanyBuilder.buildTestCompanyBuilder().setCity("/").setGid("//")
-        .buildJsonObject().toString();
+        .buildJson();
     IBuilder<MockResponse, String> mockBuilder = (companyJson) -> new MockResponse()
         .setHeader("Content-Type", "application/json").setBody(companyJson + "\n" + extraMessage);
     Pair<MockResponse, Company> pair = this.buildCompanyConfiguration(mockBuilder);
@@ -145,7 +145,7 @@ class CompanyApiFacadeIT extends IcFacadeTestBase {
     // this.mockServer.start(); //already started?
     CompanyApiFacade icFacade = new CompanyApiFacade(TEST_API_TOKEN, connectionUrl);
     Company receivedCompany = icFacade.requestCompanyInfo();
-    Assertions.assertEquals(receivedCompany, correctCompany);
+    Assertions.assertEquals(receivedCompany.getFields(), correctCompany.getFields());
     RecordedRequest request = this.mockServer.getRequest();
     this.assertSentCorrectHeaders(request, COMPANIES_ENDPOINT, connectionUrl,
         RequestType.GET);

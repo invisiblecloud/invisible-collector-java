@@ -1,7 +1,9 @@
 package com.invisiblecollector.model.builder;
 
-import com.google.gson.JsonObject;
 import com.invisiblecollector.model.Item;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ItemBuilder extends BuilderBase {
   
@@ -21,24 +23,29 @@ public class ItemBuilder extends BuilderBase {
   }
 
   @Override
-  public JsonObject buildJsonObject() {
-    return buildSendableJsonObject();
+  public Map<String, Object> buildObject() {
+    return buildSendableObject();
   }
 
-  @Override
+  private class ExtraItem extends Item {
+    private ExtraItem(Map<String, Object> map) {
+       fields = map;
+    }
+  }
+
   public Item buildModel() {
-    return buildModel(Item.class);
+    return new ExtraItem(buildObject());
   }
 
   @Override
-  public JsonObject buildSendableJsonObject() {
-    JsonObject jsonObject = new JsonObject();
+  public Map<String, Object> buildSendableObject() {
+    Map<String, Object> jsonObject = new HashMap<>();
 
-    jsonObject.addProperty("description", description);
-    jsonObject.addProperty("name", name);
-    jsonObject.addProperty("price", price);
-    jsonObject.addProperty("quantity", quantity);
-    jsonObject.addProperty("vat", vat);
+    jsonObject.put("description", description);
+    jsonObject.put("name", name);
+    jsonObject.put("price", price);
+    jsonObject.put("quantity", quantity);
+    jsonObject.put("vat", vat);
 
     return jsonObject;
   }

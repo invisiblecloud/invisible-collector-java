@@ -7,7 +7,7 @@ import java.util.Scanner;
 import java.util.UUID;
 
 import com.google.gson.JsonElement;
-import com.invisiblecollector.model.json.GsonSingleton;
+import com.invisiblecollector.model.json.JsonSingleton;
 
 public final class StringTestUtils {
   private StringTestUtils() {}
@@ -28,12 +28,12 @@ public final class StringTestUtils {
   }
   
   public static String dateToString(Date date) {
-    SimpleDateFormat formatter = new SimpleDateFormat(GsonSingleton.DATE_FORMAT);
+    SimpleDateFormat formatter = new SimpleDateFormat(JsonSingleton.DATE_FORMAT);
     return formatter.format(date);
   }
 
   public static JsonElement toJsonElement(Object obj) {
-    return GsonSingleton.getInstance().toJsonTree(obj);
+    return JsonSingleton.getInstance().toJsonTree(obj);
   }
 
 }

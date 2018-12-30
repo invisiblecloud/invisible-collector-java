@@ -3,6 +3,10 @@ package com.invisiblecollector;
 import java.io.IOException;
 import java.net.URI;
 
+import com.invisiblecollector.connection.builders.IBuilder;
+import com.invisiblecollector.model.Company;
+import com.invisiblecollector.model.builder.CompanyBuilder;
+import org.javatuples.Pair;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -123,5 +127,11 @@ public class IcFacadeTestBase {
     mockServer = new MockServerFacade();
   }
 
+  protected Pair<MockResponse, Company> buildModelConfiguration(CompanyBuilder companyBuilder) {
+    String companyJson = companyBuilder.buildJson();
+    MockResponse mockResponse = buildBodiedMockResponse(companyJson);
+    Company correctCompany = companyBuilder.buildModel();
+    return Pair.with(mockResponse, correctCompany);
+  }
 
 }
