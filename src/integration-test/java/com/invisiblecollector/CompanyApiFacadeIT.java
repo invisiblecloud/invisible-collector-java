@@ -6,6 +6,8 @@ import com.invisiblecollector.model.Company;
 import com.invisiblecollector.model.builder.CompanyBuilder;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.RecordedRequest;
+import org.hamcrest.CoreMatchers;
+import org.hamcrest.MatcherAssert;
 import org.javatuples.Pair;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -13,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import java.net.URI;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
+
 
 class CompanyApiFacadeIT extends IcFacadeTestBase {
 
@@ -106,7 +109,8 @@ class CompanyApiFacadeIT extends IcFacadeTestBase {
     MockResponse mockResponse =
         new MockResponse().setHeader("Content-Type", "application/json").setBody(badJson);
     CompanyApiFacade icFacade = initMockServer(mockResponse).getCompanyFacade();
-    Assertions.assertThrows(IcException.class, icFacade::requestCompanyInfo);
+    IcException ex = Assertions.assertThrows(IcException.class, icFacade::requestCompanyInfo);
+    MatcherAssert.assertThat(ex.getMessage(), CoreMatchers.containsString("Failed to parse JSON"));
   }
 
   @Test
@@ -115,7 +119,8 @@ class CompanyApiFacadeIT extends IcFacadeTestBase {
         (companyJson) -> new MockResponse().setBody(companyJson);
     Pair<MockResponse, Company> pair = this.buildCompanyConfiguration(mockBuilder);
     CompanyApiFacade icFacade = initMockServer(pair.getValue0()).getCompanyFacade();
-    Assertions.assertThrows(IcException.class, icFacade::requestCompanyInfo);
+    IcException ex = Assertions.assertThrows(IcException.class, icFacade::requestCompanyInfo);
+    MatcherAssert.assertThat(ex.getMessage(), CoreMatchers.containsString("Expected JSON response from server."));
   }
 
   @Test
@@ -126,7 +131,8 @@ class CompanyApiFacadeIT extends IcFacadeTestBase {
     CompanyApiFacade icFacade = initMockServer(mockResponse).getCompanyFacade();
     IcException exception =
         Assertions.assertThrows(IcException.class, icFacade::requestCompanyInfo);
-    Assertions.assertTrue(exception.getMessage().contains(JSON_ERROR_MESSAGE));
+    MatcherAssert.assertThat(exception.getMessage(), CoreMatchers.containsString(JSON_ERROR_MESSAGE));
+    MatcherAssert.assertThat(exception.getMessage(), CoreMatchers.containsString("" + statusCode));
   }
 
   @Test

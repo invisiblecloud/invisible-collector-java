@@ -30,7 +30,7 @@ public class ResponseValidator {
 
   private void throwException(ErrorObject errObj) throws IcException {
     if (errObj.getCode() == null || errObj.getMessage() == null) {
-      throw new IcException("Invalid error json returned");
+      throw new IcException("Invalid error JSON returned");
     }
 
     String msg = errObj.getMessage() + " (status code: " + errObj.getCode() + ")";
@@ -56,7 +56,7 @@ public class ResponseValidator {
     String contentTypeHeader = response.getHeaderString("Content-Type");
     if (contentTypeHeader == null || !contentTypeHeader.contains(MediaType.APPLICATION_JSON)) {
       throw new IcException(
-          "Expected json response from server. Returned status code: " + response.getStatus());
+          "Expected JSON response from server. Returned status code: " + response.getStatus());
     }
   }
 }

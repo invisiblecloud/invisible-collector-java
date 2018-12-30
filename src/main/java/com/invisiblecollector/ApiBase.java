@@ -31,7 +31,7 @@ public abstract class ApiBase {
 
   protected void assertCorrectId(String id) throws IllegalArgumentException {
     if (id == null || id.isEmpty()) {
-      throw new IllegalArgumentException("Id cannot be null");
+      throw new IllegalArgumentException("Id cannot be empty");
     }
   }
 

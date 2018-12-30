@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.hamcrest.CoreMatchers;
+import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -73,8 +75,9 @@ public class CustomerApiFacadeIT extends IcFacadeTestBase {
     CustomerApiFacade icFacade = buildCustomerResponseAndAddMockReponse(customerBuilder);
 
     Customer correctCustomer = customerBuilder.buildModel();
-    Assertions.assertThrows(IllegalArgumentException.class,
-        () -> icFacade.registerNewCustomer(correctCustomer));
+    IllegalArgumentException ex = Assertions.assertThrows(IllegalArgumentException.class,
+            () -> icFacade.registerNewCustomer(correctCustomer));
+    MatcherAssert.assertThat(ex.getMessage(), CoreMatchers.containsString("of Model 'Customer' MUST be present"));
   }
 
   @Test
@@ -125,8 +128,9 @@ public class CustomerApiFacadeIT extends IcFacadeTestBase {
     CustomerApiFacade icFacade = buildCustomerResponseAndAddMockReponse(customerBuilder);
     Customer correctCustomer = customerBuilder.buildModel();
 
-    Assertions.assertThrows(IllegalArgumentException.class,
-        () -> icFacade.updateCustomerInfo(correctCustomer.toEnumMap(), id));
+    IllegalArgumentException ex = Assertions.assertThrows(IllegalArgumentException.class,
+            () -> icFacade.updateCustomerInfo(correctCustomer.toEnumMap(), id));
+    MatcherAssert.assertThat(ex.getMessage(), CoreMatchers.containsString("Id cannot be empty"));
   }
 
   @Test
