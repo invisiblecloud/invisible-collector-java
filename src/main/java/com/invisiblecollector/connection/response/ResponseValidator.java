@@ -1,6 +1,5 @@
 package com.invisiblecollector.connection.response;
 
-import com.invisiblecollector.connection.response.ErrorObject;
 import com.invisiblecollector.exceptions.IcConflictingException;
 import com.invisiblecollector.exceptions.IcException;
 import com.invisiblecollector.model.json.JsonModelFacade;
