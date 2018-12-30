@@ -53,7 +53,6 @@ public class CompanyBuilder extends BuilderBase {
 
     jsonObject.put("address", address);
     jsonObject.put("city", city);
-    jsonObject.put("country", country);
     jsonObject.put("name", name);
     jsonObject.put("vatNumber", vatNumber);
     jsonObject.put("zipCode", zipCode);
