@@ -1,11 +1,8 @@
 package com.invisiblecollector.connection;
 
-import com.invisiblecollector.connection.request.HttpRequestBuilder;
-import com.invisiblecollector.connection.request.MessageExchanger;
 import com.invisiblecollector.connection.response.ServerResponseFacade;
 import com.invisiblecollector.connection.response.validators.IValidator;
 import com.invisiblecollector.exceptions.IcException;
-import com.sun.security.ntlm.Server;
 import org.glassfish.jersey.client.ClientProperties;
 
 import javax.ws.rs.client.Client;
@@ -37,12 +34,6 @@ public class ApiRequestFacade {
   }
 
   public ApiRequestFacade(String apiToken, URI baseUrl) {
-    this.apiToken = apiToken;
-    this.baseUrl = baseUrl;
-  }
-
-  public ApiRequestFacade(String apiToken, URI baseUrl, MessageExchanger exchanger,
-      HttpRequestBuilder requestBuilder) {
     this.apiToken = apiToken;
     this.baseUrl = baseUrl;
   }
@@ -80,6 +71,7 @@ public class ApiRequestFacade {
       throw new IllegalStateException("Invalid program logic");
     }
   }
+
 
   private InputStream requestGuts(IValidator validator, String urlEndpoint, RequestType requestType, String bodyToSend) throws IcException {
     Invocation.Builder request = client.target(baseUrl)

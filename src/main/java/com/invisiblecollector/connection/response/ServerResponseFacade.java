@@ -1,18 +1,5 @@
 package com.invisiblecollector.connection.response;
 
-import java.io.Closeable;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.util.EntityUtils;
-
-import com.invisiblecollector.connection.CloseableBufferedInputStream;
-import com.invisiblecollector.exceptions.IcException;
-
 import javax.ws.rs.core.Response;
 
 public class ServerResponseFacade implements IServerResponse {
@@ -22,10 +9,6 @@ public class ServerResponseFacade implements IServerResponse {
   public ServerResponseFacade(Response response) {
 
     this.response = response;
-  }
-
-  public ServerResponseFacade(CloseableHttpResponse response) {
-
   }
 
   @Override
