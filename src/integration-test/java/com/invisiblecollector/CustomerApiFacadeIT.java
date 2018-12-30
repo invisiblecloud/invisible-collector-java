@@ -109,6 +109,8 @@ public class CustomerApiFacadeIT extends IcFacadeTestBase {
         Assertions.assertThrows(
             IcConflictingException.class, () -> icFacade.registerNewCustomer(correctCustomer));
     Assertions.assertEquals(CONFLICT_GID, exception.getGid());
+    MatcherAssert.assertThat(
+            exception.getMessage(), CoreMatchers.containsString(JSON_ERROR_MESSAGE));
   }
 
   @Test
