@@ -29,7 +29,6 @@
 		<apache-http-client.version>4.5.6</apache-http-client.version>
 		<javatuples.version>1.2</javatuples.version>
 		<jersey-client.version>2.25</jersey-client.version>
-		<jersey-jackson.version>2.25</jersey-jackson.version>
 	</properties>
 
 
@@ -193,11 +192,6 @@
 			<groupId>org.glassfish.jersey.core</groupId>
 			<artifactId>jersey-client</artifactId>
 			<version>${jersey-client.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.glassfish.jersey.media</groupId>
-			<artifactId>jersey-media-json-jackson</artifactId>
-			<version>${jersey-jackson.version}</version>
 		</dependency>
 
 		<dependency>
