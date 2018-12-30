@@ -1,6 +1,7 @@
 package com.invisiblecollector;
 
 import com.invisiblecollector.connection.ApiRequestFacade;
+import com.invisiblecollector.connection.ResponseValidator;
 import com.invisiblecollector.connection.builders.IThrowingBuilder;
 import com.invisiblecollector.connection.response.validators.IValidator;
 import com.invisiblecollector.connection.response.validators.ValidatorBuilder;
@@ -25,7 +26,12 @@ public abstract class ApiBase {
   }
 
   protected ApiBase(String apiToken, URI baseUrl) {
-    this(new ApiRequestFacade(apiToken, baseUrl));
+    this.jsonFacade = new JsonModelFacade();
+    ResponseValidator responseValidator = new ResponseValidator(this.jsonFacade);
+    this.apiFacade = new ApiRequestFacade(apiToken, baseUrl, responseValidator);
+    this.validatorBuilder = new ValidatorBuilder();
+
+    this.validatorBuilder.addCommonValidators();
   }
 
   protected ApiBase(ApiRequestFacade apiFacade) {

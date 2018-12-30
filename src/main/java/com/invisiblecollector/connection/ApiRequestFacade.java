@@ -29,14 +29,16 @@ public class ApiRequestFacade {
   private final String apiToken;
   private final URI baseUrl;
   private final Client client;
+  private final ResponseValidator responseValidator;
 
-  public ApiRequestFacade(String apiToken, URI baseUrl) {
-    this(apiToken, baseUrl, getClientInstance());
+  public ApiRequestFacade(String apiToken, URI baseUrl, ResponseValidator responseValidator) {
+    this(apiToken, baseUrl, responseValidator, getClientInstance());
   }
 
-  public ApiRequestFacade(String apiToken, URI baseUrl, Client client) {
+  public ApiRequestFacade(String apiToken, URI baseUrl, ResponseValidator responseValidator, Client client) {
     this.apiToken = apiToken;
     this.baseUrl = baseUrl;
+    this.responseValidator = responseValidator;
     this.client = client;
   }
 
@@ -65,13 +67,14 @@ public class ApiRequestFacade {
     return this;
   }
 
-  private Response makeRequest(Invocation.Builder request, RequestType requestType, String bodyToSend) {
+  private Response makeRequest(
+      Invocation.Builder request, RequestType requestType, String bodyToSend) {
     if (requestType == RequestType.GET) {
       return request.get();
     }
 
     if (bodyToSend == null) {
-        bodyToSend = "";
+      bodyToSend = "";
     }
 
     Entity<String> entity = Entity.entity(bodyToSend, SENT_CONTENT_TYPE);
@@ -84,18 +87,16 @@ public class ApiRequestFacade {
     }
   }
 
-
-  private InputStream requestGuts(IValidator validator, String urlEndpoint, RequestType requestType, String bodyToSend) throws IcException {
-    Invocation.Builder request = client.target(baseUrl)
-            .path(urlEndpoint)
-            .request(MediaType.APPLICATION_JSON);
+  private InputStream requestGuts(
+      IValidator validator, String urlEndpoint, RequestType requestType, String bodyToSend)
+      throws IcException {
+    Invocation.Builder request =
+        client.target(baseUrl).path(urlEndpoint).request(MediaType.APPLICATION_JSON);
     this.addCommonHeaders(request);
 
     Response response = makeRequest(request, requestType, bodyToSend);
 
-    // validation
-    ServerResponseFacade serverResponseFacade = new ServerResponseFacade(response);
-    validator.assertValidResponse(serverResponseFacade);
+    responseValidator.validate(response);
 
     return response.readEntity(InputStream.class);
   }
