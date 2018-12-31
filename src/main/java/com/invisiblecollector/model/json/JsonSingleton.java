@@ -5,6 +5,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
 public class JsonSingleton {
 
   private static Gson instance = null;
@@ -27,6 +30,8 @@ public class JsonSingleton {
     if (instance2 == null) {
       instance2 = new ObjectMapper();
       instance2.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+      DateFormat df = new SimpleDateFormat(DATE_FORMAT);
+      instance2.setDateFormat(df);
     }
 
     return instance2;

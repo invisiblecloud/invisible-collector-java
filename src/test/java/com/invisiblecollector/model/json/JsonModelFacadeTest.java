@@ -90,17 +90,6 @@ public class JsonModelFacadeTest {
     JsonTestUtils.assertJsonEquals(CORRECT_MAP_JSON, returnedJson);
   }
 
-  @Test
-  public void toJson_enumMap_correctness() {
-    EnumMap<CompanyField, Object> companyMap = new EnumMap<>(CompanyField.class);
-    companyMap.put(CompanyField.CITY, "new city");
-    companyMap.put(CompanyField.ADDRESS, null);
-    String correctJson = "{ 'city':'new city', 'address': null }".replaceAll("'", "\"");
-
-    String json = new JsonModelFacade().toJson(companyMap);
-    JsonTestUtils.assertJsonEquals(correctJson, json);
-  }
-
   // tests indirectly for correct gson initialization
   @Test
   public void toJson_DateSuccess() throws ParseException {
