@@ -4,13 +4,12 @@ import java.util.EnumMap;
 import java.util.Objects;
 
 /**
- * A model for the company. 
- * 
- * <p>Can be converted into an enum map, 
- * see {@link #toEnumMap()} and {@link CompanyField} for more details.
- * 
- * @author ros
+ * A model for the company.
  *
+ * <p>Can be converted into an enum map, see {@link #toEnumMap()} and {@link CompanyField} for more
+ * details.
+ *
+ * @author ros
  */
 public class Company extends Model implements IModel, IRoutable {
 
@@ -32,7 +31,8 @@ public class Company extends Model implements IModel, IRoutable {
         && Objects.equals(this.getCity(), other.getCity())
         && Objects.equals(this.getCountry(), other.getCountry())
         && Objects.equals(this.getId(), other.getId())
-        && Objects.equals(this.isNotificationsEnabled(), other.isNotificationsEnabled());
+        && Objects.equals(this.isNotificationsEnabled(), other.isNotificationsEnabled())
+        && fields.size() == other.fields.size();
   }
 
   public String getAddress() {
@@ -67,11 +67,18 @@ public class Company extends Model implements IModel, IRoutable {
   public String getZipCode() {
     return getString("zipCode");
   }
-  
+
   @Override
   public int hashCode() {
-    return Objects.hash(this.getVatNumber(), this.getName(), this.getAddress(), this.getZipCode(), this.getCity(),
-        this.getCountry(), this.getId(), this.isNotificationsEnabled());
+    return Objects.hash(
+        this.getVatNumber(),
+        this.getName(),
+        this.getAddress(),
+        this.getZipCode(),
+        this.getCity(),
+        this.getCountry(),
+        this.getId(),
+        this.isNotificationsEnabled());
   }
 
   public Boolean isNotificationsEnabled() {
@@ -120,7 +127,7 @@ public class Company extends Model implements IModel, IRoutable {
     ModelUtils.tryAddObject(map, CompanyField.ZIP_CODE, getZipCode());
     ModelUtils.tryAddObject(map, CompanyField.CITY, getCity());
     ModelUtils.tryAddObject(map, CompanyField.COUNTRY, getCountry());
-    
+
     return map;
   }
 }
