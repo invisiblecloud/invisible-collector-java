@@ -1,23 +1,17 @@
 package com.invisiblecollector;
 
-import java.io.IOException;
-import java.net.URI;
-
-import com.invisiblecollector.connection.builders.IBuilder;
-import com.invisiblecollector.model.Company;
-import com.invisiblecollector.model.builder.CompanyBuilder;
-import org.javatuples.Pair;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-
 import com.invisiblecollector.connection.RequestType;
 import com.invisiblecollector.connection.builders.IThrowingBuilder;
 import com.invisiblecollector.exceptions.IcException;
 import com.invisiblecollector.model.builder.BuilderBase;
 import com.invisiblecollector.model.json.JsonTestUtils;
-
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.RecordedRequest;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+
+import java.io.IOException;
+import java.net.URI;
 
 public class IcFacadeTestBase {
 
@@ -125,13 +119,6 @@ public class IcFacadeTestBase {
   @BeforeEach
   private void startServer() {
     mockServer = new MockServerFacade();
-  }
-
-  protected Pair<MockResponse, Company> buildModelConfiguration(CompanyBuilder companyBuilder) {
-    String companyJson = companyBuilder.buildJson();
-    MockResponse mockResponse = buildBodiedMockResponse(companyJson);
-    Company correctCompany = companyBuilder.buildModel();
-    return Pair.with(mockResponse, correctCompany);
   }
 
 }
