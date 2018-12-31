@@ -34,7 +34,7 @@ public class JsonModelFacade {
     try {
       value = gson.fromJson(reader, classType);
     } catch (JsonIOException | JsonSyntaxException e) {
-      throw new IcException("Failed to parse Json");
+      throw new IcException("Failed to parse JSON");
     }
     try {
       reader.close();

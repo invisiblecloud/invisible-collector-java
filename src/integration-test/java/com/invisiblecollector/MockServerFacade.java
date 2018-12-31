@@ -46,8 +46,7 @@ public class MockServerFacade implements Closeable {
     return this.server.takeRequest();
   }
 
-  public static void assertApiEndpointHit(RecordedRequest request, String endpoint)
-      throws InterruptedException {
+  public static void assertApiEndpointHit(RecordedRequest request, String endpoint) {
     Assertions.assertEquals("/" + endpoint, request.getPath());
   }
 
