@@ -26,7 +26,7 @@ public class DebtApiFacadeTest extends IcFacadeTestBase {
     RecordedRequest request = this.mockServer.getRequest();
     this.assertSentCorrectHeaders(request, DEBTS_ENDPOINT,
         this.mockServer.getBaseUri(), RequestType.POST);
-    assertSentCorrectJson(request, debtBuilder.buildSendableJson());
+    assertSentCorrectJson(request, debtBuilder.buildSendableJson(true));
   }
 
   @Test

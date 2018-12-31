@@ -38,7 +38,7 @@ public class ItemBuilder extends BuilderBase {
   }
 
   @Override
-  public Map<String, Object> buildSendableObject() {
+  protected Map<String, Object> buildSendableObject() {
     Map<String, Object> jsonObject = new HashMap<>();
 
     jsonObject.put("description", description);
@@ -46,6 +46,8 @@ public class ItemBuilder extends BuilderBase {
     jsonObject.put("price", price);
     jsonObject.put("quantity", quantity);
     jsonObject.put("vat", vat);
+
+
 
     return jsonObject;
   }

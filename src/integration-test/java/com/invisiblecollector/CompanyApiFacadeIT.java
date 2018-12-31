@@ -150,7 +150,7 @@ class CompanyApiFacadeIT extends IcFacadeTestBase {
     RecordedRequest request = this.mockServer.getRequest();
     this.assertSentCorrectHeaders(
         request, COMPANIES_ENDPOINT, this.mockServer.getBaseUri(), RequestType.PUT);
-    assertSentCorrectJson(request, companyBuilder.buildSendableJson());
+    assertSentCorrectJson(request, companyBuilder.buildSendableJson(true));
   }
 
   @Test

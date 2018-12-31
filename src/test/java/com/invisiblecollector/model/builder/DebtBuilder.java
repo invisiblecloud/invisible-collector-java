@@ -60,6 +60,8 @@ public class DebtBuilder extends BuilderBase {
 
         jsonObject.put("id", id);
 
+
+
         return jsonObject;
     }
 
@@ -74,7 +76,7 @@ public class DebtBuilder extends BuilderBase {
     }
 
     @Override
-    public Map<String, Object> buildSendableObject() {
+    protected Map<String, Object> buildSendableObject() {
         Map<String, Object> jsonObject = new HashMap<>();
 
         jsonObject.put("number", number);
@@ -89,6 +91,8 @@ public class DebtBuilder extends BuilderBase {
         jsonObject.put("currency", currency);
         jsonObject.put("attributes", StringTestUtils.toJsonElement(getAttributes()));
         jsonObject.put("items", StringTestUtils.toJsonElement(getItems()));
+
+
 
         return jsonObject;
     }

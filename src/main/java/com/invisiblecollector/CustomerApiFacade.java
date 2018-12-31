@@ -25,8 +25,9 @@ public class CustomerApiFacade extends ApiBase {
   private interface DebtList extends List<Debt> {} //used to get type of List<Debt>
   private static final String ATTRIBUTES_PATH = "attributes";
   private static final String CUSTOMERS_ENDPOINT = "customers";
-
   private static final String DEBTS_PATH = "debts";
+  private static final String[] CUSTOMER_FIELDS = new String[] {"name", "externalId", "vatNumber", "address", "zipCode", "city", "country", "email", "phone", "locale"};
+
   
   public CustomerApiFacade(ApiRequestFacade apiFacade) {
     super(apiFacade);
@@ -39,24 +40,8 @@ public class CustomerApiFacade extends ApiBase {
   /**
    * Register a new customer in the database. 
    * 
-   * <p>See {@link #registerNewCustomer(Map)} for more details.
-   * 
-   * @param customerInfo the object containing the customer information. 
-   *        null values will be discarded
-   */
-  public Customer registerNewCustomer(Customer customerInfo)
-      throws IcException, IcConflictingException {
-    return this.registerNewCustomer(customerInfo.toEnumMap());
-  }
-
-  /**
-   * Register a new customer in the database. 
-   * 
-   * @param customerInfo a map containing the fields of the customer to be created. 
-   *        See {@link CustomerField} for a description of the attributes and their possible values.
-   *        null values are <b>not</b> discarded.
-   *        See {@link CustomerField#assertCorrectlyInitialized(Map)} for a list of the 
-   *        <b>mandatory</b> attributes.
+   * @param customerInfo the object containing the customer information.
+   *        Attributes {@code name}, {@code country} and {@code vatNumber} are <b>mandatory</b>
    * @return an up to date {@link Customer} containing the customer's information
    * @throws IcException any general exception
    * @throws IcConflictingException in case the vatNumber or externalId already exists 
@@ -64,10 +49,11 @@ public class CustomerApiFacade extends ApiBase {
    *         id of the conflicting customer.
    * @see #registerNewCustomer(Customer)
    */
-  public Customer registerNewCustomer(Map<CustomerField, Object> customerInfo)
+  public Customer registerNewCustomer(Customer customerInfo)
       throws IcException, IcConflictingException {
-    CustomerField.assertCorrectlyInitialized(customerInfo);
-    String jsonToSend = this.jsonFacade.toJson(customerInfo);
+    customerInfo.assertConstainsKeys("name", "vatNumber", "country");
+    Map<String, Object> fields = customerInfo.getOnlyFields(CUSTOMER_FIELDS);
+    String jsonToSend = this.jsonFacade.toJson(fields);
 
     return this.returningRequest(Customer.class,
             () -> apiFacade.postRequest(CUSTOMERS_ENDPOINT, jsonToSend));
@@ -76,29 +62,13 @@ public class CustomerApiFacade extends ApiBase {
   /**
    * Get the customer attributes string map.
    * 
-   * <p>See {@link #requestCustomerAttributes(String)} for more details.
-   * 
-   * @param idContainer An object (such as a {@link Customer} object) that contains the id or
-   *        externalId of the customer
-   */
-  public Map<String, String> requestCustomerAttributes(IRoutable idContainer)
-      throws IcException {
-    String id = idContainer.getRoutableId();
-    return requestCustomerAttributes(id);
-  }
-
-  /**
-   * Get the customer attributes string map.
-   * 
-   * <p>Use {@link #setCustomerAttributes(IRoutable, Map)} 
-   * or {@link #setCustomerAttributes(String, Map)} 
+   * <p>Use {@link #setCustomerAttributes(String, Map)}
    * to set the attributes returned by this method.
    * 
    * @param customerId the id of the customer (can be the id or externalId).
    * @return a map containing up-to-date string:string attribute 
    *         pairs which correspond to the customer.
    * @throws IcException in case of any error
-   * @see #requestCustomerAttributes(IRoutable)
    */
   public Map<String, String> requestCustomerAttributes(String customerId) throws IcException {
     assertCorrectId(customerId);
@@ -108,19 +78,6 @@ public class CustomerApiFacade extends ApiBase {
     return this.jsonFacade.parseStringStreamAsStringMap(inputStream);
   }
 
-  /**
-   * Get the customer's debts.
-   * 
-   * <p>See {@link #requestCustomerDebts(String)} for more details.
-   * 
-   * @param idContainer an object containing the id or externalId of 
-   *        the customer (can be a {@link Customer} object).
-   */
-  public List<Debt> requestCustomerDebts(IRoutable idContainer) throws IcException {
-    String id = idContainer.getRoutableId();
-    return requestCustomerDebts(id);
-  }
-  
   /**
    * Get the customer's debts.
    * 
@@ -139,24 +96,9 @@ public class CustomerApiFacade extends ApiBase {
   /**
    * Get customer info from the database.
    * 
-   * <p>See {@link #requestCustomerInfo(String)} for more details.
-   * 
-   * @param idContainer an object containing the id or externalId of 
-   *        the customer (can be a {@link Customer} object).
-   */
-  public Customer requestCustomerInfo(IRoutable idContainer)
-      throws IcException {
-    String id = idContainer.getRoutableId();
-    return requestCustomerInfo(id);
-  }
-
-  /**
-   * Get customer info from the database.
-   * 
    * @param customerId the id or externalId of the customer.
    * @return the up-to-date customer info
    * @throws IcException any general error
-   * @see #requestCustomerInfo(IRoutable)
    */
   public Customer requestCustomerInfo(String customerId)
       throws IcException {
@@ -170,23 +112,8 @@ public class CustomerApiFacade extends ApiBase {
   /**
    * Set the customer's string map attributes.
    * 
-   * <p>See {@link #setCustomerAttributes(String, Map)} for more details.
-   * 
-   * @param idContainer an object containing the id or externalId of 
-   *        the customer (can be a {@link Customer} object).
-   */
-  public Map<String, String> setCustomerAttributes(IRoutable idContainer,
-      Map<String, String> attributes) throws IcException {
-    String id = idContainer.getRoutableId();
-    return setCustomerAttributes(id, attributes);
-  }
-
-  /**
-   * Set the customer's string map attributes.
-   * 
-   * <p>Use {@link #requestCustomerAttributes(String)} or 
-   * {@link #requestCustomerAttributes(IRoutable)} to get the attributes that are set.
-   * 
+   * <p>Use {@link #requestCustomerAttributes(String)}
+   *
    * @param customerId the id or externalId of the customer.
    * @param attributes the map with the attributes to set. 
    *        Duplicate values in the database are updated, 
@@ -194,7 +121,6 @@ public class CustomerApiFacade extends ApiBase {
    * @return a map containing up-to-date string:string attribute 
    *         pairs which correspond to the customer.
    * @throws IcException any general error
-   * @see #setCustomerAttributes(IRoutable, Map)
    */
   public Map<String, String> setCustomerAttributes(String customerId,
       Map<String, String> attributes) throws IcException {
@@ -208,34 +134,28 @@ public class CustomerApiFacade extends ApiBase {
 
   /**
    * Update the customer's info in the database.
-   * 
+   *
    * <p>See {@link #updateCustomerInfo(Map, String)} for more details.
-   * 
-   * @param customerInfo the customer info. Must contain as well 
-   *        an id or externalId that indicates the customer to update. null values will be discarded
+   *
+   * @param customerInfo the customer info. Must contain as well an id or externalId that indicates the customer to update. null values will be discarded
    */
-  public Customer updateCustomerInfo(Customer customerInfo) throws IcException {
-    String id = customerInfo.getRoutableId();
-    return this.updateCustomerInfo(customerInfo.toEnumMap(), id);
-  }
-  
+
   /**
    * Update the customer's info in the database.
-   * 
-   * @param customerInfo the new customer info. null values will <b>not</b> be discarded. 
-   *        See {@link CustomerField} for a list and description of the fields of a customer.
-   *        See {@link CustomerField#assertCorrectlyInitialized(Map)} for a list of the 
-   *        <b>mandatory</b> attributes.
-   * @param customerId the id or externalId of the customer.
+   *
+   * @param customerInfo the customer info. Must contain as well an id or externalId that indicates the customer to update.
+   *         The {@code country} attribute is <b>mandatory</b>.
    * @return the up-to-date customer info.
    * @throws IcException any general exception
    * @see #updateCustomerInfo(Customer)
    */
-  public Customer updateCustomerInfo(Map<CustomerField, Object> customerInfo, String customerId)
+  public Customer updateCustomerInfo(Customer customerInfo)
       throws IcException {
-    assertCorrectId(customerId);
+    String customerId = customerInfo.getRoutableId();
     String endpoint = CUSTOMERS_ENDPOINT + "/" + customerId;
-    String json = this.jsonFacade.toJson(customerInfo);
+    customerInfo.assertConstainsKeys("country");
+    Map<String, Object> fields = customerInfo.getOnlyFields(CUSTOMER_FIELDS);
+    String json = this.jsonFacade.toJson(fields);
 
     return this.returningRequest(Customer.class,
             () -> apiFacade.putRequest(endpoint, json));

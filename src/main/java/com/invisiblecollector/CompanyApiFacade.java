@@ -61,7 +61,7 @@ public class CompanyApiFacade extends ApiBase {
    * Update company info.
    *
    * <p>You should use {@link #requestCompanyInfo()} before using this method to request company
-   * info since the name and vatNumber mandatory company fields cannot be changed and are needed for
+   * info since the name and vatNumber mandatory company fields are needed for
    * validation and consistency purposes.
    *
    * @param companyInfo the company info. name and vatNumber are <b>mandatory</b> attributes.

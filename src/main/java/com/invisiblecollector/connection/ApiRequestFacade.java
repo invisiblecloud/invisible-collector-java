@@ -95,7 +95,10 @@ public class ApiRequestFacade {
 
     Response response = makeRequest(request, requestType, bodyToSend);
 
+//    String str = response.readEntity(String.class);
+
     responseValidator.validate(response);
+
 
     return response.readEntity(InputStream.class);
   }

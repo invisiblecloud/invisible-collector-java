@@ -1,7 +1,6 @@
 package com.invisiblecollector.model.builder;
 
 import com.invisiblecollector.model.Customer;
-import com.invisiblecollector.model.Debt;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,8 +20,17 @@ public class CustomerBuilder extends BuilderBase {
 
   public CustomerBuilder() {}
 
-  public CustomerBuilder(String address, String city, String country, String email,
-      String externalId, String gid, String name, String phone, String vatNumber, String zipCode) {
+  public CustomerBuilder(
+      String address,
+      String city,
+      String country,
+      String email,
+      String externalId,
+      String gid,
+      String name,
+      String phone,
+      String vatNumber,
+      String zipCode) {
     this.address = address;
     this.city = city;
     this.country = country;
@@ -33,7 +41,6 @@ public class CustomerBuilder extends BuilderBase {
     this.phone = phone;
     this.vatNumber = vatNumber;
     this.zipCode = zipCode;
-
   }
 
   private class ExtraCustomer extends Customer {
@@ -43,17 +50,35 @@ public class CustomerBuilder extends BuilderBase {
   }
 
   public Customer buildModel() {
+    return buildModel(false);
+  }
 
-    return new ExtraCustomer(buildObject());
+  public Customer buildModel(boolean stripNulls) {
+
+    Map<String, Object> map = buildObject();
+    if (stripNulls) {
+      stripMapNulls(map);
+    }
+
+    return new ExtraCustomer(map);
   }
 
   public static CustomerBuilder buildTestCustomerBuilder() {
-    return new CustomerBuilder("testAdress", "testCity", "PT", "testEmail@gmail.com", "12345",
-        "234", "testName", "9999", "509784852", "23123");
+    return new CustomerBuilder(
+        "testAdress",
+        "testCity",
+        "PT",
+        "testEmail@gmail.com",
+        "12345",
+        "234",
+        "testName",
+        "9999",
+        "509784852",
+        "23123");
   }
-  
+
   @Override
-  public Map<String, Object> buildSendableObject() {
+  protected Map<String, Object> buildSendableObject() {
     Map<String, Object> jsonObject = new HashMap<>();
 
     jsonObject.put("name", name);
@@ -71,7 +96,7 @@ public class CustomerBuilder extends BuilderBase {
 
   @Override
   public Map<String, Object> buildObject() {
-    Map<String, Object>  jsonObject = buildSendableObject();
+    Map<String, Object> jsonObject = buildSendableObject();
 
     jsonObject.put("gid", gid);
 
@@ -128,9 +153,7 @@ public class CustomerBuilder extends BuilderBase {
     return this;
   }
 
-
   public String getExternalId() {
     return gid;
   }
-
 }

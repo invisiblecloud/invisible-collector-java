@@ -56,7 +56,7 @@ public class CustomerTest {
   @Test
   public void getRoutableId_correctOrder() {
     Customer customer = new Customer();
-    customer.setId(TEST_ID);
+    customer.setGid(TEST_ID);
     customer.setExternalId(TEST_EXTERNAL_ID);
 
     Assertions.assertEquals(TEST_ID, customer.getRoutableId());
@@ -65,7 +65,7 @@ public class CustomerTest {
   @Test
   public void getRoutableId_returnsExternalId() {
     Customer customer = new Customer();
-    customer.setId(null);
+    customer.setGid(null);
     customer.setExternalId(TEST_EXTERNAL_ID);
 
     Assertions.assertEquals(TEST_EXTERNAL_ID, customer.getRoutableId());
@@ -74,7 +74,7 @@ public class CustomerTest {
   @Test
   public void getRoutableId_fail() {
     Customer customer = new Customer();
-    customer.setId("");
+    customer.setGid("");
 
     Assertions.assertThrows(IllegalArgumentException.class, customer::getRoutableId);
   }

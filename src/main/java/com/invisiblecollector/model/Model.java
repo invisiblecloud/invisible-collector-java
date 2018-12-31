@@ -34,9 +34,8 @@ public class Model {
     Map<String, Object> copy = getFields();
     List<String> keyList = Arrays.asList(keys);
 
-    return copy.entrySet()
-        .stream()
-        .filter(pair -> keyList.contains(pair.getKey()))
-        .collect(Collectors.toMap(p -> p.getKey(), p -> p.getValue()));
+    copy.entrySet().removeIf(entry -> ! keyList.contains(entry.getKey()));
+
+    return copy;
   }
 }

@@ -92,7 +92,7 @@ public class IcFacadeTestBase {
 
   protected String buildConflictErrorJson(int statusCode) {
     return String.format(
-        "{\"code\": %d, \"message\": %s, \"gid\": %s}",
+        "{\"code\": %d, \"message\": \"%s\", \"gid\": \"%s\"}",
         statusCode, JSON_ERROR_MESSAGE, CONFLICT_GID);
   }
 

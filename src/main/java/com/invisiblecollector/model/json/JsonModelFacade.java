@@ -1,6 +1,7 @@
 package com.invisiblecollector.model.json;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.invisiblecollector.exceptions.IcException;
 
 import java.io.IOException;
@@ -15,10 +16,6 @@ import java.util.Map;
  */
 public class JsonModelFacade {
 
-  // not to be used, just to get class of map
-  private interface StringMap extends Map<String, String> {
-  }
-
   public <T> T parseStringStream(InputStream inputStream, Class<T> classType) throws IcException {
 
     try {
@@ -31,7 +28,12 @@ public class JsonModelFacade {
 
   public Map<String, String> parseStringStreamAsStringMap(InputStream inputStream)
       throws IcException {
-    return parseStringStream(inputStream, StringMap.class);
+    try {
+      return JsonSingleton.getInstance2()
+              .readValue(inputStream, new TypeReference<Map<String, String>>(){});
+    } catch (IOException e) {
+      throw new IcException(e);
+    }
   }
 
   public String toJson(Object obj) {

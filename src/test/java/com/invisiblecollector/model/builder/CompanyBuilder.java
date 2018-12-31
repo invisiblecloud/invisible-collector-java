@@ -1,7 +1,6 @@
 package com.invisiblecollector.model.builder;
 
 import com.invisiblecollector.model.Company;
-import com.invisiblecollector.model.Customer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -48,7 +47,7 @@ public class CompanyBuilder extends BuilderBase {
   }
   
   @Override
-  public Map<String, Object> buildSendableObject() {
+  protected Map<String, Object> buildSendableObject() {
     Map<String, Object> jsonObject = new HashMap<>();
 
     jsonObject.put("address", address);
@@ -56,6 +55,8 @@ public class CompanyBuilder extends BuilderBase {
     jsonObject.put("name", name);
     jsonObject.put("vatNumber", vatNumber);
     jsonObject.put("zipCode", zipCode);
+
+
 
     return jsonObject;
   }
@@ -66,6 +67,8 @@ public class CompanyBuilder extends BuilderBase {
 
     jsonObject.put("gid", gid);
     jsonObject.put("notificationsEnabled", notificationsEnabled);
+
+
 
     return jsonObject;
   }
