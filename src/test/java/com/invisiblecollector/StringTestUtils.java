@@ -1,15 +1,19 @@
 package com.invisiblecollector;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.invisiblecollector.model.json.JsonSingleton;
+
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Scanner;
 import java.util.UUID;
 
-import com.google.gson.JsonElement;
-import com.invisiblecollector.model.json.JsonSingleton;
-
 public final class StringTestUtils {
+  private static Gson instance = null;
+
   private StringTestUtils() {}
 
   // provided by Pavel Repin @ https://stackoverflow.com/a/5445161
@@ -33,7 +37,14 @@ public final class StringTestUtils {
   }
 
   public static JsonElement toJsonElement(Object obj) {
-    return JsonSingleton.getInstance().toJsonTree(obj);
+    return getInstance().toJsonTree(obj);
   }
 
+  public static Gson getInstance() {
+    if (instance == null) {
+      instance = new GsonBuilder().serializeNulls().setDateFormat(JsonSingleton.DATE_FORMAT).create();
+    }
+
+    return instance;
+  }
 }
