@@ -1,21 +1,20 @@
 package com.invisiblecollector;
 
 import com.invisiblecollector.connection.ApiRequestFacade;
-import com.invisiblecollector.connection.builders.IThrowingBuilder;
-import com.invisiblecollector.connection.response.validators.IValidator;
-import com.invisiblecollector.connection.response.validators.ValidatorBuilder;
+import com.invisiblecollector.connection.builders.ThrowingSupplier;
 import com.invisiblecollector.exceptions.IcException;
 import com.invisiblecollector.model.Company;
 import com.invisiblecollector.model.CompanyField;
+
 import java.io.InputStream;
 import java.net.URI;
 import java.util.Map;
 
 /**
  * Immutable and thread safe class for making operations on the {@code /companies } API endpoint.
- * 
+ *
  * <p>For object construction see {@link IcApiFacade}
- * 
+ *
  * @author ros
  */
 public class CompanyApiFacade extends ApiBase {
@@ -34,51 +33,47 @@ public class CompanyApiFacade extends ApiBase {
 
   /**
    * Request the company info from the database.
-   * 
+   *
    * @return up-to-date company info.
    * @throws IcException on any general exception
    */
   public Company requestCompanyInfo() throws IcException {
-    ValidatorBuilder builder = this.validatorBuilder.clone();
-    return this.returningRequest(Company.class, builder,
-        (validator) -> apiFacade.getRequest(validator, COMPANIES_ENDPOINT));
+    return this.returningRequest(Company.class, () -> apiFacade.getRequest(COMPANIES_ENDPOINT));
   }
 
   /**
    * Enable or disable notifications for the company's customer.
-   * 
+   *
    * @param enableNotifications true: enable notifications, false: disable notifications
    * @return up-to-date company info.
    * @throws IcException on any general exception
    */
   public Company setCompanyNotifications(boolean enableNotifications) throws IcException {
-    IThrowingBuilder<InputStream, IValidator> requestMethod = enableNotifications
-        ? (validator) -> apiFacade.putRequest(validator, ENABLE_NOTIFICATIONS_ENDPOINT, null)
-        : (validator) -> apiFacade.putRequest(validator, DISABLE_NOTIFICATIONS_ENDPOINT, null);
+    ThrowingSupplier<InputStream, IcException> requestMethod =
+        enableNotifications
+            ? () -> apiFacade.putRequest(ENABLE_NOTIFICATIONS_ENDPOINT, null)
+            : () -> apiFacade.putRequest(DISABLE_NOTIFICATIONS_ENDPOINT, null);
 
-    ValidatorBuilder builder = this.validatorBuilder.clone();
-    return this.returningRequest(Company.class, builder, requestMethod);
+    return this.returningRequest(Company.class, requestMethod);
   }
-
 
   /**
    * Update company info.
-   * 
-   * <p>You should use {@link #requestCompanyInfo()} before using this method to request company 
-   * info since the name and vatNumber mandatory
-   * company fields cannot be changed and are needed for validation and consistency purposes.
-   * 
+   *
+   * <p>You should use {@link #requestCompanyInfo()} before using this method to request company
+   * info since the name and vatNumber mandatory company fields cannot be changed and are needed for
+   * validation and consistency purposes.
+   *
    * @param companyInfo the company info. name and vatNumber are <b>mandatory</b> attributes.
    * @return up-to-date company info
    * @throws IcException on any general exception
    */
   public Company updateCompanyInfo(Company companyInfo) throws IcException {
     companyInfo.assertConstainsKeys("name", "vatNumber");
-    Map<String, Object> company = companyInfo.getOnlyFields("name", "vatNumber", "address", "zipCode", "city");
-    ValidatorBuilder builder = this.validatorBuilder.clone().addBadClientJsonValidator();
+    Map<String, Object> company =
+        companyInfo.getOnlyFields("name", "vatNumber", "address", "zipCode", "city");
     String jsonToSend = this.jsonFacade.toJson(company);
-    return this.returningRequest(Company.class, builder,
-        (validator) -> apiFacade.putRequest(validator, COMPANIES_ENDPOINT, jsonToSend));
+    return this.returningRequest(
+        Company.class, () -> apiFacade.putRequest(COMPANIES_ENDPOINT, jsonToSend));
   }
-  
 }

@@ -3,20 +3,16 @@ package com.invisiblecollector;
 import com.invisiblecollector.connection.RequestType;
 import com.invisiblecollector.exceptions.IcException;
 import com.invisiblecollector.model.Company;
-import com.invisiblecollector.model.Debt;
 import com.invisiblecollector.model.builder.CompanyBuilder;
-import com.invisiblecollector.model.builder.DebtBuilder;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.RecordedRequest;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.MatcherAssert;
-import org.javatuples.Pair;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.net.URI;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
 
 class CompanyApiFacadeIT extends IcFacadeTestBase {
 
@@ -71,8 +67,7 @@ class CompanyApiFacadeIT extends IcFacadeTestBase {
     response.throttleBody(1, 1, TimeUnit.MILLISECONDS); // 1000 Byte/sec
     CompanyApiFacade companyFacade = initMockServer(response).getCompanyFacade();
 
-    this.assertCorrectModelReturned(
-            companyBuilder, (unused) -> companyFacade.requestCompanyInfo());
+    this.assertCorrectModelReturned(companyBuilder, (unused) -> companyFacade.requestCompanyInfo());
 
     RecordedRequest request = this.mockServer.getRequest();
     this.assertSentCorrectHeaders(
@@ -131,7 +126,7 @@ class CompanyApiFacadeIT extends IcFacadeTestBase {
     CompanyApiFacade companyApiFacade = new CompanyApiFacade(TEST_API_TOKEN, connectionUrl);
 
     this.assertCorrectModelReturned(
-            companyBuilder, (Company company) -> companyApiFacade.requestCompanyInfo());
+        companyBuilder, (Company company) -> companyApiFacade.requestCompanyInfo());
 
     RecordedRequest request = this.mockServer.getRequest();
     this.assertSentCorrectHeaders(request, COMPANIES_ENDPOINT, connectionUrl, RequestType.GET);

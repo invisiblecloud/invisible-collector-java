@@ -1,14 +1,13 @@
 package com.invisiblecollector;
 
 import com.invisiblecollector.connection.ApiRequestFacade;
-import com.invisiblecollector.connection.response.validators.IValidator;
-import com.invisiblecollector.connection.response.validators.ValidatorBuilder;
 import com.invisiblecollector.exceptions.IcConflictingException;
 import com.invisiblecollector.exceptions.IcException;
 import com.invisiblecollector.model.Customer;
 import com.invisiblecollector.model.CustomerField;
 import com.invisiblecollector.model.Debt;
 import com.invisiblecollector.model.IRoutable;
+
 import java.io.InputStream;
 import java.net.URI;
 import java.util.List;
@@ -69,11 +68,9 @@ public class CustomerApiFacade extends ApiBase {
       throws IcException, IcConflictingException {
     CustomerField.assertCorrectlyInitialized(customerInfo);
     String jsonToSend = this.jsonFacade.toJson(customerInfo);
-    ValidatorBuilder builder = this.validatorBuilder.clone().addBadClientJsonValidator()
-        .addConflictValidator("Entity already exists with the same VAT number or externalId");
 
-    return this.returningRequest(Customer.class, builder,
-        (validator) -> apiFacade.postRequest(validator, CUSTOMERS_ENDPOINT, jsonToSend));
+    return this.returningRequest(Customer.class,
+            () -> apiFacade.postRequest(CUSTOMERS_ENDPOINT, jsonToSend));
   }
 
   /**
@@ -106,8 +103,7 @@ public class CustomerApiFacade extends ApiBase {
   public Map<String, String> requestCustomerAttributes(String customerId) throws IcException {
     assertCorrectId(customerId);
     String endpoint = String.join("/", CUSTOMERS_ENDPOINT, customerId, ATTRIBUTES_PATH);
-    IValidator validator = this.validatorBuilder.clone().build();
-    InputStream inputStream = apiFacade.getRequest(validator, endpoint);
+    InputStream inputStream = apiFacade.getRequest(endpoint);
 
     return this.jsonFacade.parseStringStreamAsStringMap(inputStream);
   }
@@ -135,10 +131,9 @@ public class CustomerApiFacade extends ApiBase {
   public List<Debt> requestCustomerDebts(String customerId) throws IcException {
     assertCorrectId(customerId);
     String endpoint = String.join("/", CUSTOMERS_ENDPOINT, customerId, DEBTS_PATH);
-    ValidatorBuilder builder = this.validatorBuilder.clone().addCommonValidators();
 
-    return this.returningRequest(DebtList.class, builder,
-        (validator) -> apiFacade.getRequest(validator, endpoint));
+    return this.returningRequest(DebtList.class,
+            () -> apiFacade.getRequest(endpoint));
   }
 
   /**
@@ -167,10 +162,9 @@ public class CustomerApiFacade extends ApiBase {
       throws IcException {
     assertCorrectId(customerId);
     String endpoint = CUSTOMERS_ENDPOINT + "/" + customerId;
-    ValidatorBuilder builder = this.validatorBuilder.clone();
 
-    return this.returningRequest(Customer.class, builder,
-        (validator) -> apiFacade.getRequest(validator, endpoint));
+    return this.returningRequest(Customer.class,
+            () -> apiFacade.getRequest(endpoint));
   }
 
   /**
@@ -207,8 +201,7 @@ public class CustomerApiFacade extends ApiBase {
     assertCorrectId(customerId);
     String endpoint = String.join("/", CUSTOMERS_ENDPOINT, customerId, ATTRIBUTES_PATH);
     String jsonToSend = this.jsonFacade.toJson(attributes);
-    IValidator validator = this.validatorBuilder.clone().addBadClientJsonValidator().build();
-    InputStream inputStream = apiFacade.postRequest(validator, endpoint, jsonToSend);
+    InputStream inputStream = apiFacade.postRequest(endpoint, jsonToSend);
 
     return this.jsonFacade.parseStringStreamAsStringMap(inputStream);
   }
@@ -243,10 +236,9 @@ public class CustomerApiFacade extends ApiBase {
     assertCorrectId(customerId);
     String endpoint = CUSTOMERS_ENDPOINT + "/" + customerId;
     String json = this.jsonFacade.toJson(customerInfo);
-    ValidatorBuilder builder = this.validatorBuilder.clone().addBadClientJsonValidator();
 
-    return this.returningRequest(Customer.class, builder,
-        (validator) -> apiFacade.putRequest(validator, endpoint, json));
+    return this.returningRequest(Customer.class,
+            () -> apiFacade.putRequest(endpoint, json));
   }
   
   

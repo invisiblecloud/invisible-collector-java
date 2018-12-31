@@ -97,7 +97,7 @@ public class IcFacadeTestBase {
   }
 
   protected String buildErrorJson(int statusCode) {
-    return String.format("{\"code\": %d, \"message\": %s}", statusCode, JSON_ERROR_MESSAGE);
+    return String.format("{\"code\": %d, \"message\": \"%s\"}", statusCode, JSON_ERROR_MESSAGE);
   }
 
   protected IcApiFacade buildIcApiResponseAndAddServerReply(BuilderBase modelBuilder)

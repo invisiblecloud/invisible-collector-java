@@ -11,7 +11,12 @@ import okhttp3.mockwebserver.RecordedRequest;
 public class DebtApiFacadeTest extends IcFacadeTestBase {
 
   private static final String DEBTS_ENDPOINT = "debts";
-  
+
+  private DebtApiFacade buildDebtResponseAndAddServerReply(DebtBuilder debtBuilder)
+          throws Exception {
+    return buildIcApiResponseAndAddServerReply(debtBuilder).getDebtFacade();
+  }
+
   @Test
   public void registerNewCustomer_success() throws Exception {
     DebtBuilder debtBuilder = DebtBuilder.buildTestDebtBuilder();
@@ -22,11 +27,6 @@ public class DebtApiFacadeTest extends IcFacadeTestBase {
     this.assertSentCorrectHeaders(request, DEBTS_ENDPOINT,
         this.mockServer.getBaseUri(), RequestType.POST);
     assertSentCorrectJson(request, debtBuilder.buildSendableJson());
-  }
-
-  private DebtApiFacade buildDebtResponseAndAddServerReply(DebtBuilder debtBuilder)
-      throws Exception {
-    return buildIcApiResponseAndAddServerReply(debtBuilder).getDebtFacade();
   }
 
   @Test
