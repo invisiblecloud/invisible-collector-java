@@ -3,20 +3,16 @@ package com.invisiblecollector;
 import com.invisiblecollector.connection.RequestType;
 import com.invisiblecollector.exceptions.IcException;
 import com.invisiblecollector.model.Company;
-import com.invisiblecollector.model.Debt;
 import com.invisiblecollector.model.builder.CompanyBuilder;
-import com.invisiblecollector.model.builder.DebtBuilder;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.RecordedRequest;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.MatcherAssert;
-import org.javatuples.Pair;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.net.URI;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
 
 class CompanyApiFacadeIT extends IcFacadeTestBase {
 
