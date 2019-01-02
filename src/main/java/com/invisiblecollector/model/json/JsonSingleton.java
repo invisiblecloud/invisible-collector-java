@@ -13,16 +13,16 @@ public class JsonSingleton {
    */
   public static final String DATE_FORMAT = "yyyy-MM-dd"; // https://docs.oracle.com/javase/6/docs/api/java/text/SimpleDateFormat.html?is-external=true
 
-  private static ObjectMapper instance2 = null;
-  public static ObjectMapper getInstance2() {
-    if (instance2 == null) {
-      instance2 = new ObjectMapper();
-      instance2.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+  private static ObjectMapper instance = null;
+  public static ObjectMapper getInstance() {
+    if (instance == null) {
+      instance = new ObjectMapper();
+      instance.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
       DateFormat df = new SimpleDateFormat(DATE_FORMAT);
-      instance2.setDateFormat(df);
+      instance.setDateFormat(df);
     }
 
-    return instance2;
+    return instance;
   }
 
 }

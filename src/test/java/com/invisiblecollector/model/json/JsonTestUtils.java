@@ -17,7 +17,7 @@ public class JsonTestUtils {
   }
  
   public static void assertJsonEquals(String expectedJson, String actualJson) {
-    ObjectMapper mapper = JsonSingleton.getInstance2();
+    ObjectMapper mapper = JsonSingleton.getInstance();
 
     try {
       JsonNode expected = mapper.readTree(expectedJson);

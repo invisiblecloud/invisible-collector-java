@@ -22,7 +22,7 @@ public class JsonModelFacade {
   public <T> T parseStringStream(InputStream inputStream, Class<T> classType) throws IcException {
 
     try {
-      return JsonSingleton.getInstance2().readValue(inputStream, classType);
+      return JsonSingleton.getInstance().readValue(inputStream, classType);
     } catch (IOException e) {
       throw new IcException(PARSING_ERROR_MSG, e);
     }
@@ -43,7 +43,7 @@ public class JsonModelFacade {
   private <T> T parseStringStreamAsCollection(InputStream inputStream, TypeReference<T> valueTypeRef)
       throws IcException {
     try {
-      return JsonSingleton.getInstance2().readValue(inputStream, valueTypeRef);
+      return JsonSingleton.getInstance().readValue(inputStream, valueTypeRef);
     } catch (IOException e) {
       throw new IcException(PARSING_ERROR_MSG, e);
     }
@@ -51,7 +51,7 @@ public class JsonModelFacade {
 
   public String toJson(Object obj) {
     try {
-      return JsonSingleton.getInstance2().writeValueAsString(obj);
+      return JsonSingleton.getInstance().writeValueAsString(obj);
     } catch (JsonProcessingException e) {
       throw new IllegalArgumentException(e);
     }

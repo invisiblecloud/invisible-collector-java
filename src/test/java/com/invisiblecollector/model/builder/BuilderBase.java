@@ -30,7 +30,7 @@ public abstract class BuilderBase {
 
   protected static String toJson(Object obj) {
     try {
-      return JsonSingleton.getInstance2().writeValueAsString(obj);
+      return JsonSingleton.getInstance().writeValueAsString(obj);
     } catch (JsonProcessingException e) {
       throw new IllegalStateException(e);
     }
