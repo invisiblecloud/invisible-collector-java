@@ -86,14 +86,14 @@ public class IcApiFacade {
     this.jsonFacade = jsonFacade;
   }
 
-  protected void assertCorrectId(String id) throws IllegalArgumentException {
+  private void assertCorrectId(String id) throws IllegalArgumentException {
     if (id == null || id.isEmpty()) {
       throw new IllegalArgumentException("Id cannot be empty");
     }
   }
 
-  protected <T> T returningRequest(
-      Class<T> returnType, ThrowingSupplier<InputStream, IcException> requestMethod)
+  private <T> T returningRequest(
+          Class<T> returnType, ThrowingSupplier<InputStream, IcException> requestMethod)
       throws IcException {
     InputStream inputStream = requestMethod.get();
     return this.jsonFacade.parseStringStream(inputStream, returnType);
