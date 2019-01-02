@@ -5,17 +5,6 @@ import java.util.Objects;
 
 public class Item extends Model implements IModel {
 
-  private String description;
-  private String name;
-  private Double price;
-  private Double quantity;
-  private Double vat;
-  
-  @Override
-  public int hashCode() {
-    return Objects.hash(description, name, price, quantity, vat);
-  }
-  
   @Override
   public boolean equals(Object obj) {
     if (!(obj instanceof Item)) {
@@ -24,52 +13,48 @@ public class Item extends Model implements IModel {
       return true;
     } else {
       Item other = (Item) obj;
-      return Objects.equals(this.description, other.description)
-          && Objects.equals(this.name, other.name) 
-          && Objects.equals(this.price, other.price)
-          && Objects.equals(this.quantity, other.quantity)
-          && Objects.equals(this.vat, other.vat);
+      return super.equals(other);
     }
   }
 
   public String getDescription() {
-    return description;
+    return getString("description");
   }
 
   public String getName() {
-    return name;
+    return getString("name");
   }
 
   public Double getPrice() {
-    return price;
+    return getDouble("price");
   }
 
   public Double getQuantity() {
-    return quantity;
+    return getDouble("quantity");
   }
 
   public Double getVat() {
-    return vat;
+    return getDouble("vat");
   }
 
   public void setDescription(String description) {
-    this.description = description;
+    fields.put("description", description);
   }
 
   public void setName(String name) {
-    this.name = name;
+    fields.put("name", name);
   }
 
   public void setPrice(Double price) {
-    this.price = price;
+    fields.put("price", price);
   }
 
   public void setQuantity(Double quantity) {
-    this.quantity = quantity;
+    fields.put("quantity", quantity);
   }
 
   public void setVat(Double vat) {
-    this.vat = vat;
+    fields.put("vat", vat);
   }
 
   @Override

@@ -1,10 +1,6 @@
 package com.invisiblecollector.model;
 
-import javax.jws.WebParam;
 import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Model {
   private interface StringMap extends Map<String, String> {}
