@@ -55,21 +55,6 @@ public class JsonModelFacadeTest {
     Date returnedDate = new JsonModelFacade().parseStringStream(inputStream, Date.class);
     Assertions.assertEquals(correctDate, returnedDate);
   }
-  
-
-  @Test
-  public void toJson_IModel_correctness() {
-    CompanyBuilder companyBuilder = CompanyBuilder.buildTestCompanyBuilder();
-
-    Company correctCompany = companyBuilder.buildModel();
-    String returnedJson = new JsonModelFacade().toJson((IModel) correctCompany);
-
-
-    //TODO fix
-//    JsonObject returnedJsonObj = JsonTestUtils.jsonStringAsJsonObject(returnedJson);
-//    JsonObject correctCompanyJsonObj = companyBuilder.buildObject();
-//    Assertions.assertEquals(returnedJsonObj, correctCompanyJsonObj);
-  }
 
   @Test
   public void parseStringStreamAsStringMap_correctness() throws IcException {

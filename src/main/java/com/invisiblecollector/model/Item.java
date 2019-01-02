@@ -53,5 +53,4 @@ public class Item extends Model {
   public void setVat(Double vat) {
     fields.put("vat", vat);
   }
-
 }
