@@ -33,7 +33,6 @@ public class Customer extends Model implements IRoutable {
     return getString("city");
   }
 
-  /** See {@link CustomerField#COUNTRY} for more details. */
   public String getCountry() {
     return getString("country");
   }

@@ -132,7 +132,6 @@ public class Debt extends Model implements IRoutable {
     return getId();
   }
 
-  /** See {@link DebtField#STATUS} for more details. */
   public String getStatus() {
     return getString("status");
   }
@@ -251,7 +250,16 @@ public class Debt extends Model implements IRoutable {
     fields.put("number", number);
   }
 
-  /** See {@link DebtField#STATUS} for possible values. */
+
+  /** Set the debt status
+   *
+   * @param status The debt status.
+   * <p>Value must be one of: <br>
+   * "PENDING" - the default value; <br>
+   * "PAID"; <br>
+   * "CANCELLED"; <br>
+   * <p>Check <a href="https://www.invisiblecollector.com/docs/api/debts/post/">the API docs </a> for up to date acceptable values
+   */
   public void setStatus(String status) {
     fields.put("status", status);
   }
