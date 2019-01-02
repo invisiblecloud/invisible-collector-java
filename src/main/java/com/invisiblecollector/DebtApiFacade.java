@@ -55,6 +55,7 @@ public class DebtApiFacade extends ApiBase {
    */
   public Debt requestDebtInfo(String debtId) throws IcException {
     assertCorrectId(debtId);
+
     String endpoint = DEBTS_ENDPOINT + "/" + debtId;
     return this.returningRequest(Debt.class,
             () -> apiFacade.getRequest(endpoint));

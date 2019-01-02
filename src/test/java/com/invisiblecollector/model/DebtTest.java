@@ -80,10 +80,12 @@ public class DebtTest {
 
   @Test
   public void setAttributes_correctness() {
+    Debt debt = new Debt();
+    Assertions.assertEquals(new HashMap<>(), debt.getAttributes());
+
     Map<String, String> actual = new HashMap<>();
     actual.put("1", "2");
 
-    Debt debt = new Debt();
     debt.setAttributes(actual);
 
     Assertions.assertEquals(actual, debt.getAttributes());
@@ -97,13 +99,16 @@ public class DebtTest {
 
   @Test
   public void setItems_correctness() {
+
+    Debt debt = new Debt();
+    Assertions.assertEquals(new ArrayList<>(), debt.getItems());
+
     Item item = ItemBuilder.buildTestItemBuilder().buildModel();
     List<Item> expected = new ArrayList<>();
     expected.add(item);
     List<Item> expected2 = new ArrayList<>();
     expected2.add(item.clone());
 
-    Debt debt = new Debt();
     debt.setItems(expected);
 
     Assertions.assertEquals(expected, debt.getItems());

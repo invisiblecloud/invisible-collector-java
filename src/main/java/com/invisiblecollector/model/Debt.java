@@ -51,8 +51,9 @@ public class Debt extends Model implements IRoutable {
   public Map<String, String> getAttributes() {
     Map<String, String> attributes = getStringMap("attributes");
     if (attributes == null) {
-      return null;
+      return new HashMap<>();
     }
+
     return new HashMap<>(attributes);
   }
 
@@ -88,7 +89,12 @@ public class Debt extends Model implements IRoutable {
   }
 
   public List<Item> getItems() {
-    return copyItemsList(getItemsInternals());
+    List<Item> items = getItemsInternals();
+    if (items == null) {
+      return new ArrayList<>();
+    }
+
+    return copyItemsList(items);
   }
 
   private List<Item> getItemsInternals() {
@@ -174,6 +180,7 @@ public class Debt extends Model implements IRoutable {
 
   /**
    * Set the items
+   *
    * @param items the items to set. items are deep cloned before setting.
    */
   public void setItems(List<Item> items) {
@@ -196,9 +203,7 @@ public class Debt extends Model implements IRoutable {
     fields.put("status", status);
   }
 
-  /**
-   * @param tax The total tax amount.
-   */
+  /** @param tax The total tax amount. */
   public void setTax(Double tax) {
     fields.put("tax", tax);
   }
