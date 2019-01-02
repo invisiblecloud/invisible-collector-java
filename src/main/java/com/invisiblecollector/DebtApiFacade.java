@@ -3,7 +3,6 @@ package com.invisiblecollector;
 import com.invisiblecollector.connection.ApiRequestFacade;
 import com.invisiblecollector.exceptions.IcException;
 import com.invisiblecollector.model.Debt;
-import com.invisiblecollector.model.DebtField;
 
 import java.net.URI;
 import java.util.Map;
@@ -30,22 +29,34 @@ public class DebtApiFacade extends ApiBase {
   /**
    * Register a new debt related to a customer.
    *
-   * @param debtInfo the debt information to register. See {@link DebtField} for a description of
-   *     the attributes and their possible values. The {@code number}, {@code customerId}, {@code
-   *     type}, {@code date} and {@code dueDate} are <b>mandatory</b> attributes. If the model
-   *     contains items they must contain the {@code name} attribute.
+   * @param debtInfo the debt information to register. The {@code number}, {@code customerId},
+   *     {@code type}, {@code date} and {@code dueDate} are <b>mandatory</b> attributes. If the
+   *     model contains items they must contain the {@code name} attribute.
    * @return an up-to-date object with the debt information.
    * @throws IcException any general exception
    * @see #registerNewDebt(Debt)
    */
   public Debt registerNewDebt(Debt debtInfo) throws IcException {
     debtInfo.assertConstainsKeys("number", "customerId", "type", "date", "dueDate");
-    Map<String, Object> fields = debtInfo.getOnlyFields("number", "customerId", "type", "status", "date", "dueDate", "netTotal", "tax", "grossTotal", "currency", "items", "attributes");
+    Map<String, Object> fields =
+        debtInfo.getOnlyFields(
+            "number",
+            "customerId",
+            "type",
+            "status",
+            "date",
+            "dueDate",
+            "netTotal",
+            "tax",
+            "grossTotal",
+            "currency",
+            "items",
+            "attributes");
     debtInfo.getItems().stream().forEach(item -> item.assertConstainsKeys("name"));
     String jsonToSend = this.jsonFacade.toJson(fields);
 
-    return this.returningRequest(Debt.class,
-            () -> apiFacade.postRequest(DEBTS_ENDPOINT, jsonToSend));
+    return this.returningRequest(
+        Debt.class, () -> apiFacade.postRequest(DEBTS_ENDPOINT, jsonToSend));
   }
 
   /**
@@ -59,9 +70,6 @@ public class DebtApiFacade extends ApiBase {
     assertCorrectId(debtId);
 
     String endpoint = DEBTS_ENDPOINT + "/" + debtId;
-    return this.returningRequest(Debt.class,
-            () -> apiFacade.getRequest(endpoint));
+    return this.returningRequest(Debt.class, () -> apiFacade.getRequest(endpoint));
   }
 }
-
-
