@@ -83,4 +83,10 @@ public abstract class Model {
 
     return copy;
   }
+
+  protected void assertCountryIso3166(String country) {
+    if (country != null && country.length() != 2 && country.length() != 3) {
+      throw new IllegalArgumentException("country must be in ISO 3166-1 format");
+    }
+  }
 }

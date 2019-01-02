@@ -3,9 +3,7 @@ package com.invisiblecollector.model;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * A model for customer debts.
- */
+/** A model for customer debts. */
 public class Debt extends Model implements IRoutable {
   public void addAttribute(String key, String value) {
     Map<String, String> attributes = getStringMap("attributes");
@@ -53,6 +51,7 @@ public class Debt extends Model implements IRoutable {
 
   /**
    * Get the debt's attributes
+   *
    * @return the debt's attributes (deep copied).
    */
   public Map<String, String> getAttributes() {
@@ -73,11 +72,21 @@ public class Debt extends Model implements IRoutable {
   }
 
   public Date getDate() {
-    return new Date(getDate("date").getTime());
+    Date date = getDate("date");
+    if (date == null) {
+      return null;
+    }
+
+    return new Date(date.getTime());
   }
 
   public Date getDueDate() {
-    return new Date(getDate("dueDate").getTime());
+    Date dueDate = getDate("dueDate");
+    if (dueDate == null) {
+      return null;
+    }
+
+    return new Date(dueDate.getTime());
   }
 
   public Double getGrossTotal() {
@@ -151,9 +160,14 @@ public class Debt extends Model implements IRoutable {
   /**
    * Set the debt's currency.
    *
-   * @param currency The Debt's currency. <p>Value must be in <a href="https://en.wikipedia.org/wiki/ISO_4217">ISO 4217</a> format.
+   * @param currency The Debt's currency.
+   *     <p>Value must be in <a href="https://en.wikipedia.org/wiki/ISO_4217">ISO 4217</a> format.
    */
   public void setCurrency(String currency) {
+    if (currency != null && currency.length() != 3) {
+      throw new IllegalArgumentException("currency must be in ISO 4217 format");
+    }
+
     fields.put("currency", currency);
   }
 
@@ -171,7 +185,8 @@ public class Debt extends Model implements IRoutable {
   /**
    * Set the customer id.
    *
-   * @param customerId The id of the customer to whom the debt is issued. Can be the customer's id or external id.
+   * @param customerId The id of the customer to whom the debt is issued. Can be the customer's id
+   *     or external id.
    * @see #setCustomerId(IRoutable)
    */
   public void setCustomerId(String customerId) {
@@ -181,19 +196,31 @@ public class Debt extends Model implements IRoutable {
   /**
    * Set the debt's date.
    *
-   * @param date The date when the debt was issued. <p>Only the year, month and day are considered, with the remaining fields discarded.
+   * @param date The date when the debt was issued.
+   *     <p>Only the year, month and day are considered, with the remaining fields discarded. Must
+   *     follow before the due date
    */
   public void setDate(Date date) {
+    assertDateOrder(date, getDueDate());
     fields.put("date", new Date(date.getTime()));
   }
 
   /**
    * Set the debt's due date.
    *
-   * @param dueDate The date when the debt is due. <p>Only the year, month and day are considered, with the remaining fields discarded.
+   * @param dueDate The date when the debt is due.
+   *     <p>Only the year, month and day are considered, with the remaining fields discarded. Must
+   *     follow after the date
    */
   public void setDueDate(Date dueDate) {
+    assertDateOrder(getDate(), dueDate);
     fields.put("dueDate", new Date(dueDate.getTime()));
+  }
+
+  private void assertDateOrder(Date date, Date dueDate) {
+    if (date != null && dueDate != null && date.compareTo(dueDate) > 0) {
+      throw new IllegalArgumentException("due date must come after the debt date.");
+    }
   }
 
   public void setGrossTotal(Double grossTotal) {

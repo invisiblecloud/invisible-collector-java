@@ -78,6 +78,8 @@ public class Company extends Model implements IRoutable {
    * @param country The company's country. Value must be in <a href="https://en.wikipedia.org/wiki/ISO_3166-1">ISO 3166-1</a> format.
    */
   public void setCountry(String country) {
+    assertCountryIso3166(country);
+
     fields.put("country", country);
   }
 
