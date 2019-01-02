@@ -1,24 +1,20 @@
 package com.invisiblecollector.model.json;
 
+import com.invisiblecollector.exceptions.IcException;
+import com.invisiblecollector.model.Company;
+import com.invisiblecollector.model.IModel;
+import com.invisiblecollector.model.builder.CompanyBuilder;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.util.Date;
-import java.util.EnumMap;
 import java.util.GregorianCalendar;
 import java.util.Map;
 import java.util.TreeMap;
-
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
-import com.google.gson.JsonObject;
-import com.invisiblecollector.exceptions.IcException;
-import com.invisiblecollector.model.Company;
-import com.invisiblecollector.model.CompanyField;
-import com.invisiblecollector.model.IModel;
-import com.invisiblecollector.model.builder.CompanyBuilder;
 
 public class JsonModelFacadeTest {
 

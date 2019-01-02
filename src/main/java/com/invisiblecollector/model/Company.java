@@ -1,7 +1,6 @@
 package com.invisiblecollector.model;
 
 import java.util.EnumMap;
-import java.util.Objects;
 
 /**
  * A model for the company.

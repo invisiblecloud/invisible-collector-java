@@ -4,7 +4,6 @@ import com.invisiblecollector.connection.ApiRequestFacade;
 import com.invisiblecollector.exceptions.IcException;
 import com.invisiblecollector.model.Debt;
 import com.invisiblecollector.model.DebtField;
-import com.invisiblecollector.model.IRoutable;
 
 import java.net.URI;
 import java.util.Map;

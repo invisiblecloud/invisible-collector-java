@@ -119,7 +119,10 @@ public class Debt extends Model implements IModel, IRoutable {
   }
 
   public void setAttributes(Map<String, String> attributes) {
-    fields.put("attributes", new HashMap<>(attributes));
+    if (attributes != null) {
+      attributes = new HashMap<>(attributes);
+    }
+    fields.put("attributes", attributes);
   }
 
   /** See {@link DebtField#CURRENCY} for more details. */
@@ -166,8 +169,10 @@ public class Debt extends Model implements IModel, IRoutable {
   }
 
   public void setItems(List<Item> items) {
-    List<Item> copy = new ArrayList<>(items);
-    fields.put("items", copy);
+    if (items != null) {
+      items = new ArrayList<>(items);
+    }
+    fields.put("items", items);
   }
 
   public void setNetTotal(Double netTotal) {

@@ -4,7 +4,6 @@ import com.invisiblecollector.connection.ApiRequestFacade;
 import com.invisiblecollector.connection.builders.ThrowingSupplier;
 import com.invisiblecollector.exceptions.IcException;
 import com.invisiblecollector.model.Company;
-import com.invisiblecollector.model.CompanyField;
 
 import java.io.InputStream;
 import java.net.URI;

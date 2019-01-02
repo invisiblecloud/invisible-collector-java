@@ -9,49 +9,44 @@ import java.util.Map;
 public abstract class BuilderBase {
 
   public abstract Model buildModel();
-  
+
   protected abstract Map<String, Object> buildSendableObject();
 
-  private Map<String, Object> buildSendableObject(boolean stripNulls) {
+  protected Map<String, Object> buildSendableObject(boolean stripNulls) {
     Map<String, Object> obj = buildSendableObject();
 
     if (stripNulls) {
-        stripMapNulls(obj);
+      stripMapNulls(obj);
     }
 
     return obj;
   }
 
-    protected void stripMapNulls(Map<String, Object> obj) {
-        obj.entrySet().removeIf(entry -> entry.getValue() == null);
-    }
+  protected void stripMapNulls(Map<String, Object> obj) {
+    obj.entrySet().removeIf(entry -> entry.getValue() == null);
+  }
 
-    public abstract Map<String, Object> buildObject();
+  public abstract Map<String, Object> buildObject();
 
-
-  public String buildJson() {
+  protected static String toJson(Object obj) {
     try {
-      return JsonSingleton.getInstance2().writeValueAsString(this.buildObject());
+      return JsonSingleton.getInstance2().writeValueAsString(obj);
     } catch (JsonProcessingException e) {
       throw new IllegalStateException(e);
     }
+  }
+
+  public String buildJson() {
+    return toJson(this.buildObject());
   }
 
   /**
    * Strips all key-value with null values.
+   *
    * @return
    * @param stripNulls
    */
   public String buildSendableJson(boolean stripNulls) {
-    try {
-      return JsonSingleton.getInstance2().writeValueAsString(this.buildSendableObject(stripNulls));
-    } catch (JsonProcessingException e) {
-      throw new IllegalStateException(e);
-    }
+    return toJson(this.buildSendableObject(stripNulls));
   }
-
-
-  
-  
-  
 }

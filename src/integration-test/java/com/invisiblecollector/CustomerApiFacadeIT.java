@@ -1,27 +1,19 @@
 package com.invisiblecollector;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
-import org.hamcrest.CoreMatchers;
-import org.hamcrest.MatcherAssert;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
 import com.invisiblecollector.connection.RequestType;
 import com.invisiblecollector.exceptions.IcConflictingException;
 import com.invisiblecollector.model.Customer;
 import com.invisiblecollector.model.Debt;
 import com.invisiblecollector.model.builder.CustomerBuilder;
 import com.invisiblecollector.model.builder.DebtBuilder;
-import com.invisiblecollector.model.json.JsonTestUtils;
-
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.RecordedRequest;
+import org.hamcrest.CoreMatchers;
+import org.hamcrest.MatcherAssert;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+import java.util.*;
 
 public class CustomerApiFacadeIT extends IcFacadeTestBase {
 
@@ -190,8 +182,6 @@ public class CustomerApiFacadeIT extends IcFacadeTestBase {
 
   private static final String TEST_ID = "1234";
 
-  private interface DebtList extends List<Debt> {};
-
   @Test
   public void requestCustomerDebts_successMultipleDebts() throws Exception {
 
@@ -206,7 +196,8 @@ public class CustomerApiFacadeIT extends IcFacadeTestBase {
     List<Debt> debts = new ArrayList<>();
     debts.add(builder1.buildModel());
     debts.add(builder2.buildModel());
-    JsonTestUtils.assertObjectsEqualsAsJson(debts, returnedDebts);
+
+    assertObjectsEquals(debts, returnedDebts);
     RecordedRequest request = this.mockServer.getRequest();
     String endpoint = joinUriPaths(CUSTOMERS_ENDPOINT, TEST_ID, DEBTS_PATH);
     this.assertSentCorrectHeaders(request, endpoint, this.mockServer.getBaseUri(), RequestType.GET);
@@ -221,7 +212,7 @@ public class CustomerApiFacadeIT extends IcFacadeTestBase {
 
     List<Debt> returnedDebts = customerFacade.requestCustomerDebts(TEST_ID);
     List<Debt> debts = new ArrayList<>();
-    JsonTestUtils.assertObjectsEqualsAsJson(debts, returnedDebts);
+    assertObjectsEquals(debts, returnedDebts);
     RecordedRequest request = this.mockServer.getRequest();
     String endpoint = joinUriPaths(CUSTOMERS_ENDPOINT, TEST_ID, DEBTS_PATH);
     this.assertSentCorrectHeaders(request, endpoint, this.mockServer.getBaseUri(), RequestType.GET);

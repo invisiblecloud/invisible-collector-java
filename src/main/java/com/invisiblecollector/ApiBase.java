@@ -1,10 +1,11 @@
 package com.invisiblecollector;
 
 import com.invisiblecollector.connection.ApiRequestFacade;
-import com.invisiblecollector.connection.response.ResponseValidator;
 import com.invisiblecollector.connection.builders.ThrowingSupplier;
+import com.invisiblecollector.connection.response.ResponseValidator;
 import com.invisiblecollector.exceptions.IcException;
 import com.invisiblecollector.model.json.JsonModelFacade;
+
 import java.io.InputStream;
 import java.net.URI;
 

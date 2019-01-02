@@ -1,12 +1,13 @@
 package com.invisiblecollector;
 
-import java.io.Closeable;
-import java.io.IOException;
-import java.net.URI;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
 import org.junit.jupiter.api.Assertions;
+
+import java.io.Closeable;
+import java.io.IOException;
+import java.net.URI;
 
 public class MockServerFacade implements Closeable {
 

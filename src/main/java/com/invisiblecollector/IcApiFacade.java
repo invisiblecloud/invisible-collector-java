@@ -1,8 +1,8 @@
 package com.invisiblecollector;
 
-import java.net.URI;
-
 import com.invisiblecollector.connection.ApiRequestFacade;
+
+import java.net.URI;
 
 /**
  * A Thread-Safe and Immutable Container for the various api Invisible Collector operations.

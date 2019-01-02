@@ -2,12 +2,11 @@ package com.invisiblecollector.model.json;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.invisiblecollector.StringTestUtils;
-import org.junit.jupiter.api.Assertions;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.invisiblecollector.StringTestUtils;
+import org.junit.jupiter.api.Assertions;
 
 import java.io.IOException;
 

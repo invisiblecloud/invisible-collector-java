@@ -1,9 +1,8 @@
 package com.invisiblecollector.model;
 
+import com.invisiblecollector.model.builder.CustomerBuilder;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import com.invisiblecollector.model.builder.CustomerBuilder;
 
 public class CustomerTest {
   

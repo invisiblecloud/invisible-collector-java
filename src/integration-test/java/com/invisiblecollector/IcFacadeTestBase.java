@@ -24,6 +24,10 @@ public class IcFacadeTestBase {
 
   protected MockServerFacade mockServer;
 
+  protected void assertObjectsEquals(Object expected, Object actual) {
+    Assertions.assertEquals(expected, actual);
+  }
+
   protected <T extends Model> void assertCorrectModelReturned(
       BuilderBase modelBuilder, IThrowingBuilder<T, T> method) throws IcException {
     @SuppressWarnings("unchecked")
@@ -33,7 +37,7 @@ public class IcFacadeTestBase {
     Map<String, Object> expectedMap = modelBuilder.buildObject();
     Map<String, Object> actualMap = returnedModel.getFields();
 
-    Assertions.assertEquals(expectedMap, actualMap);
+    assertObjectsEquals(expectedMap, actualMap);
   }
 
   private void assertSentCorrectBodiedHeaders(

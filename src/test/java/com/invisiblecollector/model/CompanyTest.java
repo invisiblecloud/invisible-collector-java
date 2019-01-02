@@ -1,9 +1,8 @@
 package com.invisiblecollector.model;
 
+import com.invisiblecollector.model.builder.CompanyBuilder;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import com.invisiblecollector.model.builder.CompanyBuilder;
 
 public class CompanyTest {
 

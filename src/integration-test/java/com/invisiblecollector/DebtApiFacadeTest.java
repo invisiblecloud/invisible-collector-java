@@ -1,12 +1,10 @@
 package com.invisiblecollector;
 
-import org.junit.jupiter.api.Test;
-
 import com.invisiblecollector.connection.RequestType;
 import com.invisiblecollector.model.Debt;
 import com.invisiblecollector.model.builder.DebtBuilder;
-
 import okhttp3.mockwebserver.RecordedRequest;
+import org.junit.jupiter.api.Test;
 
 public class DebtApiFacadeTest extends IcFacadeTestBase {
 
@@ -26,7 +24,7 @@ public class DebtApiFacadeTest extends IcFacadeTestBase {
     RecordedRequest request = this.mockServer.getRequest();
     this.assertSentCorrectHeaders(request, DEBTS_ENDPOINT,
         this.mockServer.getBaseUri(), RequestType.POST);
-    assertSentCorrectJson(request, debtBuilder.buildSendableJson(true));
+    assertSentCorrectJson(request, debtBuilder.buildSendableJson(false));
   }
 
   @Test
