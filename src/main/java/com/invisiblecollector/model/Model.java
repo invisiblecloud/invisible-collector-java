@@ -3,7 +3,6 @@ package com.invisiblecollector.model;
 import java.util.*;
 
 public abstract class Model {
-  private interface StringMap extends Map<String, String> {}
 
   protected Map<String, Object> fields = new HashMap<>();
 
@@ -18,7 +17,7 @@ public abstract class Model {
   }
 
   protected Map<String, String> getStringMap(String key) {
-    return (StringMap) fields.get(key);
+    return (Map<String, String>) fields.get(key);
   }
 
   @Override

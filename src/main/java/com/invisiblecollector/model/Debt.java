@@ -4,8 +4,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class Debt extends Model implements IRoutable {
-  private interface ItemList extends List<Item> {};
-
   public void addAttribute(String key, String value) {
     Map<String, String> attributes = getStringMap("attributes");
 
@@ -29,7 +27,7 @@ public class Debt extends Model implements IRoutable {
       fields.put("items", items);
     }
 
-    items.add(item);
+    items.add(item.clone());
   }
 
   @Override
@@ -96,7 +94,7 @@ public class Debt extends Model implements IRoutable {
   }
 
   private List<Item> getItemsInternals() {
-    return (ItemList) fields.get("items");
+    return (List<Item>) fields.get("items");
   }
 
   public Double getNetTotal() {

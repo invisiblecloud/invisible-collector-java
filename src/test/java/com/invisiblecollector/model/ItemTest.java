@@ -54,4 +54,16 @@ public class ItemTest {
     item1.setDescription("a wholly new description");
     Assertions.assertNotEquals(item1.hashCode(), item2.hashCode());
   }
+
+  @Test
+  public void clone_correctness() {
+    Item expected = ItemBuilder.buildTestItemBuilder().buildModel();
+    Item expected2 = ItemBuilder.buildTestItemBuilder().buildModel();
+    Item actual = expected.clone();
+
+    Assertions.assertEquals(expected, actual);
+
+    expected.setName("whole new Name MNSWEQWE123");
+    Assertions.assertEquals(expected2, actual);
+  }
 }
