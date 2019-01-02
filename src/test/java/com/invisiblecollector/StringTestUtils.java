@@ -12,9 +12,7 @@ public final class StringTestUtils {
 
   
   public static String randomHexString() {
-    String string = UUID.randomUUID().toString();
-    string.replaceAll("-", "");
-    return string;
+    return UUID.randomUUID().toString();
   }
   
   public static String dateToString(Date date) {

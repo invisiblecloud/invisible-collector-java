@@ -80,11 +80,9 @@ public class Debt extends Model implements IRoutable {
   }
 
   public List<Item> getItems() {
-    List<Item> items = getItemsInternals();
-    if (items == null) {
-      return null;
-    }
-    return new ArrayList<>(items);
+    return getItemsInternals().stream()
+            .map(Item::clone)
+            .collect(Collectors.toList());
   }
 
   private List<Item> getItemsInternals() {

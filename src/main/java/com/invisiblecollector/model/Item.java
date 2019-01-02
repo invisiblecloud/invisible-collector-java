@@ -1,5 +1,8 @@
 package com.invisiblecollector.model;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Item extends Model {
 
   @Override
@@ -52,5 +55,11 @@ public class Item extends Model {
 
   public void setVat(Double vat) {
     fields.put("vat", vat);
+  }
+
+  public Item clone() {
+      Item copy = new Item();
+      copy.fields = new HashMap<>(fields);
+      return copy;
   }
 }
