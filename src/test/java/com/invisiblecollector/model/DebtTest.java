@@ -54,4 +54,6 @@ public class DebtTest {
     debt1.setCustomerId("909090909");
     Assertions.assertNotEquals(debt1.hashCode(), debt2.hashCode());
   }
+
+
 }

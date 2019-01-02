@@ -85,8 +85,14 @@ public class Debt extends Model implements IRoutable {
     return getString("id");
   }
 
+  private static List<Item> copyItemsList(List<Item> items) {
+    return items.stream()
+            .map(Item::clone)
+            .collect(Collectors.toList());
+  }
+
   public List<Item> getItems() {
-    return getItemsInternals().stream().map(Item::clone).collect(Collectors.toList());
+    return copyItemsList(getItemsInternals());
   }
 
   private List<Item> getItemsInternals() {
@@ -172,7 +178,7 @@ public class Debt extends Model implements IRoutable {
 
   public void setItems(List<Item> items) {
     if (items != null) {
-      items = new ArrayList<>(items);
+      items = copyItemsList(items);
     }
     fields.put("items", items);
   }
