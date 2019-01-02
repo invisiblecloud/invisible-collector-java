@@ -1,7 +1,5 @@
 package com.invisiblecollector.model.json;
 
-import com.google.gson.Gson;
-import com.invisiblecollector.StringTestUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

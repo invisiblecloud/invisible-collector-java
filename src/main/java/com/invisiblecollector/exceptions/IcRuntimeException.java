@@ -18,4 +18,8 @@ public class IcRuntimeException extends RuntimeException {
   public IcRuntimeException(String message, URISyntaxException exception) {
     super(message, exception);
   }
+
+  public IcRuntimeException(Throwable e) {
+    super(e);
+  }
 }

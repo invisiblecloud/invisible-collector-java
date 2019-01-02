@@ -1,7 +1,5 @@
 package com.invisiblecollector.model;
 
-import java.util.EnumMap;
-
 /**
  * A model for the company.
  *
@@ -11,6 +9,12 @@ import java.util.EnumMap;
  * @author ros
  */
 public class Company extends Model implements IRoutable {
+
+  @Override
+  public int hashCode() {
+    pmdWorkaround();
+    return super.hashCode();
+  }
 
   @Override
   public boolean equals(Object obj) {

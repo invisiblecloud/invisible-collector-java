@@ -11,7 +11,7 @@ public class Debt extends Model implements IRoutable {
 
     if (attributes == null) {
       attributes = new HashMap<>();
-      fields.put("attributes", (attributes));
+      fields.put("attributes", attributes);
     }
 
     attributes.put(key, value);
@@ -30,6 +30,12 @@ public class Debt extends Model implements IRoutable {
     }
 
     items.add(item);
+  }
+
+  @Override
+  public int hashCode() {
+    pmdWorkaround();
+    return super.hashCode();
   }
 
   @Override
@@ -80,9 +86,7 @@ public class Debt extends Model implements IRoutable {
   }
 
   public List<Item> getItems() {
-    return getItemsInternals().stream()
-            .map(Item::clone)
-            .collect(Collectors.toList());
+    return getItemsInternals().stream().map(Item::clone).collect(Collectors.toList());
   }
 
   private List<Item> getItemsInternals() {

@@ -2,10 +2,12 @@ package com.invisiblecollector.model;
 
 import java.util.*;
 
-public class Model {
+public abstract class Model {
   private interface StringMap extends Map<String, String> {}
 
   protected Map<String, Object> fields = new HashMap<>();
+
+  protected void pmdWorkaround() {}
 
   protected Double getDouble(String key) {
     return (Double) fields.get(key);

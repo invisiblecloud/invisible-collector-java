@@ -16,10 +16,11 @@ public class JsonSingleton {
   private static ObjectMapper instance = null;
   public static ObjectMapper getInstance() {
     if (instance == null) {
-      instance = new ObjectMapper();
-      instance.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+      ObjectMapper mapper = new ObjectMapper();
+      mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
       DateFormat df = new SimpleDateFormat(DATE_FORMAT);
-      instance.setDateFormat(df);
+      mapper.setDateFormat(df);
+      instance = mapper;
     }
 
     return instance;

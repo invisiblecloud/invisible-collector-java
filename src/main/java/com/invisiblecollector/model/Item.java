@@ -1,9 +1,16 @@
 package com.invisiblecollector.model;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.invisiblecollector.exceptions.IcRuntimeException;
 
-public class Item extends Model {
+import java.util.HashMap;
+
+public class Item extends Model implements Cloneable {
+
+  @Override
+  public int hashCode() {
+    pmdWorkaround();
+    return super.hashCode();
+  }
 
   @Override
   public boolean equals(Object obj) {
@@ -57,9 +64,15 @@ public class Item extends Model {
     fields.put("vat", vat);
   }
 
-  public Item clone() {
+  @Override
+  public Item clone()  {
+      try {
+          super.clone();
+      } catch (CloneNotSupportedException e) {
+          throw new IcRuntimeException(e);
+      }
       Item copy = new Item();
-      copy.fields = new HashMap<>(fields);
-      return copy;
+    copy.fields = new HashMap<>(fields);
+    return copy;
   }
 }
