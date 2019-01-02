@@ -14,7 +14,6 @@ public class JsonSingleton {
   public static final String DATE_FORMAT = "yyyy-MM-dd"; // https://docs.oracle.com/javase/6/docs/api/java/text/SimpleDateFormat.html?is-external=true
 
   private static ObjectMapper instance2 = null;
-
   public static ObjectMapper getInstance2() {
     if (instance2 == null) {
       instance2 = new ObjectMapper();

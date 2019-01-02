@@ -6,7 +6,23 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Model {
+  private interface StringMap extends Map<String, String> {}
+
   protected Map<String, Object> fields = new HashMap<>();
+
+  protected Double getDouble(String key) {
+    return (Double) fields.get(key);
+  }
+
+  protected Date getDate(String key) {
+    return (Date) fields.get(key);
+  }
+
+  protected Map<String, String> getStringMap(String key) {
+    return (StringMap) fields.get(key);
+  }
+
+
 
   protected String getString(String key) {
     return (String) fields.get(key);
