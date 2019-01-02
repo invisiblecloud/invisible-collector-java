@@ -1,4 +1,4 @@
-package com.invisiblecollector.connection.builders;
+package com.invisiblecollector.model.builder;
 
 import com.invisiblecollector.exceptions.IcException;
 

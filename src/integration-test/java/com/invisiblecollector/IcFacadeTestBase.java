@@ -1,7 +1,7 @@
 package com.invisiblecollector;
 
 import com.invisiblecollector.connection.RequestType;
-import com.invisiblecollector.connection.builders.IThrowingBuilder;
+import com.invisiblecollector.model.builder.IThrowingBuilder;
 import com.invisiblecollector.exceptions.IcException;
 import com.invisiblecollector.model.Model;
 import com.invisiblecollector.model.builder.BuilderBase;
