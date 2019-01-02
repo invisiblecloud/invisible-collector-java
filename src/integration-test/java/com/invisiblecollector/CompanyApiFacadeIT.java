@@ -21,15 +21,10 @@ class CompanyApiFacadeIT extends IcFacadeTestBase {
   private static final String DISABLE_NOTIFICATIONS_ENDPOINT = "companies/disableNotifications";
   private static final String ENABLE_NOTIFICATIONS_ENDPOINT = "companies/enableNotifications";
 
-  private CompanyApiFacade buildCompanyResponseAndAddServerReply(CompanyBuilder companyBuilder)
-      throws Exception {
-    return buildIcApiResponseAndAddServerReply(companyBuilder).getCompanyFacade();
-  }
-
   @Test
   public void requestCompanyInfo_successNormalConditions() throws Exception {
     CompanyBuilder companyBuilder = CompanyBuilder.buildTestCompanyBuilder();
-    CompanyApiFacade companyApiFacade = buildCompanyResponseAndAddServerReply(companyBuilder);
+    IcApiFacade companyApiFacade = buildIcApiResponseAndAddServerReply(companyBuilder);
 
     this.assertCorrectModelReturned(
         companyBuilder, (unused) -> companyApiFacade.requestCompanyInfo());
@@ -49,7 +44,7 @@ class CompanyApiFacadeIT extends IcFacadeTestBase {
         new MockResponse()
             .setHeader("Content-Type", "application/json")
             .setBody(json1 + "\n" + json2);
-    CompanyApiFacade companyFacade = initMockServer(mockResponse).getCompanyFacade();
+    IcApiFacade companyFacade = initMockServer(mockResponse);
 
     this.assertCorrectModelReturned(companyBuilder, (unused) -> companyFacade.requestCompanyInfo());
 
@@ -65,7 +60,7 @@ class CompanyApiFacadeIT extends IcFacadeTestBase {
     MockResponse response = buildBodiedMockResponse(companyBuilder.buildJson());
 
     response.throttleBody(1, 1, TimeUnit.MILLISECONDS); // 1000 Byte/sec
-    CompanyApiFacade companyFacade = initMockServer(response).getCompanyFacade();
+    IcApiFacade companyFacade = initMockServer(response);
 
     this.assertCorrectModelReturned(companyBuilder, (unused) -> companyFacade.requestCompanyInfo());
 
@@ -81,7 +76,7 @@ class CompanyApiFacadeIT extends IcFacadeTestBase {
 
     MockResponse mockResponse =
         new MockResponse().setHeader("Content-Type", "application/json").setBody(badJson);
-    CompanyApiFacade icFacade = initMockServer(mockResponse).getCompanyFacade();
+    IcApiFacade icFacade = initMockServer(mockResponse);
     IcException ex = Assertions.assertThrows(IcException.class, icFacade::requestCompanyInfo);
     MatcherAssert.assertThat(ex.getMessage(), CoreMatchers.containsString("Failed to parse JSON"));
   }
@@ -90,7 +85,7 @@ class CompanyApiFacadeIT extends IcFacadeTestBase {
   public void requestCompanyInfo_failOnNoContentTypeHeader() throws Exception {
     CompanyBuilder companyBuilder = CompanyBuilder.buildTestCompanyBuilder();
     MockResponse mockResponse = new MockResponse().setBody(companyBuilder.buildJson());
-    CompanyApiFacade companyApiFacade = initMockServer(mockResponse).getCompanyFacade();
+    IcApiFacade companyApiFacade = initMockServer(mockResponse);
 
     IcException ex =
         Assertions.assertThrows(IcException.class, companyApiFacade::requestCompanyInfo);
@@ -103,7 +98,7 @@ class CompanyApiFacadeIT extends IcFacadeTestBase {
     int statusCode = 400;
     String json = buildErrorJson(statusCode);
     MockResponse mockResponse = buildBodiedMockResponse(json).setResponseCode(statusCode);
-    CompanyApiFacade icFacade = initMockServer(mockResponse).getCompanyFacade();
+    IcApiFacade icFacade = initMockServer(mockResponse);
     IcException exception =
         Assertions.assertThrows(IcException.class, icFacade::requestCompanyInfo);
     MatcherAssert.assertThat(
@@ -123,7 +118,7 @@ class CompanyApiFacadeIT extends IcFacadeTestBase {
 
     MockResponse mockResponse = buildBodiedMockResponse(companyBuilder.buildJson());
     this.mockServer.addMockResponse(mockResponse);
-    CompanyApiFacade companyApiFacade = new CompanyApiFacade(TEST_API_TOKEN, connectionUrl);
+    IcApiFacade companyApiFacade = new IcApiFacade(TEST_API_TOKEN, connectionUrl);
 
     this.assertCorrectModelReturned(
         companyBuilder, (Company company) -> companyApiFacade.requestCompanyInfo());
@@ -142,7 +137,7 @@ class CompanyApiFacadeIT extends IcFacadeTestBase {
     CompanyBuilder companyBuilder = CompanyBuilder.buildTestCompanyBuilder();
     companyBuilder.setAddress(newAddress);
     companyBuilder.setCity(newCity);
-    CompanyApiFacade companyApiFacade = buildCompanyResponseAndAddServerReply(companyBuilder);
+    IcApiFacade companyApiFacade = buildIcApiResponseAndAddServerReply(companyBuilder);
 
     this.assertCorrectModelReturned(
         companyBuilder, (Company company) -> companyApiFacade.updateCompanyInfo(company));
@@ -157,7 +152,7 @@ class CompanyApiFacadeIT extends IcFacadeTestBase {
   public void setCompanyNotifications_enable() throws Exception {
     CompanyBuilder companyBuilder = CompanyBuilder.buildTestCompanyBuilder();
     companyBuilder.setNotificationsEnabled(true);
-    CompanyApiFacade companyApiFacade = buildCompanyResponseAndAddServerReply(companyBuilder);
+    IcApiFacade companyApiFacade = buildIcApiResponseAndAddServerReply(companyBuilder);
 
     this.assertCorrectModelReturned(
         companyBuilder, (unused) -> companyApiFacade.setCompanyNotifications(true));
@@ -171,7 +166,7 @@ class CompanyApiFacadeIT extends IcFacadeTestBase {
   public void setCompanyNotifications_disable() throws Exception {
     CompanyBuilder companyBuilder = CompanyBuilder.buildTestCompanyBuilder();
     companyBuilder.setNotificationsEnabled(false);
-    CompanyApiFacade companyApiFacade = buildCompanyResponseAndAddServerReply(companyBuilder);
+    IcApiFacade companyApiFacade = buildIcApiResponseAndAddServerReply(companyBuilder);
 
     this.assertCorrectModelReturned(
         companyBuilder, (unused) -> companyApiFacade.setCompanyNotifications(false));

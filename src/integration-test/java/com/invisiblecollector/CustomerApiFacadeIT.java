@@ -31,17 +31,12 @@ public class CustomerApiFacadeIT extends IcFacadeTestBase {
     TEST_MAP = Collections.unmodifiableMap(new HashMap<>(map));
   }
 
-  private CustomerApiFacade buildCustomerResponseAndAddMockReponse(CustomerBuilder customerBuilder)
-      throws Exception {
-    return buildIcApiResponseAndAddServerReply(customerBuilder).getCustomerFacade();
-  }
-
   private String assertCustomerAttributesGuts(
       RequestType requestType,
-      IThrowingBuilder2<Map<String, String>, CustomerApiFacade, String> method)
+      IThrowingBuilder2<Map<String, String>, IcApiFacade, String> method)
       throws Exception {
     MockResponse response = buildBodiedMockResponse(TEST_MAP_JSON);
-    CustomerApiFacade facade = initMockServer(response).getCustomerFacade();
+    IcApiFacade facade = initMockServer(response);
     String id = "123";
     String endpoint = joinUriPaths(CUSTOMERS_ENDPOINT, id, ATTRIBUTES_PATH);
     Map<String, String> returnedMap = method.build(facade, id);
@@ -52,7 +47,7 @@ public class CustomerApiFacadeIT extends IcFacadeTestBase {
   @Test
   public void registerNewCustomer_success() throws Exception {
     CustomerBuilder customerBuilder = CustomerBuilder.buildTestCustomerBuilder();
-    CustomerApiFacade icFacade = buildCustomerResponseAndAddMockReponse(customerBuilder);
+    IcApiFacade icFacade = buildIcApiResponseAndAddServerReply(customerBuilder);
 
     this.assertCorrectModelReturned(
         customerBuilder, (Customer customer) -> icFacade.registerNewCustomer(customer));
@@ -65,7 +60,7 @@ public class CustomerApiFacadeIT extends IcFacadeTestBase {
   @Test
   public void registerNewCustomer_failMissingMandatoryField() throws Exception {
     CustomerBuilder customerBuilder = new CustomerBuilder().setGid("1232132");
-    CustomerApiFacade icFacade = buildCustomerResponseAndAddMockReponse(customerBuilder);
+    IcApiFacade icFacade = buildIcApiResponseAndAddServerReply(customerBuilder);
 
     Customer correctCustomer = customerBuilder.buildModel(true);
     IllegalArgumentException ex =
@@ -83,7 +78,7 @@ public class CustomerApiFacadeIT extends IcFacadeTestBase {
             .setVatNumber("1234")
             .setCountry("PT")
             .setCity(null);
-    CustomerApiFacade icFacade = buildCustomerResponseAndAddMockReponse(customerBuilder);
+    IcApiFacade icFacade = buildIcApiResponseAndAddServerReply(customerBuilder);
     Customer customer = customerBuilder.buildModel(true);
     icFacade.registerNewCustomer(customer);
     RecordedRequest request = this.mockServer.getRequest();
@@ -95,7 +90,7 @@ public class CustomerApiFacadeIT extends IcFacadeTestBase {
     int statusCode = 409;
     String json = buildConflictErrorJson(statusCode);
     MockResponse mockResponse = buildBodiedMockResponse(json).setResponseCode(statusCode);
-    CustomerApiFacade icFacade = initMockServer(mockResponse).getCustomerFacade();
+    IcApiFacade icFacade = initMockServer(mockResponse);
     Customer correctCustomer = CustomerBuilder.buildTestCustomerBuilder().buildModel();
     IcConflictingException exception =
         Assertions.assertThrows(
@@ -112,7 +107,7 @@ public class CustomerApiFacadeIT extends IcFacadeTestBase {
             .setName("Brand new new Name");
     String id = customerBuilder.getExternalId();
     String endpoint = joinUriPaths(CUSTOMERS_ENDPOINT, id);
-    CustomerApiFacade icFacade = buildCustomerResponseAndAddMockReponse(customerBuilder);
+    IcApiFacade icFacade = buildIcApiResponseAndAddServerReply(customerBuilder);
 
     Customer sentCustomer =
             customerBuilder.buildModel();
@@ -138,7 +133,7 @@ public class CustomerApiFacadeIT extends IcFacadeTestBase {
             .setName("Brand new new Name")
             .setGid("")
             .setExternalId("");
-    CustomerApiFacade icFacade = buildCustomerResponseAndAddMockReponse(customerBuilder);
+    IcApiFacade icFacade = buildIcApiResponseAndAddServerReply(customerBuilder);
     Customer correctCustomer = customerBuilder.buildModel();
 
     IllegalArgumentException ex =
@@ -151,7 +146,7 @@ public class CustomerApiFacadeIT extends IcFacadeTestBase {
   @Test
   public void requestCustomerInfo_success() throws Exception {
     CustomerBuilder customerBuilder = CustomerBuilder.buildTestCustomerBuilder();
-    CustomerApiFacade icFacade = buildCustomerResponseAndAddMockReponse(customerBuilder);
+    IcApiFacade icFacade = buildIcApiResponseAndAddServerReply(customerBuilder);
     String id = customerBuilder.getExternalId();
     String endpoint = joinUriPaths(CUSTOMERS_ENDPOINT, id);
     this.assertCorrectModelReturned(
@@ -190,7 +185,7 @@ public class CustomerApiFacadeIT extends IcFacadeTestBase {
 
     String json = "[" + builder1.buildJson() + "," + builder2.buildJson() + "]";
     MockResponse mockResponse = buildBodiedMockResponse(json);
-    CustomerApiFacade customerFacade = initMockServer(mockResponse).getCustomerFacade();
+    IcApiFacade customerFacade = initMockServer(mockResponse);
 
     List<Debt> returnedDebts = customerFacade.requestCustomerDebts(TEST_ID);
     List<Debt> debts = new ArrayList<>();
@@ -208,7 +203,7 @@ public class CustomerApiFacadeIT extends IcFacadeTestBase {
 
     String json = "[ ]";
     MockResponse mockResponse = buildBodiedMockResponse(json);
-    CustomerApiFacade customerFacade = initMockServer(mockResponse).getCustomerFacade();
+    IcApiFacade customerFacade = initMockServer(mockResponse);
 
     List<Debt> returnedDebts = customerFacade.requestCustomerDebts(TEST_ID);
     List<Debt> debts = new ArrayList<>();

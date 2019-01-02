@@ -10,15 +10,10 @@ public class DebtApiFacadeTest extends IcFacadeTestBase {
 
   private static final String DEBTS_ENDPOINT = "debts";
 
-  private DebtApiFacade buildDebtResponseAndAddServerReply(DebtBuilder debtBuilder)
-          throws Exception {
-    return buildIcApiResponseAndAddServerReply(debtBuilder).getDebtFacade();
-  }
-
   @Test
   public void registerNewCustomer_success() throws Exception {
     DebtBuilder debtBuilder = DebtBuilder.buildTestDebtBuilder();
-    DebtApiFacade icFacade = buildDebtResponseAndAddServerReply(debtBuilder);
+    IcApiFacade icFacade = buildIcApiResponseAndAddServerReply(debtBuilder);
 
     this.assertCorrectModelReturned(debtBuilder, (Debt debt) -> icFacade.registerNewDebt(debt));
     RecordedRequest request = this.mockServer.getRequest();
@@ -30,7 +25,7 @@ public class DebtApiFacadeTest extends IcFacadeTestBase {
   @Test
   public void requestDebtInfo() throws Exception {
     DebtBuilder debtBuilder = DebtBuilder.buildTestDebtBuilder();
-    DebtApiFacade icFacade = buildDebtResponseAndAddServerReply(debtBuilder);
+    IcApiFacade icFacade = buildIcApiResponseAndAddServerReply(debtBuilder);
     String endpoint = DEBTS_ENDPOINT + "/" + debtBuilder.getId();
 
     this.assertCorrectModelReturned(debtBuilder,
