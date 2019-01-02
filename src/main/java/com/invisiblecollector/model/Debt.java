@@ -3,6 +3,9 @@ package com.invisiblecollector.model;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * A model for customer debts.
+ */
 public class Debt extends Model implements IRoutable {
   public void addAttribute(String key, String value) {
     Map<String, String> attributes = getStringMap("attributes");
@@ -48,6 +51,10 @@ public class Debt extends Model implements IRoutable {
     }
   }
 
+  /**
+   * Get the debt's attributes
+   * @return the debt's attributes (deep copied).
+   */
   public Map<String, String> getAttributes() {
     Map<String, String> attributes = getStringMap("attributes");
     if (attributes == null) {
@@ -57,7 +64,6 @@ public class Debt extends Model implements IRoutable {
     return new HashMap<>(attributes);
   }
 
-  /** See {@link DebtField#CURRENCY} for more details. */
   public String getCurrency() {
     return getString("currency");
   }
@@ -66,12 +72,10 @@ public class Debt extends Model implements IRoutable {
     return getString("customerId");
   }
 
-  /** See {@link DebtField#DATE} for more details. */
   public Date getDate() {
     return new Date(getDate("date").getTime());
   }
 
-  /** See {@link DebtField#DUE_DATE} for more details. */
   public Date getDueDate() {
     return new Date(getDate("dueDate").getTime());
   }
@@ -88,6 +92,11 @@ public class Debt extends Model implements IRoutable {
     return items.stream().map(Item::clone).collect(Collectors.toList());
   }
 
+  /**
+   * Get the items.
+   *
+   * @return the items (deep copied).
+   */
   public List<Item> getItems() {
     List<Item> items = getItemsInternals();
     if (items == null) {
@@ -123,11 +132,15 @@ public class Debt extends Model implements IRoutable {
     return getDouble("tax");
   }
 
-  /** See {@link DebtField#TYPE} for more details. */
   public String getType() {
     return getString("type");
   }
 
+  /**
+   * Set the debt's attributes.
+   *
+   * @param attributes the debt's atrtibutes. They are deep cloned before setting.
+   */
   public void setAttributes(Map<String, String> attributes) {
     if (attributes != null) {
       attributes = new HashMap<>(attributes);
@@ -135,13 +148,17 @@ public class Debt extends Model implements IRoutable {
     fields.put("attributes", attributes);
   }
 
-  /** See {@link DebtField#CURRENCY} for more details. */
+  /**
+   * Set the debt's currency.
+   *
+   * @param currency The Debt's currency. <p>Value must be in <a href="https://en.wikipedia.org/wiki/ISO_4217">ISO 4217</a> format.
+   */
   public void setCurrency(String currency) {
     fields.put("currency", currency);
   }
 
   /**
-   * See {@link DebtField#CUSTOMER_ID} for more details.
+   * Set the customer id.
    *
    * @param customerInfo the object that has the id or external id of the customer. Can be a {@link
    *     Customer} object.
@@ -152,20 +169,29 @@ public class Debt extends Model implements IRoutable {
   }
 
   /**
-   * See {@link DebtField#CUSTOMER_ID} for more details.
+   * Set the customer id.
    *
+   * @param customerId The id of the customer to whom the debt is issued. Can be the customer's id or external id.
    * @see #setCustomerId(IRoutable)
    */
   public void setCustomerId(String customerId) {
     fields.put("customerId", customerId);
   }
 
-  /** See {@link DebtField#DATE} for more details. */
+  /**
+   * Set the debt's date.
+   *
+   * @param date The date when the debt was issued. <p>Only the year, month and day are considered, with the remaining fields discarded.
+   */
   public void setDate(Date date) {
     fields.put("date", new Date(date.getTime()));
   }
 
-  /** See {@link DebtField#DUE_DATE} for more details. */
+  /**
+   * Set the debt's due date.
+   *
+   * @param dueDate The date when the debt is due. <p>Only the year, month and day are considered, with the remaining fields discarded.
+   */
   public void setDueDate(Date dueDate) {
     fields.put("dueDate", new Date(dueDate.getTime()));
   }

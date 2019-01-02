@@ -30,9 +30,10 @@ public class DebtApiFacade extends ApiBase {
   /**
    * Register a new debt related to a customer.
    *
-   * @param debtInfo the debt information to register. See {@link DebtField} for
-   *        a description of the attributes and their possible values.
-   *        The {@code number}, {@code customerId}, {@code type}, {@code date} and {@code dueDate} are <b>mandatory</b> attributes. If the model contains items they must contain the {@code name} attribute.
+   * @param debtInfo the debt information to register. See {@link DebtField} for a description of
+   *     the attributes and their possible values. The {@code number}, {@code customerId}, {@code
+   *     type}, {@code date} and {@code dueDate} are <b>mandatory</b> attributes. If the model
+   *     contains items they must contain the {@code name} attribute.
    * @return an up-to-date object with the debt information.
    * @throws IcException any general exception
    * @see #registerNewDebt(Debt)
