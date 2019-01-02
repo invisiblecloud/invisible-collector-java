@@ -1,5 +1,6 @@
 package com.invisiblecollector.model;
 
+import javax.jws.WebParam;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -22,7 +23,22 @@ public class Model {
     return (StringMap) fields.get(key);
   }
 
+  @Override
+  public int hashCode() {
+    return fields.hashCode();
+  }
 
+  @Override
+  public boolean equals(Object obj) {
+    if (!(obj instanceof Model)) {
+      return false;
+    } else if (this == obj) {
+      return true;
+    } else {
+      Model other = (Model) obj;
+      return fields.equals(other.fields);
+    }
+  }
 
   protected String getString(String key) {
     return (String) fields.get(key);
@@ -50,7 +66,7 @@ public class Model {
     Map<String, Object> copy = getFields();
     List<String> keyList = Arrays.asList(keys);
 
-    copy.entrySet().removeIf(entry -> ! keyList.contains(entry.getKey()));
+    copy.entrySet().removeIf(entry -> !keyList.contains(entry.getKey()));
 
     return copy;
   }

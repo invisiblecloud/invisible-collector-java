@@ -24,15 +24,7 @@ public class Company extends Model implements IModel, IRoutable {
     }
 
     Company other = (Company) obj;
-    return Objects.equals(this.getVatNumber(), other.getVatNumber())
-        && Objects.equals(this.getName(), other.getName())
-        && Objects.equals(this.getAddress(), other.getAddress())
-        && Objects.equals(this.getZipCode(), other.getZipCode())
-        && Objects.equals(this.getCity(), other.getCity())
-        && Objects.equals(this.getCountry(), other.getCountry())
-        && Objects.equals(this.getId(), other.getId())
-        && Objects.equals(this.isNotificationsEnabled(), other.isNotificationsEnabled())
-        && fields.size() == other.fields.size();
+    return super.equals(other);
   }
 
   public String getAddress() {
@@ -66,19 +58,6 @@ public class Company extends Model implements IModel, IRoutable {
 
   public String getZipCode() {
     return getString("zipCode");
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(
-        this.getVatNumber(),
-        this.getName(),
-        this.getAddress(),
-        this.getZipCode(),
-        this.getCity(),
-        this.getCountry(),
-        this.getId(),
-        this.isNotificationsEnabled());
   }
 
   public Boolean isNotificationsEnabled() {

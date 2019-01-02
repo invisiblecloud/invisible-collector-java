@@ -40,18 +40,7 @@ public class Debt extends Model implements IModel, IRoutable {
       return true;
     } else {
       Debt other = (Debt) obj;
-      return Objects.equals(this.getAttributes(), other.getAttributes())
-          && Objects.equals(this.getCurrency(), other.getCurrency())
-          && Objects.equals(this.getCustomerId(), other.getCustomerId())
-          && Objects.equals(this.getDate(), other.getDate())
-          && Objects.equals(this.getDueDate(), other.getDueDate())
-          && Objects.equals(this.getGrossTotal(), other.getGrossTotal())
-          && Objects.equals(this.getId(), other.getId())
-          && Objects.equals(this.getItems(), other.getItems())
-          && Objects.equals(this.getNetTotal(), other.getNetTotal())
-          && Objects.equals(this.getNumber(), other.getNumber())
-          && Objects.equals(this.getStatus(), other.getStatus())
-          && Objects.equals(this.getTax(), other.getTax());
+      return super.equals(other);
     }
   }
 
@@ -127,22 +116,6 @@ public class Debt extends Model implements IModel, IRoutable {
   /** See {@link DebtField#TYPE} for more details. */
   public String getType() {
     return getString("type");
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(
-//        get
-        getCurrency(),
-        getCustomerId(),
-        getDate(),
-        getDueDate(),
-        getGrossTotal(),
-        getId(),
-        getNetTotal(),
-        getNumber(),
-        getStatus(),
-        getTax());
   }
 
   public void setAttributes(Map<String, String> attributes) {
