@@ -10,9 +10,9 @@ public class JsonSingletonTest {
 
   @Test 
   public void getInstance_correctness() {
-    Gson gson1 = StringTestUtils.getInstance();
-    Gson gson2 = StringTestUtils.getInstance();
+    Object json1 = JsonSingleton.getInstance();
+    Object json2 = JsonSingleton.getInstance();
     
-    Assertions.assertEquals(gson1, gson2);
+    Assertions.assertEquals(json1, json2);
   }
 }

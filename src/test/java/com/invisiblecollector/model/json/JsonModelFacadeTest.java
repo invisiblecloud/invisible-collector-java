@@ -71,9 +71,8 @@ public class JsonModelFacadeTest {
     JsonTestUtils.assertJsonEquals(CORRECT_MAP_JSON, returnedJson);
   }
 
-  // tests indirectly for correct gson initialization
   @Test
-  public void toJson_DateSuccess() throws ParseException {
+  public void toJson_DateSuccess() {
     Date time = new GregorianCalendar(2013, 2, 19).getTime();
     String json = new JsonModelFacade().toJson(time);
     Assertions.assertEquals(TEST_JSON_DATE, json);
