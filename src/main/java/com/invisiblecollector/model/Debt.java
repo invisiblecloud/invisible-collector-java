@@ -3,7 +3,7 @@ package com.invisiblecollector.model;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class Debt extends Model implements IModel, IRoutable {
+public class Debt extends Model implements IRoutable {
   private interface ItemList extends List<Item> {};
 
   public void addAttribute(String key, String value) {
@@ -195,29 +195,5 @@ public class Debt extends Model implements IModel, IRoutable {
   /** See {@link DebtField#TYPE} for possible values. */
   public void setType(String type) {
     fields.put("type", type);
-  }
-
-  @Override
-  public EnumMap<DebtField, Object> toEnumMap() {
-    EnumMap<DebtField, Object> map = new EnumMap<>(DebtField.class);
-
-    ModelUtils.tryAddObject(map, DebtField.NUMBER, getNumber());
-    ModelUtils.tryAddObject(map, DebtField.CUSTOMER_ID, getCustomerId());
-    ModelUtils.tryAddObject(map, DebtField.TYPE, getType());
-    ModelUtils.tryAddObject(map, DebtField.STATUS, getStatus());
-    ModelUtils.tryAddObject(map, DebtField.DATE, getDate());
-    ModelUtils.tryAddObject(map, DebtField.DUE_DATE, getDueDate());
-    ModelUtils.tryAddObject(map, DebtField.NET_TOTAL, getNetTotal());
-    ModelUtils.tryAddObject(map, DebtField.TAX, getTax());
-    ModelUtils.tryAddObject(map, DebtField.GROSS_TOTAL, getGrossTotal());
-    ModelUtils.tryAddObject(map, DebtField.CURRENCY, getCurrency());
-    ModelUtils.tryAddObject(map, DebtField.ATTRIBUTES, getAttributes());
-    if (getItems() != null) {
-      List<Map<ItemField, Object>> processedItems =
-          getItems().stream().map(item -> item.toEnumMap()).collect(Collectors.toList());
-      map.put(DebtField.ITEMS, processedItems);
-    }
-
-    return map;
   }
 }

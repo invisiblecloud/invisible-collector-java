@@ -1,8 +1,6 @@
 package com.invisiblecollector.model;
 
-import java.util.EnumMap;
-
-public class Item extends Model implements IModel {
+public class Item extends Model {
 
   @Override
   public boolean equals(Object obj) {
@@ -56,16 +54,4 @@ public class Item extends Model implements IModel {
     fields.put("vat", vat);
   }
 
-  @Override
-  public EnumMap<ItemField, Object> toEnumMap() {
-    EnumMap<ItemField, Object> map = new EnumMap<>(ItemField.class);
-
-    ModelUtils.tryAddObject(map, ItemField.NAME, getName());
-    ModelUtils.tryAddObject(map, ItemField.DESCRIPTION, getDescription());
-    ModelUtils.tryAddObject(map, ItemField.QUANTITY, getQuantity());
-    ModelUtils.tryAddObject(map, ItemField.VAT, getVat());
-    ModelUtils.tryAddObject(map, ItemField.PRICE, getPrice());
-
-    return map;
-  }
 }

@@ -10,7 +10,7 @@ import java.util.EnumMap;
  *
  * @author ros
  */
-public class Company extends Model implements IModel, IRoutable {
+public class Company extends Model implements IRoutable {
 
   @Override
   public boolean equals(Object obj) {
@@ -93,19 +93,5 @@ public class Company extends Model implements IModel, IRoutable {
 
   public void setNotificationsEnabled(Boolean notificationsEnabled) {
     fields.put("notificationsEnabled", notificationsEnabled);
-  }
-
-  @Override
-  public EnumMap<CompanyField, Object> toEnumMap() {
-    EnumMap<CompanyField, Object> map = new EnumMap<>(CompanyField.class);
-
-    ModelUtils.tryAddObject(map, CompanyField.NAME, getName());
-    ModelUtils.tryAddObject(map, CompanyField.ADDRESS, getAddress());
-    ModelUtils.tryAddObject(map, CompanyField.VAT_NUMBER, getVatNumber());
-    ModelUtils.tryAddObject(map, CompanyField.ZIP_CODE, getZipCode());
-    ModelUtils.tryAddObject(map, CompanyField.CITY, getCity());
-    ModelUtils.tryAddObject(map, CompanyField.COUNTRY, getCountry());
-
-    return map;
   }
 }

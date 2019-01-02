@@ -10,7 +10,7 @@ import java.util.EnumMap;
  *
  * @author ros
  */
-public class Customer extends Model implements IModel, IRoutable {
+public class Customer extends Model implements IRoutable {
 
   @Override
   public boolean equals(Object obj) {
@@ -130,22 +130,5 @@ public class Customer extends Model implements IModel, IRoutable {
 
   public void setZipCode(String zipCode) {
     fields.put("zipCode", zipCode);
-  }
-
-  @Override
-  public EnumMap<CustomerField, Object> toEnumMap() {
-    EnumMap<CustomerField, Object> map = new EnumMap<>(CustomerField.class);
-
-    ModelUtils.tryAddObject(map, CustomerField.NAME, getName());
-    ModelUtils.tryAddObject(map, CustomerField.ADDRESS, getAddress());
-    ModelUtils.tryAddObject(map, CustomerField.VAT_NUMBER, getVatNumber());
-    ModelUtils.tryAddObject(map, CustomerField.ZIP_CODE, getZipCode());
-    ModelUtils.tryAddObject(map, CustomerField.CITY, getCity());
-    ModelUtils.tryAddObject(map, CustomerField.EXTERNAL_ID, getExternalId());
-    ModelUtils.tryAddObject(map, CustomerField.COUNTRY, getCountry());
-    ModelUtils.tryAddObject(map, CustomerField.EMAIL, getEmail());
-    ModelUtils.tryAddObject(map, CustomerField.PHONE, getPhone());
-
-    return map;
   }
 }
