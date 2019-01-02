@@ -3,9 +3,6 @@ package com.invisiblecollector.model;
 /**
  * A model for the company.
  *
- * <p>Can be converted into an enum map, see {@link #toEnumMap()} and {@link CompanyField} for more
- * details.
- *
  * @author ros
  */
 public class Company extends Model implements IRoutable {
@@ -75,6 +72,11 @@ public class Company extends Model implements IRoutable {
     fields.put("city", city);
   }
 
+  /**
+   * Set the company's country
+   *
+   * @param country The company's country. Value must be in <a href="https://en.wikipedia.org/wiki/ISO_3166-1">ISO 3166-1</a> format.
+   */
   public void setCountry(String country) {
     fields.put("country", country);
   }
@@ -87,6 +89,11 @@ public class Company extends Model implements IRoutable {
     fields.put("name", name);
   }
 
+  /**
+   * Set the vat number
+   *
+   * @param vatNumber the VAT number. This number is validated for correctness
+   */
   public void setVatNumber(String vatNumber) {
     fields.put("vatNumber", vatNumber);
   }

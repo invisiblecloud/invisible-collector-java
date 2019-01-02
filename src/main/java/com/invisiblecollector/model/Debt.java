@@ -84,9 +84,7 @@ public class Debt extends Model implements IRoutable {
   }
 
   private static List<Item> copyItemsList(List<Item> items) {
-    return items.stream()
-            .map(Item::clone)
-            .collect(Collectors.toList());
+    return items.stream().map(Item::clone).collect(Collectors.toList());
   }
 
   public List<Item> getItems() {
@@ -174,6 +172,10 @@ public class Debt extends Model implements IRoutable {
     fields.put("id", id);
   }
 
+  /**
+   * Set the items
+   * @param items the items to set. items are deep cloned before setting.
+   */
   public void setItems(List<Item> items) {
     if (items != null) {
       items = copyItemsList(items);
@@ -194,11 +196,23 @@ public class Debt extends Model implements IRoutable {
     fields.put("status", status);
   }
 
+  /**
+   * @param tax The total tax amount.
+   */
   public void setTax(Double tax) {
     fields.put("tax", tax);
   }
 
-  /** See {@link DebtField#TYPE} for possible values. */
+  /**
+   * Set the type
+   *
+   * @param type The debt type. Expected value is a {@link String} Value must be one of: <br>
+   *     "FT" - Normal invoice; <br>
+   *     "FS" - Simplified invoice; <br>
+   *     "SD" - Standard debt; <br>
+   *     Check <a href="https://www.invisiblecollector.com/docs/api/debts/post/">the API docs </a>
+   *     for up to date acceptable values
+   */
   public void setType(String type) {
     fields.put("type", type);
   }

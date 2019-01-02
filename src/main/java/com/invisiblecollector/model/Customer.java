@@ -3,9 +3,6 @@ package com.invisiblecollector.model;
 /**
  * A model for the customer.
  *
- * <p>Can be converted into an enum map, see {@link #toEnumMap()} and {@link CustomerField} for more
- * details.
- *
  * @author ros
  */
 public class Customer extends Model implements IRoutable {
@@ -92,11 +89,20 @@ public class Customer extends Model implements IRoutable {
     fields.put("city", city);
   }
 
-  /** See {@link CustomerField#COUNTRY} for more details. */
+  /**
+   * Set the company's country
+   *
+   * @param country The company's country. Value must be in <a href="https://en.wikipedia.org/wiki/ISO_3166-1">ISO 3166-1</a> format.
+   */
   public void setCountry(String country) {
     fields.put("country", country);
   }
 
+  /**
+   * Set the email.
+   *
+   * @param email the email. It's validated fir correctness
+   */
   public void setEmail(String email) {
     fields.put("email", email);
   }
@@ -128,6 +134,11 @@ public class Customer extends Model implements IRoutable {
     fields.put("phone", phone);
   }
 
+  /**
+   * Set the vat number
+   *
+   * @param vatNumber the VAT number. This number is validated for correctness
+   */
   public void setVatNumber(String vatNumber) {
     fields.put("vatNumber", vatNumber);
   }

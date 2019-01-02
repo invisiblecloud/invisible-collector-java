@@ -2,6 +2,13 @@ package com.invisiblecollector.model;
 
 import java.util.*;
 
+/**
+ * The base model.
+ *
+ * <p>Any initial model instance starts without any fields set (converting to json renders an empty
+ * object). Any setter can either set a value or a null (to allow sending json object with null
+ * values).
+ */
 public abstract class Model {
 
   protected Map<String, Object> fields = new HashMap<>();
@@ -20,11 +27,20 @@ public abstract class Model {
     return (Map<String, String>) fields.get(key);
   }
 
+  /**
+   * @return the hash code
+   */
   @Override
   public int hashCode() {
     return fields.hashCode();
   }
 
+  /**
+   * Compare for equality.
+   *
+   * @param obj the other object
+   * @return true on equal
+   */
   @Override
   public boolean equals(Object obj) {
     if (!(obj instanceof Model)) {

@@ -64,6 +64,10 @@ public class Item extends Model implements Cloneable {
     fields.put("vat", vat);
   }
 
+    /**
+     * Create a deep clone
+     * @return deep clone of the model
+     */
   @Override
   public Item clone()  {
       try {
