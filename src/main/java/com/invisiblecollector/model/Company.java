@@ -1,28 +1,18 @@
 package com.invisiblecollector.model;
 
-import java.util.EnumMap;
-import java.util.Objects;
-
 /**
- * A model for the company. 
- * 
- * <p>Can be converted into an enum map, 
- * see {@link #toEnumMap()} and {@link CompanyField} for more details.
- * 
- * @author ros
+ * A model for the company.
  *
+ * @author ros
  */
-public class Company implements IModel, IRoutable {
+public class Company extends Model implements IRoutable {
 
-  private String address;
-  private String city;
-  private String country;
-  private String gid;
-  private String name;
-  private Boolean notificationsEnabled;
-  private String vatNumber;
-  private String zipCode;
-  
+  @Override
+  public int hashCode() {
+    pmdWorkaround();
+    return super.hashCode();
+  }
+
   @Override
   public boolean equals(Object obj) {
     if (!(obj instanceof Company)) {
@@ -34,34 +24,27 @@ public class Company implements IModel, IRoutable {
     }
 
     Company other = (Company) obj;
-    return Objects.equals(this.vatNumber, other.vatNumber)
-        && Objects.equals(this.name, other.name)
-        && Objects.equals(this.address, other.address)
-        && Objects.equals(this.zipCode, other.zipCode) 
-        && Objects.equals(this.city, other.city)
-        && Objects.equals(this.country, other.country) 
-        && Objects.equals(this.gid, other.gid)
-        && Objects.equals(this.notificationsEnabled, other.notificationsEnabled);
+    return super.equals(other);
   }
 
   public String getAddress() {
-    return address;
+    return getString("address");
   }
 
   public String getCity() {
-    return city;
+    return getString("city");
   }
 
   public String getCountry() {
-    return country;
+    return getString("country");
   }
 
   public String getId() {
-    return gid;
+    return getString("gid");
   }
 
   public String getName() {
-    return name;
+    return getString("name");
   }
 
   @Override
@@ -70,58 +53,58 @@ public class Company implements IModel, IRoutable {
   }
 
   public String getVatNumber() {
-    return vatNumber;
+    return getString("vatNumber");
   }
 
   public String getZipCode() {
-    return zipCode;
-  }
-  
-  @Override
-  public int hashCode() {
-    return Objects.hash(this.vatNumber, this.name, this.address, this.zipCode, this.city,
-        this.country, this.gid, this.notificationsEnabled);
+    return getString("zipCode");
   }
 
   public Boolean isNotificationsEnabled() {
-    return notificationsEnabled;
+    return getBoolean("notificationsEnabled");
   }
 
   public void setAddress(String address) {
-    this.address = address;
+    fields.put("address", address);
   }
 
   public void setCity(String city) {
-    this.city = city;
+    fields.put("city", city);
   }
-  
-  public void setId(String id) {
-    this.gid = id;
+
+  /**
+   * Set the company's country
+   *
+   * @param country The company's country. Value must be in <a href="https://en.wikipedia.org/wiki/ISO_3166-1">ISO 3166-1</a> format.
+   */
+  public void setCountry(String country) {
+    assertCountryIso3166(country);
+
+    fields.put("country", country);
+  }
+
+  public void setGid(String id) {
+    fields.put("gid", id);
   }
 
   public void setName(String name) {
-    this.name = name;
+    fields.put("name", name);
   }
 
+  /**
+   * Set the vat number
+   *
+   * @param vatNumber the VAT number. This number is validated for correctness
+   */
   public void setVatNumber(String vatNumber) {
-    this.vatNumber = vatNumber;
+    fields.put("vatNumber", vatNumber);
   }
 
   public void setZipCode(String zipCode) {
-    this.zipCode = zipCode;
+    fields.put("zipCode", zipCode);
   }
 
-  @Override
-  public EnumMap<CompanyField, Object> toEnumMap() {
-    EnumMap<CompanyField, Object> map = new EnumMap<>(CompanyField.class);
-
-    ModelUtils.tryAddObject(map, CompanyField.NAME, getName());
-    ModelUtils.tryAddObject(map, CompanyField.ADDRESS, getAddress());
-    ModelUtils.tryAddObject(map, CompanyField.VAT_NUMBER, getVatNumber());
-    ModelUtils.tryAddObject(map, CompanyField.ZIP_CODE, getZipCode());
-    ModelUtils.tryAddObject(map, CompanyField.CITY, getCity());
-    ModelUtils.tryAddObject(map, CompanyField.COUNTRY, getCountry());
-    
-    return map;
+  public void setNotificationsEnabled(Boolean notificationsEnabled) {
+    fields.put("notificationsEnabled", notificationsEnabled);
   }
 }

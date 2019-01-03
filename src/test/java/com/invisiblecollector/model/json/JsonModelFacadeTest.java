@@ -1,24 +1,18 @@
 package com.invisiblecollector.model.json;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.text.ParseException;
-import java.util.Date;
-import java.util.EnumMap;
-import java.util.GregorianCalendar;
-import java.util.Map;
-import java.util.TreeMap;
-
+import com.invisiblecollector.exceptions.IcException;
+import com.invisiblecollector.model.Company;
+import com.invisiblecollector.model.builder.CompanyBuilder;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import com.google.gson.JsonObject;
-import com.invisiblecollector.exceptions.IcException;
-import com.invisiblecollector.model.Company;
-import com.invisiblecollector.model.CompanyField;
-import com.invisiblecollector.model.IModel;
-import com.invisiblecollector.model.builder.CompanyBuilder;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class JsonModelFacadeTest {
 
@@ -42,7 +36,7 @@ public class JsonModelFacadeTest {
     CompanyBuilder companyBuilder = CompanyBuilder.buildTestCompanyBuilder();
     Company correctCompany = companyBuilder.buildModel();
 
-    String jsonString = companyBuilder.buildJsonObject().toString();
+    String jsonString = companyBuilder.buildJson();
 
     InputStream inputStream = stringToInputStream(jsonString);
 
@@ -58,19 +52,6 @@ public class JsonModelFacadeTest {
     InputStream inputStream = stringToInputStream(TEST_JSON_DATE);
     Date returnedDate = new JsonModelFacade().parseStringStream(inputStream, Date.class);
     Assertions.assertEquals(correctDate, returnedDate);
-  }
-  
-
-  @Test
-  public void toJson_IModel_correctness() {
-    CompanyBuilder companyBuilder = CompanyBuilder.buildTestCompanyBuilder();
-
-    Company correctCompany = companyBuilder.buildModel();
-    String returnedJson = new JsonModelFacade().toJson((IModel) correctCompany);
-
-    JsonObject returnedJsonObj = JsonTestUtils.jsonStringAsJsonObject(returnedJson);
-    JsonObject correctCompanyJsonObj = companyBuilder.buildJsonObject();
-    Assertions.assertEquals(returnedJsonObj, correctCompanyJsonObj);
   }
 
   @Test
@@ -89,19 +70,7 @@ public class JsonModelFacadeTest {
   }
 
   @Test
-  public void toJson_enumMap_correctness() {
-    EnumMap<CompanyField, Object> companyMap = new EnumMap<>(CompanyField.class);
-    companyMap.put(CompanyField.CITY, "new city");
-    companyMap.put(CompanyField.ADDRESS, null);
-    String correctJson = "{ 'city':'new city', 'address': null }".replaceAll("'", "\"");
-
-    String json = new JsonModelFacade().toJson(companyMap);
-    JsonTestUtils.assertJsonEquals(correctJson, json);
-  }
-
-  // tests indirectly for correct gson initialization
-  @Test
-  public void toJson_DateSuccess() throws ParseException {
+  public void toJson_DateSuccess() {
     Date time = new GregorianCalendar(2013, 2, 19).getTime();
     String json = new JsonModelFacade().toJson(time);
     Assertions.assertEquals(TEST_JSON_DATE, json);

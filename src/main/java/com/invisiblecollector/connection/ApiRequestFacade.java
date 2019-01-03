@@ -34,7 +34,8 @@ public class ApiRequestFacade {
     this(apiToken, baseUrl, responseValidator, getClientInstance());
   }
 
-  public ApiRequestFacade(String apiToken, URI baseUrl, ResponseValidator responseValidator, Client client) {
+  public ApiRequestFacade(
+      String apiToken, URI baseUrl, ResponseValidator responseValidator, Client client) {
     this.apiToken = apiToken;
     this.baseUrl = baseUrl;
     this.responseValidator = responseValidator;
@@ -86,8 +87,7 @@ public class ApiRequestFacade {
     }
   }
 
-  private InputStream requestGuts(
-          String urlEndpoint, RequestType requestType, String bodyToSend)
+  private InputStream requestGuts(String urlEndpoint, RequestType requestType, String bodyToSend)
       throws IcException {
     Invocation.Builder request =
         client.target(baseUrl).path(urlEndpoint).request(MediaType.APPLICATION_JSON);
@@ -104,13 +104,11 @@ public class ApiRequestFacade {
     return this.requestGuts(urlEndpoint, RequestType.GET, null);
   }
 
-  public InputStream putRequest(String urlEndpoint, String bodyToSend)
-      throws IcException {
+  public InputStream putRequest(String urlEndpoint, String bodyToSend) throws IcException {
     return this.requestGuts(urlEndpoint, RequestType.PUT, bodyToSend);
   }
 
-  public InputStream postRequest(String urlEndpoint, String bodyToSend)
-      throws IcException {
+  public InputStream postRequest(String urlEndpoint, String bodyToSend) throws IcException {
     return this.requestGuts(urlEndpoint, RequestType.POST, bodyToSend);
   }
 }

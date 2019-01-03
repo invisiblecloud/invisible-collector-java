@@ -1,16 +1,10 @@
 package com.invisiblecollector.model.builder;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
-import com.google.gson.JsonObject;
 import com.invisiblecollector.StringTestUtils;
 import com.invisiblecollector.model.Debt;
 import com.invisiblecollector.model.Item;
+
+import java.util.*;
 
 public class DebtBuilder extends BuilderBase {
 
@@ -28,6 +22,16 @@ public class DebtBuilder extends BuilderBase {
   private Double tax;
   private String type;
 
+  private static Date truncateDateTime(Date date) {
+    Calendar cal = Calendar.getInstance();
+    cal.setTime(date);
+    cal.set(Calendar.HOUR_OF_DAY, 0);
+    cal.set(Calendar.MINUTE, 0);
+    cal.set(Calendar.SECOND, 0);
+    cal.set(Calendar.MILLISECOND, 0);
+    return cal.getTime();
+  }
+
   private static Date buildDate(int yearOffset) {
     Calendar calendarNow = Calendar.getInstance();
     calendarNow.add(Calendar.YEAR, yearOffset);
@@ -36,8 +40,12 @@ public class DebtBuilder extends BuilderBase {
   }
 
   public static DebtBuilder buildMinimalTestBuilder() {
-    return new DebtBuilder().setNumber("1").setCustomerId("1").setType("FS")
-        .setDate(buildDate(0)).setDueDate(buildDate(2));
+    return new DebtBuilder()
+        .setNumber("1")
+        .setCustomerId("1")
+        .setType("FS")
+        .setDate(buildDate(0))
+        .setDueDate(buildDate(2));
   }
 
   public DebtBuilder addItem(Item item) {
@@ -54,42 +62,53 @@ public class DebtBuilder extends BuilderBase {
     attributes.put("test-key", "test-value");
     attributes.put("key2", "value2");
 
-    return new DebtBuilder().setNumber("2").setCustomerId("1").setType("FS").setDate(buildDate(0))
-        .setDueDate(buildDate(2)).setAttributes(attributes)
+    return new DebtBuilder()
+        .setNumber("2")
+        .setCustomerId("1")
+        .setType("FS")
+        .setDate(buildDate(0))
+        .setDueDate(buildDate(2))
+        .setAttributes(attributes)
         .addItem(ItemBuilder.buildTestItemBuilder().buildModel())
-        .addItem(ItemBuilder.buildAnotherTestItemBuilder().buildModel()).setId("1");
+        .addItem(ItemBuilder.buildAnotherTestItemBuilder().buildModel())
+        .setId("1");
   }
 
   @Override
-  public JsonObject buildJsonObject() {
-    JsonObject jsonObject = buildSendableJsonObject();
+  public Map<String, Object> buildObject() {
+    Map<String, Object> jsonObject = buildSendableObject();
 
-    jsonObject.addProperty("id", id);
+    jsonObject.put("id", id);
 
     return jsonObject;
   }
 
-  @Override
+  private class ExtraDebt extends Debt {
+    private ExtraDebt(Map<String, Object> map) {
+      fields = map;
+    }
+  }
+
   public Debt buildModel() {
-    return buildModel(Debt.class);
+    return (Debt) new ExtraDebt(buildObject());
   }
 
   @Override
-  public JsonObject buildSendableJsonObject() {
-    JsonObject jsonObject = new JsonObject();
+  protected Map<String, Object> buildSendableObject() {
+    Map<String, Object> jsonObject = new HashMap<>();
 
-    jsonObject.addProperty("number", number);
-    jsonObject.addProperty("customerId", customerId);
-    jsonObject.addProperty("type", type);
-    jsonObject.addProperty("status", status);
-    jsonObject.addProperty("date", StringTestUtils.dateToString(date));
-    jsonObject.addProperty("dueDate", StringTestUtils.dateToString(dueDate));
-    jsonObject.addProperty("netTotal", netTotal);
-    jsonObject.addProperty("tax", tax);
-    jsonObject.addProperty("grossTotal", grossTotal);
-    jsonObject.addProperty("currency", currency);
-    jsonObject.add("attributes", StringTestUtils.toJsonElement(getAttributes()));
-    jsonObject.add("items", StringTestUtils.toJsonElement(getItems()));
+    jsonObject.put("number", number);
+    jsonObject.put("customerId", customerId);
+    jsonObject.put("type", type);
+    jsonObject.put("status", status);
+    jsonObject.put("date", truncateDateTime(date));
+    jsonObject.put("dueDate", truncateDateTime(dueDate));
+    jsonObject.put("netTotal", netTotal);
+    jsonObject.put("tax", tax);
+    jsonObject.put("grossTotal", grossTotal);
+    jsonObject.put("currency", currency);
+    jsonObject.put("attributes", getAttributes());
+    jsonObject.put("items", getItems());
 
     return jsonObject;
   }
@@ -211,4 +230,31 @@ public class DebtBuilder extends BuilderBase {
     return this;
   }
 
+  private Map<String, Object> convertDateStrings(Map<String, Object> obj) {
+    Date date = getDate();
+    if (date != null) {
+      obj.put("date", StringTestUtils.dateToString(date));
+    }
+
+    Date dueDate = getDueDate();
+    if (dueDate != null) {
+      obj.put("dueDate", StringTestUtils.dateToString(dueDate));
+    }
+
+    return obj;
+  }
+
+  @Override
+  public String buildJson() {
+    Map<String, Object> obj = this.buildObject();
+
+    return toJson(convertDateStrings(obj));
+  }
+
+  @Override
+  public String buildSendableJson(boolean stripNulls) {
+    Map<String, Object> obj = this.buildSendableObject(stripNulls);
+
+    return toJson(convertDateStrings(obj));
+  }
 }

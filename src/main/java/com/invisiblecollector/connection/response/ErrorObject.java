@@ -20,4 +20,16 @@ public class ErrorObject {
   public boolean hasGid() {
     return gid != null;
   }
+
+  public void setCode(Integer code) {
+    this.code = code;
+  }
+
+  public void setMessage(String message) {
+    this.message = message;
+  }
+
+  public void setGid(String gid) {
+    this.gid = gid;
+  }
 }

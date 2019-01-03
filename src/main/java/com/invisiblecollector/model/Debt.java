@@ -1,48 +1,40 @@
 package com.invisiblecollector.model;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
-public class Debt implements IModel, IRoutable {
-  
-  private Map<String, String> attributes;
-  private String currency;
-  private String customerId;
-  private Date date;
-  private Date dueDate;
-  private Double grossTotal;
-  private String id;
-  private List<Item> items;
-  private Double netTotal;
-  private String number;
-  private String status;
-  private Double tax;
-  private String type;
-
+/** A model for customer debts. */
+public class Debt extends Model implements IRoutable {
   public void addAttribute(String key, String value) {
+    Map<String, String> attributes = getStringMap("attributes");
+
     if (attributes == null) {
       attributes = new HashMap<>();
+      fields.put("attributes", attributes);
     }
-    
+
     attributes.put(key, value);
   }
 
   public void addItem(Item item) {
-    if (items == null) {
-      items = new ArrayList<>();
-    }
-    
     if (item == null) {
       throw new IllegalArgumentException("item cannot be null");
     }
 
-    items.add(item);
+    List<Item> items = getItemsInternals();
+
+    if (items == null) {
+      items = new ArrayList<>();
+      fields.put("items", items);
+    }
+
+    items.add(item.clone());
+  }
+
+  @Override
+  public int hashCode() {
+    pmdWorkaround();
+    return super.hashCode();
   }
 
   @Override
@@ -53,65 +45,86 @@ public class Debt implements IModel, IRoutable {
       return true;
     } else {
       Debt other = (Debt) obj;
-      return Objects.equals(this.attributes, other.attributes)
-          && Objects.equals(this.currency, other.currency)
-          && Objects.equals(this.customerId, other.customerId)
-          && Objects.equals(this.date, other.date) && Objects.equals(this.dueDate, other.dueDate)
-          && Objects.equals(this.grossTotal, other.grossTotal) && Objects.equals(this.id, other.id)
-          && Objects.equals(this.items, other.items)
-          && Objects.equals(this.netTotal, other.netTotal)
-          && Objects.equals(this.number, other.number) && Objects.equals(this.status, other.status)
-          && Objects.equals(this.tax, other.tax);
+      return super.equals(other);
     }
   }
 
+  /**
+   * Get the debt's attributes
+   *
+   * @return the debt's attributes (deep copied).
+   */
   public Map<String, String> getAttributes() {
-    return attributes;
+    Map<String, String> attributes = getStringMap("attributes");
+    if (attributes == null) {
+      return new HashMap<>();
+    }
+
+    return new HashMap<>(attributes);
   }
 
-  /**
-   * See {@link DebtField#CURRENCY} for more details. 
-   */
   public String getCurrency() {
-    return currency;
+    return getString("currency");
   }
 
   public String getCustomerId() {
-    return customerId;
+    return getString("customerId");
   }
 
-  /**
-   * See {@link DebtField#DATE} for more details. 
-   */
   public Date getDate() {
+    Date date = getDate("date");
+    if (date == null) {
+      return null;
+    }
+
     return new Date(date.getTime());
   }
 
-  /**
-   * See {@link DebtField#DUE_DATE} for more details. 
-   */
   public Date getDueDate() {
+    Date dueDate = getDate("dueDate");
+    if (dueDate == null) {
+      return null;
+    }
+
     return new Date(dueDate.getTime());
   }
 
   public Double getGrossTotal() {
-    return grossTotal;
+    return getDouble("grossTotal");
   }
 
   public String getId() {
-    return id;
+    return getString("id");
   }
 
+  private static List<Item> copyItemsList(List<Item> items) {
+    return items.stream().map(Item::clone).collect(Collectors.toList());
+  }
+
+  /**
+   * Get the items.
+   *
+   * @return the items (deep copied).
+   */
   public List<Item> getItems() {
-    return items;
+    List<Item> items = getItemsInternals();
+    if (items == null) {
+      return new ArrayList<>();
+    }
+
+    return copyItemsList(items);
+  }
+
+  private List<Item> getItemsInternals() {
+    return (List<Item>) fields.get("items");
   }
 
   public Double getNetTotal() {
-    return netTotal;
+    return getDouble("netTotal");
   }
 
   public String getNumber() {
-    return number;
+    return getString("number");
   }
 
   @Override
@@ -119,134 +132,154 @@ public class Debt implements IModel, IRoutable {
     return getId();
   }
 
-  /**
-   * See {@link DebtField#STATUS} for more details. 
-   */
   public String getStatus() {
-    return status;
+    return getString("status");
   }
 
   public Double getTax() {
-    return tax;
+    return getDouble("tax");
   }
 
-  /**
-   * See {@link DebtField#TYPE} for more details. 
-   */
   public String getType() {
-    return type;
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(attributes, currency, customerId, date, dueDate, grossTotal, id, items,
-        netTotal, number, status, tax);
-  }
-
-  public void setAttributes(Map<String, String> attributes) {
-    this.attributes = attributes;
+    return getString("type");
   }
 
   /**
-   * See {@link DebtField#CURRENCY} for more details. 
+   * Set the debt's attributes.
+   *
+   * @param attributes the debt's atrtibutes. They are deep cloned before setting.
+   */
+  public void setAttributes(Map<String, String> attributes) {
+    if (attributes != null) {
+      attributes = new HashMap<>(attributes);
+    }
+    fields.put("attributes", attributes);
+  }
+
+  /**
+   * Set the debt's currency.
+   *
+   * @param currency The Debt's currency.
+   *     <p>Value must be in <a href="https://en.wikipedia.org/wiki/ISO_4217">ISO 4217</a> format.
    */
   public void setCurrency(String currency) {
-    this.currency = currency;
+    if (currency != null && currency.length() != 3) {
+      throw new IllegalArgumentException("currency must be in ISO 4217 format");
+    }
+
+    fields.put("currency", currency);
   }
-  
+
   /**
-   * See {@link DebtField#CUSTOMER_ID} for more details.
-   * 
-   * @param customerInfo the object that has the id or external id of the customer.
-   *        Can be a {@link Customer} object.
+   * Set the customer id.
+   *
+   * @param customerInfo the object that has the id or external id of the customer. Can be a {@link
+   *     Customer} object.
    * @see #setCustomerId(String)
    */
   public void setCustomerId(IRoutable customerInfo) {
-    this.customerId = customerInfo.getRoutableId();
+    setCustomerId(customerInfo.getRoutableId());
   }
 
   /**
-   * See {@link DebtField#CUSTOMER_ID} for more details.
-   * 
+   * Set the customer id.
+   *
+   * @param customerId The id of the customer to whom the debt is issued. Can be the customer's id
+   *     or external id.
    * @see #setCustomerId(IRoutable)
    */
   public void setCustomerId(String customerId) {
-    this.customerId = customerId;
+    fields.put("customerId", customerId);
   }
 
   /**
-   * See {@link DebtField#DATE} for more details. 
+   * Set the debt's date.
+   *
+   * @param date The date when the debt was issued.
+   *     <p>Only the year, month and day are considered, with the remaining fields discarded. Must
+   *     follow before the due date
    */
   public void setDate(Date date) {
-    this.date = new Date(date.getTime());
+    assertDateOrder(date, getDueDate());
+    fields.put("date", new Date(date.getTime()));
   }
 
   /**
-   * See {@link DebtField#DUE_DATE} for more details. 
+   * Set the debt's due date.
+   *
+   * @param dueDate The date when the debt is due.
+   *     <p>Only the year, month and day are considered, with the remaining fields discarded. Must
+   *     follow after the date
    */
   public void setDueDate(Date dueDate) {
-    this.dueDate = new Date(dueDate.getTime());
+    assertDateOrder(getDate(), dueDate);
+    fields.put("dueDate", new Date(dueDate.getTime()));
+  }
+
+  private void assertDateOrder(Date date, Date dueDate) {
+    if (date != null && dueDate != null && date.compareTo(dueDate) > 0) {
+      throw new IllegalArgumentException("due date must come after the debt date.");
+    }
   }
 
   public void setGrossTotal(Double grossTotal) {
-    this.grossTotal = grossTotal;
+    fields.put("grossTotal", grossTotal);
   }
 
   public void setId(String id) {
-    this.id = id;
+    fields.put("id", id);
   }
 
+  /**
+   * Set the items
+   *
+   * @param items the items to set. items are deep cloned before setting.
+   */
   public void setItems(List<Item> items) {
-    this.items = items;
+    if (items != null) {
+      items = copyItemsList(items);
+    }
+    fields.put("items", items);
   }
 
   public void setNetTotal(Double netTotal) {
-    this.netTotal = netTotal;
+    fields.put("netTotal", netTotal);
   }
 
   public void setNumber(String number) {
-    this.number = number;
+    fields.put("number", number);
   }
 
-  /**
-   * See {@link DebtField#STATUS} for possible values. 
+
+  /** Set the debt status
+   *
+   * @param status The debt status.
+   * <p>Value must be one of: <br>
+   * "PENDING" - the default value; <br>
+   * "PAID"; <br>
+   * "CANCELLED"; <br>
+   * <p>Check <a href="https://www.invisiblecollector.com/docs/api/debts/post/">the API docs </a> for up to date acceptable values
    */
   public void setStatus(String status) {
-    this.status = status;
+    fields.put("status", status);
   }
 
+  /** @param tax The total tax amount. */
   public void setTax(Double tax) {
-    this.tax = tax;
+    fields.put("tax", tax);
   }
 
   /**
-   * See {@link DebtField#TYPE} for possible values. 
+   * Set the type
+   *
+   * @param type The debt type. Expected value is a {@link String} Value must be one of: <br>
+   *     "FT" - Normal invoice; <br>
+   *     "FS" - Simplified invoice; <br>
+   *     "SD" - Standard debt; <br>
+   *     Check <a href="https://www.invisiblecollector.com/docs/api/debts/post/">the API docs </a>
+   *     for up to date acceptable values
    */
   public void setType(String type) {
-    this.type = type;
-  }
-
-  @Override
-  public EnumMap<DebtField, Object> toEnumMap() {
-    EnumMap<DebtField, Object> map = new EnumMap<>(DebtField.class);
-
-    ModelUtils.tryAddObject(map, DebtField.NUMBER, getNumber());
-    ModelUtils.tryAddObject(map, DebtField.CUSTOMER_ID, getCustomerId());
-    ModelUtils.tryAddObject(map, DebtField.TYPE, getType());
-    ModelUtils.tryAddObject(map, DebtField.STATUS, getStatus());
-    ModelUtils.tryAddObject(map, DebtField.DATE, getDate());
-    ModelUtils.tryAddObject(map, DebtField.DUE_DATE, getDueDate());
-    ModelUtils.tryAddObject(map, DebtField.NET_TOTAL, getNetTotal());
-    ModelUtils.tryAddObject(map, DebtField.TAX, getTax());
-    ModelUtils.tryAddObject(map, DebtField.GROSS_TOTAL, getGrossTotal());
-    ModelUtils.tryAddObject(map, DebtField.CURRENCY, getCurrency());
-    ModelUtils.tryAddObject(map, DebtField.ATTRIBUTES, getAttributes());
-    if (getItems() != null) {
-      List<Map<ItemField, Object>> processedItems =
-          getItems().stream().map(item -> item.toEnumMap()).collect(Collectors.toList());
-      map.put(DebtField.ITEMS, processedItems);
-    }
-
-    return map;
+    fields.put("type", type);
   }
 }

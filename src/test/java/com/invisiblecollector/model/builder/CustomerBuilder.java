@@ -1,7 +1,9 @@
 package com.invisiblecollector.model.builder;
 
-import com.google.gson.JsonObject;
 import com.invisiblecollector.model.Customer;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class CustomerBuilder extends BuilderBase {
 
@@ -18,8 +20,17 @@ public class CustomerBuilder extends BuilderBase {
 
   public CustomerBuilder() {}
 
-  public CustomerBuilder(String address, String city, String country, String email,
-      String externalId, String gid, String name, String phone, String vatNumber, String zipCode) {
+  public CustomerBuilder(
+      String address,
+      String city,
+      String country,
+      String email,
+      String externalId,
+      String gid,
+      String name,
+      String phone,
+      String vatNumber,
+      String zipCode) {
     this.address = address;
     this.city = city;
     this.country = country;
@@ -30,42 +41,64 @@ public class CustomerBuilder extends BuilderBase {
     this.phone = phone;
     this.vatNumber = vatNumber;
     this.zipCode = zipCode;
-
   }
 
-  @Override
-  public Customer buildModel() {
+  private class ExtraCustomer extends Customer {
+    private ExtraCustomer(Map<String, Object> map) {
+      fields = map;
+    }
+  }
 
-    return buildModel(Customer.class);
+  public Customer buildModel() {
+    return buildModel(false);
+  }
+
+  public Customer buildModel(boolean stripNulls) {
+
+    Map<String, Object> map = buildObject();
+    if (stripNulls) {
+      stripMapNulls(map);
+    }
+
+    return new ExtraCustomer(map);
   }
 
   public static CustomerBuilder buildTestCustomerBuilder() {
-    return new CustomerBuilder("testAdress", "testCity", "PT", "testEmail@gmail.com", "12345",
-        "234", "testName", "9999", "509784852", "23123");
+    return new CustomerBuilder(
+        "testAdress",
+        "testCity",
+        "PT",
+        "testEmail@gmail.com",
+        "12345",
+        "234",
+        "testName",
+        "9999",
+        "509784852",
+        "23123");
   }
-  
-  @Override
-  public JsonObject buildSendableJsonObject() {
-    JsonObject jsonObject = new JsonObject();
 
-    jsonObject.addProperty("name", name);
-    jsonObject.addProperty("externalId", externalId);
-    jsonObject.addProperty("vatNumber", vatNumber);
-    jsonObject.addProperty("address", address);
-    jsonObject.addProperty("zipCode", zipCode);
-    jsonObject.addProperty("city", city);
-    jsonObject.addProperty("country", country);
-    jsonObject.addProperty("email", email);
-    jsonObject.addProperty("phone", phone);
+  @Override
+  protected Map<String, Object> buildSendableObject() {
+    Map<String, Object> jsonObject = new HashMap<>();
+
+    jsonObject.put("name", name);
+    jsonObject.put("externalId", externalId);
+    jsonObject.put("vatNumber", vatNumber);
+    jsonObject.put("address", address);
+    jsonObject.put("zipCode", zipCode);
+    jsonObject.put("city", city);
+    jsonObject.put("country", country);
+    jsonObject.put("email", email);
+    jsonObject.put("phone", phone);
 
     return jsonObject;
   }
 
   @Override
-  public JsonObject buildJsonObject() {
-    JsonObject jsonObject = buildSendableJsonObject();
+  public Map<String, Object> buildObject() {
+    Map<String, Object> jsonObject = buildSendableObject();
 
-    jsonObject.addProperty("gid", gid);
+    jsonObject.put("gid", gid);
 
     return jsonObject;
   }
@@ -120,9 +153,7 @@ public class CustomerBuilder extends BuilderBase {
     return this;
   }
 
-
   public String getExternalId() {
     return gid;
   }
-
 }

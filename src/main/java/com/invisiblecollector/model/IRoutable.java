@@ -10,6 +10,7 @@ public interface IRoutable {
   /**
    * Get a valid routable id of the model. Can be used to reference the model
    * in the remote database for updates, deletions, etc.
+   * @throws IllegalArgumentException if no valid id is present.
    * 
    * @return the id
    */

@@ -1,21 +1,18 @@
 package com.invisiblecollector.model;
 
-import java.util.EnumMap;
-import java.util.Objects;
+import com.invisiblecollector.exceptions.IcRuntimeException;
 
-public class Item implements IModel {
+import java.util.HashMap;
 
-  private String description;
-  private String name;
-  private Double price;
-  private Double quantity;
-  private Double vat;
-  
+/** A model for debt items. */
+public class Item extends Model implements Cloneable {
+
   @Override
   public int hashCode() {
-    return Objects.hash(description, name, price, quantity, vat);
+    pmdWorkaround();
+    return super.hashCode();
   }
-  
+
   @Override
   public boolean equals(Object obj) {
     if (!(obj instanceof Item)) {
@@ -24,64 +21,83 @@ public class Item implements IModel {
       return true;
     } else {
       Item other = (Item) obj;
-      return Objects.equals(this.description, other.description)
-          && Objects.equals(this.name, other.name) 
-          && Objects.equals(this.price, other.price)
-          && Objects.equals(this.quantity, other.quantity)
-          && Objects.equals(this.vat, other.vat);
+      return super.equals(other);
     }
   }
 
   public String getDescription() {
-    return description;
+    return getString("description");
   }
 
   public String getName() {
-    return name;
+    return getString("name");
   }
 
   public Double getPrice() {
-    return price;
+    return getDouble("price");
   }
 
   public Double getQuantity() {
-    return quantity;
+    return getDouble("quantity");
   }
 
   public Double getVat() {
-    return vat;
+    return getDouble("vat");
   }
 
   public void setDescription(String description) {
-    this.description = description;
+    fields.put("description", description);
   }
 
   public void setName(String name) {
-    this.name = name;
+    fields.put("name", name);
   }
 
+  /**
+   * Set the item's price
+   *
+   * @param price the price. Default value is 0.0
+   */
   public void setPrice(Double price) {
-    this.price = price;
+    fields.put("price", price);
   }
 
+  /**
+   * Set the quantity.
+   *
+   * @param quantity The amount of items of this type included in the transaction. Default value is 0.0. Must be positive
+   */
   public void setQuantity(Double quantity) {
-    this.quantity = quantity;
+    if (quantity < 0) {
+      throw new IllegalArgumentException("quantity can't be negative");
+    }
+
+    fields.put("quantity", quantity);
   }
 
+  /**
+   * Set the item's VAT.
+   *
+   * @param vat the VAT. Default value is 0.0
+   */
   public void setVat(Double vat) {
-    this.vat = vat;
+    fields.put("vat", vat);
   }
 
+  /**
+   * Create a deep clone
+   *
+   * @return deep clone of the model
+   */
   @Override
-  public EnumMap<ItemField, Object> toEnumMap() {
-    EnumMap<ItemField, Object> map = new EnumMap<>(ItemField.class);
-
-    ModelUtils.tryAddObject(map, ItemField.NAME, getName());
-    ModelUtils.tryAddObject(map, ItemField.DESCRIPTION, getDescription());
-    ModelUtils.tryAddObject(map, ItemField.QUANTITY, getQuantity());
-    ModelUtils.tryAddObject(map, ItemField.VAT, getVat());
-    ModelUtils.tryAddObject(map, ItemField.PRICE, getPrice());
-
-    return map;
+  public Item clone() {
+    try {
+      super.clone();
+    } catch (CloneNotSupportedException e) {
+      throw new IcRuntimeException(e);
+    }
+    Item copy = new Item();
+    copy.fields = new HashMap<>(fields);
+    return copy;
   }
 }

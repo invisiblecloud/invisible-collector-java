@@ -1,56 +1,59 @@
 package com.invisiblecollector.model.json;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.invisiblecollector.exceptions.IcException;
+import com.invisiblecollector.model.Debt;
+
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Map;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonIOException;
-import com.google.gson.JsonSyntaxException;
-import com.google.gson.stream.JsonReader;
-import com.invisiblecollector.exceptions.IcException;
 
 /**
  * Thread-safe.
- * 
- * @author ros
  *
+ * @author ros
  */
 public class JsonModelFacade {
 
-  // not to be used, just to get class of map
-  private interface StringMap extends Map<String, String> {
-  }
+  private static final String PARSING_ERROR_MSG = "Failed to parse JSON.";
 
   public <T> T parseStringStream(InputStream inputStream, Class<T> classType) throws IcException {
 
-    InputStreamReader inputStreamReader =
-        new InputStreamReader(inputStream, StandardCharsets.UTF_8);
-    JsonReader reader = new JsonReader(inputStreamReader);
-    Gson gson = GsonSingleton.getInstance();
-    T value;
     try {
-      value = gson.fromJson(reader, classType);
-    } catch (JsonIOException | JsonSyntaxException e) {
-      throw new IcException("Failed to parse JSON");
-    }
-    try {
-      reader.close();
+      return JsonSingleton.getInstance().readValue(inputStream, classType);
     } catch (IOException e) {
-      throw new IcException(e);
+      throw new IcException(PARSING_ERROR_MSG, e);
     }
-    return value;
   }
 
   public Map<String, String> parseStringStreamAsStringMap(InputStream inputStream)
       throws IcException {
-    return parseStringStream(inputStream, StringMap.class);
+    TypeReference<Map<String, String>> valueTypeRef = new TypeReference<Map<String, String>>() {};
+    return parseStringStreamAsCollection(inputStream, valueTypeRef);
+  }
+
+  public List<Debt> parseStringStreamAsDebtList(InputStream inputStream)
+          throws IcException {
+    TypeReference<List<Debt>> typeReference = new TypeReference<List<Debt>>() {};
+    return parseStringStreamAsCollection(inputStream, typeReference);
+  }
+
+  private <T> T parseStringStreamAsCollection(InputStream inputStream, TypeReference<T> valueTypeRef)
+      throws IcException {
+    try {
+      return JsonSingleton.getInstance().readValue(inputStream, valueTypeRef);
+    } catch (IOException e) {
+      throw new IcException(PARSING_ERROR_MSG, e);
+    }
   }
 
   public String toJson(Object obj) {
-    return GsonSingleton.getInstance().toJson(obj);
+    try {
+      return JsonSingleton.getInstance().writeValueAsString(obj);
+    } catch (JsonProcessingException e) {
+      throw new IllegalArgumentException(e);
+    }
   }
-
 }

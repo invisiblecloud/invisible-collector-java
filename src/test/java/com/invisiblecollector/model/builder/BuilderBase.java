@@ -1,57 +1,52 @@
 package com.invisiblecollector.model.builder;
 
-import java.util.Iterator;
-import java.util.Map.Entry;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.invisiblecollector.model.Model;
+import com.invisiblecollector.model.json.JsonSingleton;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.invisiblecollector.model.IModel;
-import com.invisiblecollector.model.json.GsonSingleton;
+import java.util.Map;
 
 public abstract class BuilderBase {
-  public abstract IModel buildModel();
 
-  protected <T> T buildModel(Class<T> classType) {
-    String json = this.buildJsonObject().toString();
+  public abstract Model buildModel();
 
-    Gson gson = GsonSingleton.getInstance();
-    return gson.fromJson(json, classType);
-  }
-  
-  public abstract JsonObject buildSendableJsonObject();
+  protected abstract Map<String, Object> buildSendableObject();
 
-  public JsonObject buildSendableJsonObject(boolean stripNulls) {
-    JsonObject obj = buildSendableJsonObject();
+  protected Map<String, Object> buildSendableObject(boolean stripNulls) {
+    Map<String, Object> obj = buildSendableObject();
 
     if (stripNulls) {
-      Iterator<Entry<String, JsonElement>> it = obj.entrySet().iterator();
-      while (it.hasNext()) {
-        Entry<String, JsonElement> entry = it.next();
-        if (entry.getValue().isJsonNull()) {
-          it.remove();
-        }
-      }
+      stripMapNulls(obj);
     }
 
     return obj;
   }
 
-  public abstract JsonObject buildJsonObject();
+  protected void stripMapNulls(Map<String, Object> obj) {
+    obj.entrySet().removeIf(entry -> entry.getValue() == null);
+  }
 
+  public abstract Map<String, Object> buildObject();
+
+  protected static String toJson(Object obj) {
+    try {
+      return JsonSingleton.getInstance().writeValueAsString(obj);
+    } catch (JsonProcessingException e) {
+      throw new IllegalStateException(e);
+    }
+  }
 
   public String buildJson() {
-    return this.buildJsonObject().toString();
+    return toJson(this.buildObject());
   }
 
   /**
    * Strips all key-value with null values.
+   *
    * @return
+   * @param stripNulls
    */
-  public String buildSendableJson() {
-    return this.buildSendableJsonObject(true).toString();
+  public String buildSendableJson(boolean stripNulls) {
+    return toJson(this.buildSendableObject(stripNulls));
   }
-  
-  
-  
 }
