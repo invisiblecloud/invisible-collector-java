@@ -216,12 +216,6 @@ public class Debt extends Model implements IRoutable {
     fields.put("dueDate", new Date(dueDate.getTime()));
   }
 
-  private void assertDateOrder(Date date, Date dueDate) {
-    if (date != null && dueDate != null && date.compareTo(dueDate) > 0) {
-      throw new IllegalArgumentException("due date must come after the debt date.");
-    }
-  }
-
   public void setGrossTotal(Double grossTotal) {
     fields.put("grossTotal", grossTotal);
   }
@@ -281,5 +275,9 @@ public class Debt extends Model implements IRoutable {
    */
   public void setType(String type) {
     fields.put("type", type);
+  }
+
+  private void assertDateOrder(Date date, Date dueDate) {
+    assertDateOrder(date, dueDate, "dueDate must come after the debt date.");
   }
 }

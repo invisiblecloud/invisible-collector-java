@@ -9,6 +9,7 @@ import com.invisiblecollector.exceptions.IcException;
 import com.invisiblecollector.model.Company;
 import com.invisiblecollector.model.Customer;
 import com.invisiblecollector.model.Debt;
+import com.invisiblecollector.model.FindDebtsBuilder;
 import com.invisiblecollector.model.json.JsonModelFacade;
 
 import java.io.InputStream;
@@ -313,7 +314,9 @@ public class IcApiFacade {
     return this.returningRequest(Debt.class, () -> apiFacade.jsonToJsonRequest(RequestType.GET, endpoint, null));
   }
 
-  public List<Debt> findDebts() throws IcException {
+  public List<Debt> findDebts(FindDebtsBuilder findDebts) throws IcException {
+
+
     return null;
   }
 }
