@@ -1,7 +1,5 @@
 package com.invisiblecollector.model;
 
-import com.invisiblecollector.model.serialization.StringUtils;
-
 import java.util.Date;
 
 public class FindDebtsBuilder extends Model {

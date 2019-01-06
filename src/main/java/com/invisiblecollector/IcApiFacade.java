@@ -2,7 +2,6 @@ package com.invisiblecollector;
 
 import com.invisiblecollector.connection.ApiRequestFacade;
 import com.invisiblecollector.connection.RequestType;
-import com.invisiblecollector.connection.builders.ThrowingSupplier;
 import com.invisiblecollector.connection.response.ResponseValidator;
 import com.invisiblecollector.exceptions.IcConflictingException;
 import com.invisiblecollector.exceptions.IcException;

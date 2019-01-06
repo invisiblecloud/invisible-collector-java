@@ -1,6 +1,5 @@
 package com.invisiblecollector.model.serialization;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.invisiblecollector.exceptions.IcException;
 import com.invisiblecollector.model.Debt;
