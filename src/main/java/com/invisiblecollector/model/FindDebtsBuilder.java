@@ -8,25 +8,25 @@ public class FindDebtsBuilder extends Model {
 
   public FindDebtsBuilder withFromDate(Date fromDate) {
     assertDateOrder(fromDate, getToDate(), "to_date must follow from_date");
-    fields.put("from_date", StringUtils.dateToString(fromDate));
+    setDate("from_date", fromDate);
     return this;
   }
 
   public FindDebtsBuilder withToDate(Date toDate) {
     assertDateOrder(getFromDate(), toDate, "to_date must follow from_date");
-    fields.put("to_date", StringUtils.dateToString(toDate));
+    setDate("to_date", toDate);
     return this;
   }
 
   public FindDebtsBuilder withFromDueDate(Date fromDueDate) {
     assertDateOrder(fromDueDate, getToDueDate(), "to_duedate must follow from_duedate");
-    fields.put("from_duedate", StringUtils.dateToString(fromDueDate));
+    setDate("from_duedate", fromDueDate);
     return this;
   }
 
   public FindDebtsBuilder withToDueDate(Date toDueDate) {
     assertDateOrder(getFromDueDate(), toDueDate, "to_duedate must follow from_duedate");
-    fields.put("to_duedate", StringUtils.dateToString(toDueDate));
+    setDate("to_duedate", toDueDate);
     return this;
   }
 
@@ -36,19 +36,19 @@ public class FindDebtsBuilder extends Model {
   }
 
   public Date getToDueDate() {
-    return StringUtils.parseDateString(getString("to_duedate"));
+    return getDate("to_duedate");
   }
 
   public Date getFromDueDate() {
-    return StringUtils.parseDateString(getString("from_duedate"));
+    return getDate("from_duedate");
   }
 
   public Date getFromDate() {
-    return StringUtils.parseDateString(getString("from_date"));
+    return getDate("from_date");
   }
 
   public Date getToDate() {
-    return StringUtils.parseDateString(getString("to_date"));
+    return getDate("to_date");
   }
 
   public String getNumber() {

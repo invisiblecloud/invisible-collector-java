@@ -201,7 +201,7 @@ public class Debt extends Model implements IRoutable {
    */
   public void setDate(Date date) {
     assertDateOrder(date, getDueDate());
-    fields.put("date", new Date(date.getTime()));
+    setDate("date", date);
   }
 
   /**
@@ -213,7 +213,7 @@ public class Debt extends Model implements IRoutable {
    */
   public void setDueDate(Date dueDate) {
     assertDateOrder(getDate(), dueDate);
-    fields.put("dueDate", new Date(dueDate.getTime()));
+    setDate("dueDate", dueDate);
   }
 
   public void setGrossTotal(Double grossTotal) {

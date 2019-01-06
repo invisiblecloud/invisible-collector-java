@@ -1,9 +1,5 @@
 package com.invisiblecollector;
 
-import com.invisiblecollector.model.serialization.JsonSingleton;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.UUID;
 
 public final class StringTestUtils {

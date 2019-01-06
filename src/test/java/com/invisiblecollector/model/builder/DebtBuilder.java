@@ -79,6 +79,7 @@ public class DebtBuilder extends BuilderBase {
     Map<String, Object> jsonObject = buildSendableObject();
 
     jsonObject.put("id", id);
+    convertDateStrings(jsonObject);
 
     return jsonObject;
   }

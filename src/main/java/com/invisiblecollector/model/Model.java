@@ -1,5 +1,7 @@
 package com.invisiblecollector.model;
 
+import com.invisiblecollector.model.serialization.StringUtils;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -68,7 +70,11 @@ public abstract class Model {
   }
 
   protected Date getDate(String key) {
-    return (Date) fields.get(key);
+    return StringUtils.parseDateString(getString(key));
+  }
+
+  protected void setDate(String key, Date date) {
+    fields.put(key, StringUtils.dateToString(date));
   }
 
   protected Map<String, String> getStringMap(String key) {
