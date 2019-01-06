@@ -87,10 +87,21 @@ public class ApiRequestFacade {
     }
   }
 
-  private InputStream requestGuts(String urlEndpoint, RequestType requestType, String bodyToSend)
+  /**
+   * Sends a JSON request expecting JSON in return
+   *
+   * @param requestType HTTP request type
+   * @param urlEndpoint path
+   * @param bodyToSend can be null if no body present
+   * @return response body
+   * @throws IcException
+   */
+  public InputStream jsonToJsonRequest(RequestType requestType, String urlEndpoint, String bodyToSend)
       throws IcException {
     Invocation.Builder request =
-        client.target(baseUrl).path(urlEndpoint).request(MediaType.APPLICATION_JSON);
+        client.target(baseUrl)
+                .path(urlEndpoint)
+                .request(MediaType.APPLICATION_JSON);
     this.addCommonHeaders(request);
 
     Response response = makeRequest(request, requestType, bodyToSend);
@@ -100,15 +111,4 @@ public class ApiRequestFacade {
     return response.readEntity(InputStream.class);
   }
 
-  public InputStream getRequest(String urlEndpoint) throws IcException {
-    return this.requestGuts(urlEndpoint, RequestType.GET, null);
-  }
-
-  public InputStream putRequest(String urlEndpoint, String bodyToSend) throws IcException {
-    return this.requestGuts(urlEndpoint, RequestType.PUT, bodyToSend);
-  }
-
-  public InputStream postRequest(String urlEndpoint, String bodyToSend) throws IcException {
-    return this.requestGuts(urlEndpoint, RequestType.POST, bodyToSend);
-  }
 }
