@@ -65,18 +65,13 @@ public class ApiRequestFacade {
     return this;
   }
 
-  private<T> Response makeRequest(
+  private <T> Response makeRequest(
       Invocation.Builder request, RequestType requestType, T bodyToSend, String contentType) {
     if (requestType == RequestType.GET) {
       return request.get();
     }
 
-    Entity entity;
-    if (bodyToSend == null) {
-      entity = Entity.entity("", contentType);
-    } else {
-      entity = Entity.entity(bodyToSend, contentType);
-    }
+    Entity entity = Entity.entity(bodyToSend == null ? "" : bodyToSend, contentType);
 
     switch (requestType) {
       case PUT:
@@ -97,7 +92,7 @@ public class ApiRequestFacade {
    * @return response body
    * @throws IcException
    */
-  public<T> InputStream jsonToJsonRequest(
+  public <T> InputStream jsonToJsonRequest(
       RequestType requestType, String urlEndpoint, T bodyToSend) throws IcException {
     Invocation.Builder request =
         client.target(baseUrl).path(urlEndpoint).request(MediaType.APPLICATION_JSON);
@@ -116,7 +111,7 @@ public class ApiRequestFacade {
 
     WebTarget path = client.target(baseUrl).path(urlEndpoint);
     for (Map.Entry<String, Object> e : uriQuery.entrySet()) {
-        path = path.queryParam(e.getKey(), e.getValue());
+      path = path.queryParam(e.getKey(), e.getValue());
     }
 
     Invocation.Builder request = path.request(MediaType.APPLICATION_JSON);
