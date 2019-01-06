@@ -106,7 +106,7 @@ public class ApiRequestFacade {
 
     Response response = makeRequest(request, requestType, bodyToSend);
 
-    responseValidator.validate(response);
+    responseValidator.assertApiJsonResponse(response);
 
     return response.readEntity(InputStream.class);
   }

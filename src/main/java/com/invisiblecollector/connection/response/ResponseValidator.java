@@ -16,7 +16,7 @@ public class ResponseValidator {
     this.jsonFacade = jsonFacade;
   }
 
-  public void validate(Response response) throws IcException {
+  public void assertApiJsonResponse(Response response) throws IcException {
     assertJsonResponse(response);
 
     if (isValidStatusCode(response)) {
