@@ -22,7 +22,7 @@ public class UriEncodingFacade {
     String str;
     if (value instanceof Date) {
       Date date = (Date) value;
-      SimpleDateFormat formatter = new SimpleDateFormat(JsonSingleton.DATE_FORMAT);
+      SimpleDateFormat formatter = new SimpleDateFormat(StringUtils.DATE_FORMAT);
       str = formatter.format(date);
     } else {
       str = value.toString();

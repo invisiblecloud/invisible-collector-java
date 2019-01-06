@@ -14,9 +14,5 @@ public final class StringTestUtils {
   public static String randomHexString() {
     return UUID.randomUUID().toString();
   }
-  
-  public static String dateToString(Date date) {
-    SimpleDateFormat formatter = new SimpleDateFormat(JsonSingleton.DATE_FORMAT);
-    return formatter.format(date);
-  }
+
 }

@@ -1,30 +1,32 @@
 package com.invisiblecollector.model;
 
+import com.invisiblecollector.model.serialization.StringUtils;
+
 import java.util.Date;
 
 public class FindDebtsBuilder extends Model {
 
   public FindDebtsBuilder withFromDate(Date fromDate) {
-    assertDateOrder(fromDate, getDate("to_date"), "to_date must follow from_date");
-    fields.put("from_date", new Date(fromDate.getTime()));
+    assertDateOrder(fromDate, getToDate(), "to_date must follow from_date");
+    fields.put("from_date", StringUtils.dateToString(fromDate));
     return this;
   }
 
   public FindDebtsBuilder withToDate(Date toDate) {
-    assertDateOrder(getDate("from_date"), toDate, "to_date must follow from_date");
-    fields.put("to_date", new Date(toDate.getTime()));
+    assertDateOrder(getFromDate(), toDate, "to_date must follow from_date");
+    fields.put("to_date", StringUtils.dateToString(toDate));
     return this;
   }
 
   public FindDebtsBuilder withFromDueDate(Date fromDueDate) {
-    assertDateOrder(fromDueDate, getDate("to_duedate"), "to_duedate must follow from_duedate");
-    fields.put("from_duedate", new Date(fromDueDate.getTime()));
+    assertDateOrder(fromDueDate, getToDueDate(), "to_duedate must follow from_duedate");
+    fields.put("from_duedate", StringUtils.dateToString(fromDueDate));
     return this;
   }
 
   public FindDebtsBuilder withToDueDate(Date toDueDate) {
-    assertDateOrder(getDate("from_duedate"), toDueDate, "to_duedate must follow from_duedate");
-    fields.put("to_duedate", new Date(toDueDate.getTime()));
+    assertDateOrder(getFromDueDate(), toDueDate, "to_duedate must follow from_duedate");
+    fields.put("to_duedate", StringUtils.dateToString(toDueDate));
     return this;
   }
 
@@ -32,4 +34,25 @@ public class FindDebtsBuilder extends Model {
     fields.put("number", number);
     return this;
   }
+
+  public Date getToDueDate() {
+    return StringUtils.parseDateString(getString("to_duedate"));
+  }
+
+  public Date getFromDueDate() {
+    return StringUtils.parseDateString(getString("from_duedate"));
+  }
+
+  public Date getFromDate() {
+    return StringUtils.parseDateString(getString("from_date"));
+  }
+
+  public Date getToDate() {
+    return StringUtils.parseDateString(getString("to_date"));
+  }
+
+  public String getNumber() {
+    return getString("number");
+  }
+
 }

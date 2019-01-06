@@ -1,21 +1,20 @@
 package com.invisiblecollector.model;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * The base model.
  *
- * <p>Any initial model instance starts without any fields set (converting to serialization renders an empty
- * object). Any setter can either set a value or a null (to allow sending serialization object with null
- * values).
+ * <p>Any initial model instance starts without any fields set (converting to serialization renders
+ * an empty object). Any setter can either set a value or a null (to allow sending serialization
+ * object with null values).
  */
 public abstract class Model {
 
   protected Map<String, Object> fields = new HashMap<>();
 
-  /**
-   * @return the hash code
-   */
+  /** @return the hash code */
   @Override
   public int hashCode() {
     return fields.hashCode();
@@ -45,12 +44,12 @@ public abstract class Model {
 
   public void assertContainsKeys(String... keys) {
     Arrays.stream(keys)
-            .filter(key -> !fields.containsKey(key))
-            .forEach(
-                    key -> {
-                      String msg = String.format("Field %s is missing", key);
-                      throw new IllegalArgumentException(msg);
-                    });
+        .filter(key -> !fields.containsKey(key))
+        .forEach(
+            key -> {
+              String msg = String.format("Field %s is missing", key);
+              throw new IllegalArgumentException(msg);
+            });
   }
 
   public Map<String, Object> getOnlyFields(String... keys) {
@@ -94,5 +93,16 @@ public abstract class Model {
     if (date != null && dueDate != null && date.compareTo(dueDate) > 0) {
       throw new IllegalArgumentException(msg);
     }
+  }
+
+  @Override
+  public String toString() {
+    return "{"
+        + fields
+            .entrySet()
+            .stream()
+            .map(e -> e.getKey() + ": " + e.getValue())
+            .collect(Collectors.joining(", "))
+        + "}";
   }
 }

@@ -1,8 +1,8 @@
 package com.invisiblecollector.model.builder;
 
-import com.invisiblecollector.StringTestUtils;
 import com.invisiblecollector.model.Debt;
 import com.invisiblecollector.model.Item;
+import com.invisiblecollector.model.serialization.StringUtils;
 
 import java.util.*;
 
@@ -233,12 +233,12 @@ public class DebtBuilder extends BuilderBase {
   private Map<String, Object> convertDateStrings(Map<String, Object> obj) {
     Date date = getDate();
     if (date != null) {
-      obj.put("date", StringTestUtils.dateToString(date));
+      obj.put("date", StringUtils.dateToString(date));
     }
 
     Date dueDate = getDueDate();
     if (dueDate != null) {
-      obj.put("dueDate", StringTestUtils.dateToString(dueDate));
+      obj.put("dueDate", StringUtils.dateToString(dueDate));
     }
 
     return obj;

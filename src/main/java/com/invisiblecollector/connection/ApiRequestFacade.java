@@ -4,10 +4,7 @@ import com.invisiblecollector.connection.response.ResponseValidator;
 import com.invisiblecollector.exceptions.IcException;
 import org.glassfish.jersey.client.ClientProperties;
 
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.Entity;
-import javax.ws.rs.client.Invocation;
+import javax.ws.rs.client.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.io.InputStream;
@@ -15,6 +12,7 @@ import java.net.URI;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
 
 public class ApiRequestFacade {
 
@@ -87,8 +85,6 @@ public class ApiRequestFacade {
     }
   }
 
-
-
   /**
    * Sends a JSON request expecting JSON in return
    *
@@ -98,12 +94,10 @@ public class ApiRequestFacade {
    * @return response body
    * @throws IcException
    */
-  public InputStream jsonToJsonRequest(RequestType requestType, String urlEndpoint, String bodyToSend)
-      throws IcException {
+  public InputStream jsonToJsonRequest(
+      RequestType requestType, String urlEndpoint, String bodyToSend) throws IcException {
     Invocation.Builder request =
-        client.target(baseUrl)
-                .path(urlEndpoint)
-                .request(MediaType.APPLICATION_JSON);
+        client.target(baseUrl).path(urlEndpoint).request(MediaType.APPLICATION_JSON);
     this.addCommonHeaders(request);
 
     Response response = makeRequest(request, requestType, bodyToSend, JSON_WITH_CHARSET_TYPE);
@@ -113,12 +107,16 @@ public class ApiRequestFacade {
     return response.readEntity(InputStream.class);
   }
 
-  public InputStream uriEncodedToJsonRequest(RequestType requestType, String urlEndpoint, String uriQuery) throws IcException {
+  public InputStream uriEncodedToJsonRequest(
+      RequestType requestType, String urlEndpoint, Map<String, Object> uriQuery)
+      throws IcException {
 
-    Invocation.Builder request =
-            client.target(baseUrl)
-                    .path(urlEndpoint + "?" + uriQuery)
-                    .request(MediaType.APPLICATION_JSON);
+    WebTarget path = client.target(baseUrl).path(urlEndpoint);
+    for (Map.Entry<String, Object> e : uriQuery.entrySet()) {
+        path = path.queryParam(e.getKey(), e.getValue());
+    }
+
+    Invocation.Builder request = path.request(MediaType.APPLICATION_JSON);
     this.addCommonHeaders(request);
 
     Response response = makeRequest(request, requestType, null, JSON_WITH_CHARSET_TYPE);

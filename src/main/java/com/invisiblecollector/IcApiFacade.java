@@ -11,7 +11,6 @@ import com.invisiblecollector.model.Customer;
 import com.invisiblecollector.model.Debt;
 import com.invisiblecollector.model.FindDebtsBuilder;
 import com.invisiblecollector.model.serialization.JsonModelFacade;
-import com.invisiblecollector.model.serialization.UriEncodingFacade;
 
 import java.io.InputStream;
 import java.net.URI;
@@ -318,9 +317,8 @@ public class IcApiFacade {
 
   public List<Debt> findDebts(FindDebtsBuilder findDebts) throws IcException {
     Map<String, Object> queryParams = findDebts.getFields();
-    String uriQuery = UriEncodingFacade.encodeUri(queryParams);
 
-    InputStream inputStream = this.apiFacade.uriEncodedToJsonRequest(RequestType.GET, DEBTS_FIND_PATH, uriQuery);
+    InputStream inputStream = this.apiFacade.uriEncodedToJsonRequest(RequestType.GET, DEBTS_FIND_PATH, queryParams);
 
     return this.jsonFacade.parseStringStreamAsDebtList(inputStream);
   }
