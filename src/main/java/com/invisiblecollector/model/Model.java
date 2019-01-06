@@ -65,7 +65,7 @@ public abstract class Model {
     return new HashMap<>(fields);
   }
 
-  public void assertConstainsKeys(String... keys) {
+  public void assertContainsKeys(String... keys) {
     Arrays.stream(keys)
         .filter(key -> !fields.containsKey(key))
         .forEach(

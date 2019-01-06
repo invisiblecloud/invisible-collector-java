@@ -138,7 +138,7 @@ public class IcApiFacade {
    * @throws IcException on any general exception
    */
   public Company updateCompanyInfo(Company companyInfo) throws IcException {
-    companyInfo.assertConstainsKeys("name", "vatNumber");
+    companyInfo.assertContainsKeys("name", "vatNumber");
     Map<String, Object> company =
         companyInfo.getOnlyFields("name", "vatNumber", "address", "zipCode", "city");
     String jsonToSend = this.jsonFacade.toJson(company);
@@ -160,7 +160,7 @@ public class IcApiFacade {
    */
   public Customer registerNewCustomer(Customer customerInfo)
       throws IcException, IcConflictingException {
-    customerInfo.assertConstainsKeys("name", "vatNumber", "country");
+    customerInfo.assertContainsKeys("name", "vatNumber", "country");
     Map<String, Object> fields = customerInfo.getOnlyFields(CUSTOMER_FIELDS);
     String jsonToSend = this.jsonFacade.toJson(fields);
 
@@ -259,7 +259,7 @@ public class IcApiFacade {
   public Customer updateCustomerInfo(Customer customerInfo) throws IcException {
     String customerId = customerInfo.getRoutableId();
     String endpoint = CUSTOMERS_ENDPOINT + "/" + customerId;
-    customerInfo.assertConstainsKeys("country");
+    customerInfo.assertContainsKeys("country");
     Map<String, Object> fields = customerInfo.getOnlyFields(CUSTOMER_FIELDS);
     String json = this.jsonFacade.toJson(fields);
 
@@ -277,7 +277,7 @@ public class IcApiFacade {
    * @see #registerNewDebt(Debt)
    */
   public Debt registerNewDebt(Debt debtInfo) throws IcException {
-    debtInfo.assertConstainsKeys("number", "customerId", "type", "date", "dueDate");
+    debtInfo.assertContainsKeys("number", "customerId", "type", "date", "dueDate");
     Map<String, Object> fields =
         debtInfo.getOnlyFields(
             "number",
@@ -292,7 +292,7 @@ public class IcApiFacade {
             "currency",
             "items",
             "attributes");
-    debtInfo.getItems().stream().forEach(item -> item.assertConstainsKeys("name"));
+    debtInfo.getItems().stream().forEach(item -> item.assertContainsKeys("name"));
     String jsonToSend = this.jsonFacade.toJson(fields);
 
     return this.returningRequest(
@@ -311,5 +311,9 @@ public class IcApiFacade {
 
     String endpoint = DEBTS_ENDPOINT + "/" + debtId;
     return this.returningRequest(Debt.class, () -> apiFacade.jsonToJsonRequest(RequestType.GET, endpoint, null));
+  }
+
+  public List<Debt> findDebts() throws IcException {
+    return null;
   }
 }
