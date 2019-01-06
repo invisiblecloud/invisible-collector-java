@@ -38,18 +38,18 @@ public class IcApiFacade {
   private static final String ENABLE_NOTIFICATIONS_ENDPOINT = "companies/enableNotifications";
   private static final String DEBTS_FIND_PATH = "debts/find";
   private static final String[] CUSTOMER_FIELDS =
-          new String[] {
-                  "name",
-                  "externalId",
-                  "vatNumber",
-                  "address",
-                  "zipCode",
-                  "city",
-                  "country",
-                  "email",
-                  "phone",
-                  "locale"
-          };
+      new String[] {
+        "name",
+        "externalId",
+        "vatNumber",
+        "address",
+        "zipCode",
+        "city",
+        "country",
+        "email",
+        "phone",
+        "locale"
+      };
 
   private ApiRequestFacade apiFacade;
   private JsonModelFacade jsonFacade;
@@ -96,7 +96,7 @@ public class IcApiFacade {
   }
 
   private <T> T returningRequest(
-          Class<T> returnType, ThrowingSupplier<InputStream, IcException> requestMethod)
+      Class<T> returnType, ThrowingSupplier<InputStream, IcException> requestMethod)
       throws IcException {
     InputStream inputStream = requestMethod.get();
     return this.jsonFacade.parseStringStream(inputStream, returnType);
@@ -109,7 +109,9 @@ public class IcApiFacade {
    * @throws IcException on any general exception
    */
   public Company requestCompanyInfo() throws IcException {
-    return this.returningRequest(Company.class, () -> apiFacade.jsonToJsonRequest(RequestType.GET, COMPANIES_ENDPOINT, null));
+    return this.returningRequest(
+        Company.class,
+        () -> apiFacade.jsonToJsonRequest(RequestType.GET, COMPANIES_ENDPOINT, null));
   }
 
   /**
@@ -122,8 +124,10 @@ public class IcApiFacade {
   public Company setCompanyNotifications(boolean enableNotifications) throws IcException {
     ThrowingSupplier<InputStream, IcException> requestMethod =
         enableNotifications
-            ? () -> apiFacade.jsonToJsonRequest(RequestType.PUT, ENABLE_NOTIFICATIONS_ENDPOINT, null)
-            : () -> apiFacade.jsonToJsonRequest(RequestType.PUT, DISABLE_NOTIFICATIONS_ENDPOINT, null);
+            ? () ->
+                apiFacade.jsonToJsonRequest(RequestType.PUT, ENABLE_NOTIFICATIONS_ENDPOINT, null)
+            : () ->
+                apiFacade.jsonToJsonRequest(RequestType.PUT, DISABLE_NOTIFICATIONS_ENDPOINT, null);
 
     return this.returningRequest(Company.class, requestMethod);
   }
@@ -143,9 +147,9 @@ public class IcApiFacade {
     companyInfo.assertContainsKeys("name", "vatNumber");
     Map<String, Object> company =
         companyInfo.getOnlyFields("name", "vatNumber", "address", "zipCode", "city");
-    String jsonToSend = this.jsonFacade.toJson(company);
     return this.returningRequest(
-        Company.class, () -> apiFacade.jsonToJsonRequest(RequestType.PUT, COMPANIES_ENDPOINT, jsonToSend));
+        Company.class,
+        () -> apiFacade.jsonToJsonRequest(RequestType.PUT, COMPANIES_ENDPOINT, company));
   }
 
   /**
@@ -164,10 +168,10 @@ public class IcApiFacade {
       throws IcException, IcConflictingException {
     customerInfo.assertContainsKeys("name", "vatNumber", "country");
     Map<String, Object> fields = customerInfo.getOnlyFields(CUSTOMER_FIELDS);
-    String jsonToSend = this.jsonFacade.toJson(fields);
 
     return this.returningRequest(
-        Customer.class, () -> apiFacade.jsonToJsonRequest(RequestType.POST, CUSTOMERS_ENDPOINT, jsonToSend));
+        Customer.class,
+        () -> apiFacade.jsonToJsonRequest(RequestType.POST, CUSTOMERS_ENDPOINT, fields));
   }
 
   /**
@@ -215,7 +219,8 @@ public class IcApiFacade {
     assertCorrectId(customerId);
     String endpoint = CUSTOMERS_ENDPOINT + "/" + customerId;
 
-    return this.returningRequest(Customer.class, () -> apiFacade.jsonToJsonRequest(RequestType.GET, endpoint, null));
+    return this.returningRequest(
+        Customer.class, () -> apiFacade.jsonToJsonRequest(RequestType.GET, endpoint, null));
   }
 
   /**
@@ -234,8 +239,7 @@ public class IcApiFacade {
       String customerId, Map<String, String> attributes) throws IcException {
     assertCorrectId(customerId);
     String endpoint = String.join("/", CUSTOMERS_ENDPOINT, customerId, ATTRIBUTES_PATH);
-    String jsonToSend = this.jsonFacade.toJson(attributes);
-    InputStream inputStream = apiFacade.jsonToJsonRequest(RequestType.POST, endpoint, jsonToSend);
+    InputStream inputStream = apiFacade.jsonToJsonRequest(RequestType.POST, endpoint, attributes);
 
     return this.jsonFacade.parseStringStreamAsStringMap(inputStream);
   }
@@ -263,9 +267,9 @@ public class IcApiFacade {
     String endpoint = CUSTOMERS_ENDPOINT + "/" + customerId;
     customerInfo.assertContainsKeys("country");
     Map<String, Object> fields = customerInfo.getOnlyFields(CUSTOMER_FIELDS);
-    String json = this.jsonFacade.toJson(fields);
 
-    return this.returningRequest(Customer.class, () -> apiFacade.jsonToJsonRequest(RequestType.PUT, endpoint, json));
+    return this.returningRequest(
+        Customer.class, () -> apiFacade.jsonToJsonRequest(RequestType.PUT, endpoint, fields));
   }
 
   /**
@@ -295,10 +299,9 @@ public class IcApiFacade {
             "items",
             "attributes");
     debtInfo.getItems().stream().forEach(item -> item.assertContainsKeys("name"));
-    String jsonToSend = this.jsonFacade.toJson(fields);
 
     return this.returningRequest(
-        Debt.class, () -> apiFacade.jsonToJsonRequest(RequestType.POST, DEBTS_ENDPOINT, jsonToSend));
+        Debt.class, () -> apiFacade.jsonToJsonRequest(RequestType.POST, DEBTS_ENDPOINT, fields));
   }
 
   /**
@@ -312,13 +315,15 @@ public class IcApiFacade {
     assertCorrectId(debtId);
 
     String endpoint = DEBTS_ENDPOINT + "/" + debtId;
-    return this.returningRequest(Debt.class, () -> apiFacade.jsonToJsonRequest(RequestType.GET, endpoint, null));
+    return this.returningRequest(
+        Debt.class, () -> apiFacade.jsonToJsonRequest(RequestType.GET, endpoint, null));
   }
 
   public List<Debt> findDebts(FindDebtsBuilder findDebts) throws IcException {
     Map<String, Object> queryParams = findDebts.getFields();
 
-    InputStream inputStream = this.apiFacade.uriEncodedToJsonRequest(RequestType.GET, DEBTS_FIND_PATH, queryParams);
+    InputStream inputStream =
+        this.apiFacade.uriEncodedToJsonRequest(RequestType.GET, DEBTS_FIND_PATH, queryParams);
 
     return this.jsonFacade.parseStringStreamAsDebtList(inputStream);
   }

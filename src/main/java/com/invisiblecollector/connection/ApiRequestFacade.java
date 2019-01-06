@@ -65,23 +65,26 @@ public class ApiRequestFacade {
     return this;
   }
 
-  private Response makeRequest(
-      Invocation.Builder request, RequestType requestType, String bodyToSend, String contentType) {
+  private<T> Response makeRequest(
+      Invocation.Builder request, RequestType requestType, T bodyToSend, String contentType) {
     if (requestType == RequestType.GET) {
       return request.get();
     }
 
+    Entity entity;
     if (bodyToSend == null) {
-      bodyToSend = "";
+      entity = Entity.entity("", contentType);
+    } else {
+      entity = Entity.entity(bodyToSend, contentType);
     }
 
-    Entity<String> entity = Entity.entity(bodyToSend, contentType);
-    if (requestType == RequestType.POST) {
-      return request.post(entity);
-    } else if (requestType == RequestType.PUT) {
-      return request.put(entity);
-    } else {
-      throw new IllegalStateException("Invalid program logic");
+    switch (requestType) {
+      case PUT:
+        return request.put(entity);
+      case POST:
+        return request.post(entity);
+      default:
+        throw new IllegalStateException("Invalid program state");
     }
   }
 
@@ -94,8 +97,8 @@ public class ApiRequestFacade {
    * @return response body
    * @throws IcException
    */
-  public InputStream jsonToJsonRequest(
-      RequestType requestType, String urlEndpoint, String bodyToSend) throws IcException {
+  public<T> InputStream jsonToJsonRequest(
+      RequestType requestType, String urlEndpoint, T bodyToSend) throws IcException {
     Invocation.Builder request =
         client.target(baseUrl).path(urlEndpoint).request(MediaType.APPLICATION_JSON);
     this.addCommonHeaders(request);
