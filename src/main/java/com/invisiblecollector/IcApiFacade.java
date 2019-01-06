@@ -11,6 +11,7 @@ import com.invisiblecollector.model.Customer;
 import com.invisiblecollector.model.Debt;
 import com.invisiblecollector.model.FindDebtsBuilder;
 import com.invisiblecollector.model.serialization.JsonModelFacade;
+import com.invisiblecollector.model.serialization.UriEncodingFacade;
 
 import java.io.InputStream;
 import java.net.URI;
@@ -33,22 +34,23 @@ public class IcApiFacade {
   private static final String ATTRIBUTES_PATH = "attributes";
   private static final String CUSTOMERS_ENDPOINT = "customers";
   private static final String DEBTS_PATH = "debts";
-  private static final String[] CUSTOMER_FIELDS =
-      new String[] {
-        "name",
-        "externalId",
-        "vatNumber",
-        "address",
-        "zipCode",
-        "city",
-        "country",
-        "email",
-        "phone",
-        "locale"
-      };
   private static final String COMPANIES_ENDPOINT = "companies";
   private static final String DISABLE_NOTIFICATIONS_ENDPOINT = "companies/disableNotifications";
   private static final String ENABLE_NOTIFICATIONS_ENDPOINT = "companies/enableNotifications";
+  private static final String DEBTS_FIND_PATH = "debts/find";
+  private static final String[] CUSTOMER_FIELDS =
+          new String[] {
+                  "name",
+                  "externalId",
+                  "vatNumber",
+                  "address",
+                  "zipCode",
+                  "city",
+                  "country",
+                  "email",
+                  "phone",
+                  "locale"
+          };
 
   private ApiRequestFacade apiFacade;
   private JsonModelFacade jsonFacade;
@@ -316,9 +318,10 @@ public class IcApiFacade {
 
   public List<Debt> findDebts(FindDebtsBuilder findDebts) throws IcException {
     Map<String, Object> queryParams = findDebts.getFields();
+    String uriQuery = UriEncodingFacade.encodeUri(queryParams);
 
+    InputStream inputStream = this.apiFacade.uriEncodedToJsonRequest(RequestType.GET, DEBTS_FIND_PATH, uriQuery);
 
-
-    return null;
+    return this.jsonFacade.parseStringStreamAsDebtList(inputStream);
   }
 }

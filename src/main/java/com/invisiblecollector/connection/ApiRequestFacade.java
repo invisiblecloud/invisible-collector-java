@@ -20,8 +20,8 @@ public class ApiRequestFacade {
 
   private static final String X_API_TOKEN_NAME = "Authorization";
   private static final String X_API_TOKEN_PREFIX = "Bearer ";
-  private static final String CONTENT_TYPE = "application/serialization";
-  private static final String SENT_CONTENT_TYPE = CONTENT_TYPE + "; charset=utf-8";
+  private static final String JSON_TYPE = "application/json";
+  private static final String JSON_WITH_CHARSET_TYPE = JSON_TYPE + "; charset=utf-8";
 
   private static Client clientInstance = null; // assumed to be thread-safe
 
@@ -60,7 +60,7 @@ public class ApiRequestFacade {
       host += ":" + port;
     }
     requestBuilder.header("Host", host);
-    requestBuilder.header("Accept", CONTENT_TYPE);
+    requestBuilder.header("Accept", JSON_TYPE);
     final String sendDate =
         DateTimeFormatter.RFC_1123_DATE_TIME.format(ZonedDateTime.now(ZoneOffset.UTC));
     requestBuilder.header("Date", sendDate);
@@ -68,7 +68,7 @@ public class ApiRequestFacade {
   }
 
   private Response makeRequest(
-      Invocation.Builder request, RequestType requestType, String bodyToSend) {
+      Invocation.Builder request, RequestType requestType, String bodyToSend, String contentType) {
     if (requestType == RequestType.GET) {
       return request.get();
     }
@@ -77,7 +77,7 @@ public class ApiRequestFacade {
       bodyToSend = "";
     }
 
-    Entity<String> entity = Entity.entity(bodyToSend, SENT_CONTENT_TYPE);
+    Entity<String> entity = Entity.entity(bodyToSend, contentType);
     if (requestType == RequestType.POST) {
       return request.post(entity);
     } else if (requestType == RequestType.PUT) {
@@ -86,6 +86,8 @@ public class ApiRequestFacade {
       throw new IllegalStateException("Invalid program logic");
     }
   }
+
+
 
   /**
    * Sends a JSON request expecting JSON in return
@@ -104,11 +106,25 @@ public class ApiRequestFacade {
                 .request(MediaType.APPLICATION_JSON);
     this.addCommonHeaders(request);
 
-    Response response = makeRequest(request, requestType, bodyToSend);
+    Response response = makeRequest(request, requestType, bodyToSend, JSON_WITH_CHARSET_TYPE);
 
     responseValidator.assertApiJsonResponse(response);
 
     return response.readEntity(InputStream.class);
   }
 
+  public InputStream uriEncodedToJsonRequest(RequestType requestType, String urlEndpoint, String uriQuery) throws IcException {
+
+    Invocation.Builder request =
+            client.target(baseUrl)
+                    .path(urlEndpoint + "?" + uriQuery)
+                    .request(MediaType.APPLICATION_JSON);
+    this.addCommonHeaders(request);
+
+    Response response = makeRequest(request, requestType, null, JSON_WITH_CHARSET_TYPE);
+
+    responseValidator.assertApiJsonResponse(response);
+
+    return response.readEntity(InputStream.class);
+  }
 }

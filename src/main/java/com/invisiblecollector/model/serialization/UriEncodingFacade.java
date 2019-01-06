@@ -31,7 +31,7 @@ public class UriEncodingFacade {
     return uriEncodeString(str);
   }
 
-  public static String uriEncode(Map<String, Object> fields) {
+  public static String encodeUri(Map<String, Object> fields) {
     return fields
         .entrySet()
         .stream()
