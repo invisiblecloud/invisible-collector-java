@@ -10,7 +10,7 @@ import com.invisiblecollector.model.Company;
 import com.invisiblecollector.model.Customer;
 import com.invisiblecollector.model.Debt;
 import com.invisiblecollector.model.FindDebtsBuilder;
-import com.invisiblecollector.model.json.JsonModelFacade;
+import com.invisiblecollector.model.serialization.JsonModelFacade;
 
 import java.io.InputStream;
 import java.net.URI;
@@ -315,6 +315,8 @@ public class IcApiFacade {
   }
 
   public List<Debt> findDebts(FindDebtsBuilder findDebts) throws IcException {
+    Map<String, Object> queryParams = findDebts.getFields();
+
 
 
     return null;

@@ -1,4 +1,4 @@
-package com.invisiblecollector.model.json;
+package com.invisiblecollector.model.serialization;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

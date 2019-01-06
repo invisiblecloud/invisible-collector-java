@@ -1,6 +1,6 @@
 package com.invisiblecollector;
 
-import com.invisiblecollector.model.json.JsonSingleton;
+import com.invisiblecollector.model.serialization.JsonSingleton;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

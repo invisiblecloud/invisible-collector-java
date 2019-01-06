@@ -5,7 +5,7 @@ import com.invisiblecollector.model.builder.IThrowingBuilder;
 import com.invisiblecollector.exceptions.IcException;
 import com.invisiblecollector.model.Model;
 import com.invisiblecollector.model.builder.BuilderBase;
-import com.invisiblecollector.model.json.JsonTestUtils;
+import com.invisiblecollector.model.serialization.JsonTestUtils;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.RecordedRequest;
 import org.junit.jupiter.api.AfterEach;
@@ -44,7 +44,7 @@ public class IcFacadeTestBase {
       RecordedRequest request, String endpoint, URI baseUri, String requestType) throws Exception {
     MockServerFacade.assertApiEndpointHit(request, endpoint);
     this.assertSentCorrectHeadersCommon(request, endpoint, baseUri, requestType);
-    MockServerFacade.assertHeaderContainsValue(request, "Content-Type", "application/json");
+    MockServerFacade.assertHeaderContainsValue(request, "Content-Type", "application/serialization");
     MockServerFacade.assertHeaderContainsValue(request, "Content-Type", "utf-8");
     MockServerFacade.assertHasHeader(request, "Content-Length");
   }
@@ -79,7 +79,7 @@ public class IcFacadeTestBase {
     MockServerFacade.assertApiEndpointHit(request, endpoint);
     MockServerFacade.assertHeaderContainsValue(request, "Authorization", TEST_API_TOKEN);
     MockServerFacade.assertHeaderContainsValue(request, "Authorization", "Bearer");
-    MockServerFacade.assertHeaderContainsValue(request, "Accept", "application/json");
+    MockServerFacade.assertHeaderContainsValue(request, "Accept", "application/serialization");
     MockServerFacade.assertHeaderContainsValue(request, "Host", baseUrl.getHost());
     MockServerFacade.assertHasHeader(request, "Date");
     MockServerFacade.assertRequestLineContains(request, requestType);
@@ -91,7 +91,7 @@ public class IcFacadeTestBase {
   }
 
   protected MockResponse buildBodiedMockResponse(String bodyJson) {
-    return new MockResponse().setHeader("Content-Type", "application/json").setBody(bodyJson);
+    return new MockResponse().setHeader("Content-Type", "application/serialization").setBody(bodyJson);
   }
 
   protected String buildConflictErrorJson(int statusCode) {

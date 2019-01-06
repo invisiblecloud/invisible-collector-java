@@ -17,7 +17,7 @@ import java.util.*;
 
 public class CustomerApiFacadeIT extends IcFacadeTestBase {
 
-  // same as TEST_MAP in json form
+  // same as TEST_MAP in serialization form
   private static final String TEST_MAP_JSON = "{ \"a\":\"12\", \"b\":\"string\" }";
   private static final Map<String, String> TEST_MAP;
   private static final String ATTRIBUTES_PATH = "attributes";

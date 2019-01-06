@@ -20,7 +20,7 @@ public class ApiRequestFacade {
 
   private static final String X_API_TOKEN_NAME = "Authorization";
   private static final String X_API_TOKEN_PREFIX = "Bearer ";
-  private static final String CONTENT_TYPE = "application/json";
+  private static final String CONTENT_TYPE = "application/serialization";
   private static final String SENT_CONTENT_TYPE = CONTENT_TYPE + "; charset=utf-8";
 
   private static Client clientInstance = null; // assumed to be thread-safe

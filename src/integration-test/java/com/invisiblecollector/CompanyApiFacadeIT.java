@@ -42,7 +42,7 @@ class CompanyApiFacadeIT extends IcFacadeTestBase {
 
     MockResponse mockResponse =
         new MockResponse()
-            .setHeader("Content-Type", "application/json")
+            .setHeader("Content-Type", "application/serialization")
             .setBody(json1 + "\n" + json2);
     IcApiFacade companyFacade = initMockServer(mockResponse);
 
@@ -75,7 +75,7 @@ class CompanyApiFacadeIT extends IcFacadeTestBase {
     String badJson = "{231,,[][[";
 
     MockResponse mockResponse =
-        new MockResponse().setHeader("Content-Type", "application/json").setBody(badJson);
+        new MockResponse().setHeader("Content-Type", "application/serialization").setBody(badJson);
     IcApiFacade icFacade = initMockServer(mockResponse);
     IcException ex = Assertions.assertThrows(IcException.class, icFacade::requestCompanyInfo);
     MatcherAssert.assertThat(ex.getMessage(), CoreMatchers.containsString("Failed to parse JSON"));

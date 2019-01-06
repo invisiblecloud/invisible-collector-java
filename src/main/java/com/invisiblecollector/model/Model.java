@@ -5,8 +5,8 @@ import java.util.*;
 /**
  * The base model.
  *
- * <p>Any initial model instance starts without any fields set (converting to json renders an empty
- * object). Any setter can either set a value or a null (to allow sending json object with null
+ * <p>Any initial model instance starts without any fields set (converting to serialization renders an empty
+ * object). Any setter can either set a value or a null (to allow sending serialization object with null
  * values).
  */
 public abstract class Model {

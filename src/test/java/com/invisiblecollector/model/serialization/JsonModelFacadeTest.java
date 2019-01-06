@@ -1,4 +1,4 @@
-package com.invisiblecollector.model.json;
+package com.invisiblecollector.model.serialization;
 
 import com.invisiblecollector.exceptions.IcException;
 import com.invisiblecollector.model.Company;
