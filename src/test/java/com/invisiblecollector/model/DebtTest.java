@@ -2,13 +2,12 @@ package com.invisiblecollector.model;
 
 import com.invisiblecollector.model.builder.DebtBuilder;
 import com.invisiblecollector.model.builder.ItemBuilder;
+import org.hamcrest.CoreMatchers;
+import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class DebtTest {
   @Test
@@ -22,7 +21,7 @@ public class DebtTest {
     debt1.setCustomerId("909090909");
     Assertions.assertNotEquals(debt1, debt2);
   }
-  
+
   @Test
   public void equals_null() {
 
@@ -30,19 +29,19 @@ public class DebtTest {
 
     Assertions.assertNotEquals(debt, null);
   }
-  
+
   @Test
   public void equals_seeded() {
     DebtBuilder builder = DebtBuilder.buildTestDebtBuilder();
     Debt debt1 = builder.buildModel();
     Debt debt2 = builder.buildModel();
-    
+
     Assertions.assertEquals(debt1, debt2);
-    
+
     debt2.setCustomerId("909090909");
     Assertions.assertNotEquals(debt1, debt2);
   }
-  
+
   @Test
   public void equals_identity() {
     DebtBuilder builder = DebtBuilder.buildTestDebtBuilder();
@@ -143,4 +142,29 @@ public class DebtTest {
 
     Assertions.assertEquals(expected2, debt.getItems());
   }
+
+  @Test
+  public void setDate_order() {
+    final String errorMsg = "dueDate must come after the debt date.";
+
+    Date firstDate = new Date(1, 1, 1);
+    Date midDate = new Date(2, 1, 1);
+    Date lateDate = new Date(3, 1, 1);
+
+    Debt debt = new Debt();
+    // ok
+    debt.setDate(midDate);
+    debt.setDueDate(lateDate);
+
+    IllegalArgumentException e =
+        Assertions.assertThrows(IllegalArgumentException.class, () -> debt.setDueDate(firstDate));
+    MatcherAssert.assertThat(e.getMessage(), CoreMatchers.containsString(errorMsg));
+
+    Debt debt2 = new Debt();
+    debt2.setDueDate(firstDate);
+    IllegalArgumentException e2 =
+        Assertions.assertThrows(IllegalArgumentException.class, () -> debt2.setDate(midDate));
+    MatcherAssert.assertThat(e2.getMessage(), CoreMatchers.containsString(errorMsg));
+  }
+
 }

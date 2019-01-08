@@ -210,6 +210,7 @@ public class Debt extends Model implements IRoutable {
    * @param dueDate The date when the debt is due.
    *     <p>Only the year, month and day are considered, with the remaining fields discarded. Must
    *     follow after the date
+   * @throws IllegalArgumentException if a due date is set with an older date
    */
   public void setDueDate(Date dueDate) {
     assertDateOrder(getDate(), dueDate);
