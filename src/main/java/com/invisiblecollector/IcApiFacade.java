@@ -313,6 +313,13 @@ public class IcApiFacade {
         apiFacade.jsonToJsonRequest(RequestType.GET, endpoint, null), Debt.class);
   }
 
+  /**
+   * Search the database for the debts that match the query
+   *
+   * @param findDebts the search query
+   * @return found debts that match the query
+   * @throws IcException on any general exception
+   */
   public List<Debt> findDebts(FindDebtsBuilder findDebts) throws IcException {
     Map<String, Object> queryParams = findDebts.getFields();
 

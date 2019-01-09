@@ -2,9 +2,22 @@ package com.invisiblecollector.model;
 
 import java.util.Date;
 
+/**
+ * Model for searching debts
+ *
+ * <p>Implements a fluent builder API.
+ */
 public class FindDebtsBuilder extends Model {
 
   private static final String DATE_ERROR_MSG = "to_date must follow from_date";
+
+  /**
+   * Set search start date
+   *
+   * @param fromDate the date. time is ignored.
+   * @return this
+   * @throws IllegalArgumentException if there is a to_date set with an earlier date
+   */
   public FindDebtsBuilder withFromDate(Date fromDate) {
 
     assertDateOrder(fromDate, getToDate(), DATE_ERROR_MSG);
@@ -12,6 +25,13 @@ public class FindDebtsBuilder extends Model {
     return this;
   }
 
+  /**
+   * Set search end date
+   *
+   * @param toDate the date. time is ignored.
+   * @return this
+   * @throws IllegalArgumentException if there is a from_date with a later date
+   */
   public FindDebtsBuilder withToDate(Date toDate) {
     assertDateOrder(getFromDate(), toDate, DATE_ERROR_MSG);
     setDate("to_date", toDate);
@@ -19,6 +39,14 @@ public class FindDebtsBuilder extends Model {
   }
 
   private static final String DUE_DATE_ERROR_MSG = "to_duedate must follow from_duedate";
+
+  /**
+   * Set search start due date
+   *
+   * @param fromDueDate the date. time is ignored.
+   * @return this
+   * @throws IllegalArgumentException if there is a to_duedate with an earlier date
+   */
   public FindDebtsBuilder withFromDueDate(Date fromDueDate) {
 
     assertDateOrder(fromDueDate, getToDueDate(), DUE_DATE_ERROR_MSG);
@@ -26,6 +54,13 @@ public class FindDebtsBuilder extends Model {
     return this;
   }
 
+  /**
+   * Set search end due date
+   *
+   * @param toDueDate the date. time is ignored.
+   * @return this
+   * @throws IllegalArgumentException if there is a from_duedate with a later date
+   */
   public FindDebtsBuilder withToDueDate(Date toDueDate) {
     assertDateOrder(getFromDueDate(), toDueDate, DUE_DATE_ERROR_MSG);
     setDate("to_duedate", toDueDate);
@@ -37,13 +72,13 @@ public class FindDebtsBuilder extends Model {
     return this;
   }
 
-  public Date getToDueDate() {
-    return getDate("to_duedate");
-  }
-
   public FindDebtsBuilder withShowDebits(Boolean showDebits) {
     fields.put("show_debits", showDebits);
     return this;
+  }
+
+  public Date getToDueDate() {
+    return getDate("to_duedate");
   }
 
   public Date getFromDueDate() {

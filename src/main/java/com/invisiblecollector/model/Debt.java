@@ -198,6 +198,7 @@ public class Debt extends Model implements IRoutable {
    * @param date The date when the debt was issued.
    *     <p>Only the year, month and day are considered, with the remaining fields discarded. Must
    *     follow before the due date
+   * @throws IllegalArgumentException if a 'dueDate' set with an newer date
    */
   public void setDate(Date date) {
     assertDateOrder(date, getDueDate());
@@ -210,7 +211,7 @@ public class Debt extends Model implements IRoutable {
    * @param dueDate The date when the debt is due.
    *     <p>Only the year, month and day are considered, with the remaining fields discarded. Must
    *     follow after the date
-   * @throws IllegalArgumentException if a due date is set with an older date
+   * @throws IllegalArgumentException if there is a 'date' set with an older date
    */
   public void setDueDate(Date dueDate) {
     assertDateOrder(getDate(), dueDate);
@@ -245,15 +246,16 @@ public class Debt extends Model implements IRoutable {
     fields.put("number", number);
   }
 
-
-  /** Set the debt status
+  /**
+   * Set the debt status
    *
    * @param status The debt status.
-   * <p>Value must be one of: <br>
-   * "PENDING" - the default value; <br>
-   * "PAID"; <br>
-   * "CANCELLED"; <br>
-   * <p>Check <a href="https://www.invisiblecollector.com/docs/api/debts/post/">the API docs </a> for up to date acceptable values
+   *     <p>Value must be one of: <br>
+   *     "PENDING" - the default value; <br>
+   *     "PAID"; <br>
+   *     "CANCELLED"; <br>
+   *     <p>Check <a href="https://www.invisiblecollector.com/docs/api/debts/post/">the API docs
+   *     </a> for up to date acceptable values
    */
   public void setStatus(String status) {
     fields.put("status", status);
