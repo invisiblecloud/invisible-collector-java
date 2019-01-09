@@ -352,7 +352,7 @@
                         <configuration>
                             <reportOutputDirectory>${project.basedir}</reportOutputDirectory>
                             <destDir>docs</destDir>
-                            <excludePackageNames>com.invisiblecollector.connection:com.invisiblecollector.model.json</excludePackageNames>
+                            <excludePackageNames>com.invisiblecollector.connection:com.invisiblecollector.model.*</excludePackageNames>
                         </configuration>
                         <executions>
                             <execution>
