@@ -18,6 +18,12 @@ If you have fixed any bugs or implemented new features please create a [Pull Req
 This library follows the [google java style guide](https://google.github.io/styleguide/javaguide.html).
 
 
+## Commands
+
+To generate javadoc static website:
+
+`mvn compile -P generate-javadoc`
+
 ## Notes
 
 You can check out the documentation for the API which this library implements [here](https://www.invisiblecollector.com/docs/).
