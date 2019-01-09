@@ -6,3 +6,13 @@ jdk:
   - oraclejdk8
 after_success:
   - bash <(curl -s https://codecov.io/bash)
+  - test $TRAVIS_BRANCH = "master" && mvn compile -P generate-javadoc
+
+deploy:
+  provider: pages
+  skip-cleanup: true
+  github-token: $GITHUB_TOKEN  # Set in the settings page of your repository, as a secure variable
+  keep-history: true
+  local-dir: docs
+  on:
+    branch: ci-javadocs
