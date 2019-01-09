@@ -52,7 +52,7 @@ public class CustomerApiFacadeIT extends IcFacadeTestBase {
     this.assertCorrectModelReturned(
         customerBuilder, (Customer customer) -> icFacade.registerNewCustomer(customer));
     RecordedRequest request = this.mockServer.getRequest();
-    this.assertSentCorrectHeaders(
+    this.assertSentCorrectCoreHeaders(
         request, CUSTOMERS_ENDPOINT, this.mockServer.getBaseUri(), RequestType.POST);
     assertSentCorrectJson(request, customerBuilder.buildSendableJson(true));
   }
@@ -118,7 +118,7 @@ public class CustomerApiFacadeIT extends IcFacadeTestBase {
         customerBuilder,
         (unused) -> icFacade.updateCustomerInfo(sentCustomer));
     RecordedRequest request = this.mockServer.getRequest();
-    this.assertSentCorrectHeaders(request, endpoint, this.mockServer.getBaseUri(), RequestType.PUT);
+    this.assertSentCorrectCoreHeaders(request, endpoint, this.mockServer.getBaseUri(), RequestType.PUT);
 
     customerBuilder.setVatNumber(null);
     customerBuilder.setExternalId(null);
@@ -152,7 +152,7 @@ public class CustomerApiFacadeIT extends IcFacadeTestBase {
     this.assertCorrectModelReturned(
         customerBuilder, (customer) -> icFacade.requestCustomerInfo(id));
     RecordedRequest request = this.mockServer.getRequest();
-    this.assertSentCorrectHeaders(request, endpoint, this.mockServer.getBaseUri(), RequestType.GET);
+    this.assertSentCorrectCoreHeaders(request, endpoint, this.mockServer.getBaseUri(), RequestType.GET);
   }
 
   @Test
@@ -161,7 +161,7 @@ public class CustomerApiFacadeIT extends IcFacadeTestBase {
         assertCustomerAttributesGuts(
             RequestType.POST, (facade, id) -> facade.setCustomerAttributes(id, TEST_MAP));
     RecordedRequest request = this.mockServer.getRequest();
-    this.assertSentCorrectHeaders(
+    this.assertSentCorrectCoreHeaders(
         request, endpoint, this.mockServer.getBaseUri(), RequestType.POST);
     assertSentCorrectJson(request, TEST_MAP_JSON);
   }
@@ -172,30 +172,29 @@ public class CustomerApiFacadeIT extends IcFacadeTestBase {
         assertCustomerAttributesGuts(
             RequestType.GET, (facade, id) -> facade.requestCustomerAttributes(id));
     RecordedRequest request = this.mockServer.getRequest();
-    this.assertSentCorrectHeaders(request, endpoint, this.mockServer.getBaseUri(), RequestType.GET);
+    this.assertSentCorrectCoreHeaders(request, endpoint, this.mockServer.getBaseUri(), RequestType.GET);
   }
 
   private static final String TEST_ID = "1234";
 
+
+
   @Test
   public void requestCustomerDebts_successMultipleDebts() throws Exception {
 
-    DebtBuilder builder1 = DebtBuilder.buildMinimalTestBuilder();
-    DebtBuilder builder2 = DebtBuilder.buildTestDebtBuilder();
+    Pair<List<Debt>, String> pair = DebtBuilder.buildTestDebtList();
+    String json = pair.second;
+    List<Debt> debts = pair.first;
 
-    String json = "[" + builder1.buildJson() + "," + builder2.buildJson() + "]";
     MockResponse mockResponse = buildBodiedMockResponse(json);
     IcApiFacade customerFacade = initMockServer(mockResponse);
 
     List<Debt> returnedDebts = customerFacade.requestCustomerDebts(TEST_ID);
-    List<Debt> debts = new ArrayList<>();
-    debts.add(builder1.buildModel());
-    debts.add(builder2.buildModel());
 
     assertObjectsEquals(debts, returnedDebts);
     RecordedRequest request = this.mockServer.getRequest();
     String endpoint = joinUriPaths(CUSTOMERS_ENDPOINT, TEST_ID, DEBTS_PATH);
-    this.assertSentCorrectHeaders(request, endpoint, this.mockServer.getBaseUri(), RequestType.GET);
+    this.assertSentCorrectCoreHeaders(request, endpoint, this.mockServer.getBaseUri(), RequestType.GET);
   }
 
   @Test
@@ -210,6 +209,6 @@ public class CustomerApiFacadeIT extends IcFacadeTestBase {
     assertObjectsEquals(debts, returnedDebts);
     RecordedRequest request = this.mockServer.getRequest();
     String endpoint = joinUriPaths(CUSTOMERS_ENDPOINT, TEST_ID, DEBTS_PATH);
-    this.assertSentCorrectHeaders(request, endpoint, this.mockServer.getBaseUri(), RequestType.GET);
+    this.assertSentCorrectCoreHeaders(request, endpoint, this.mockServer.getBaseUri(), RequestType.GET);
   }
 }

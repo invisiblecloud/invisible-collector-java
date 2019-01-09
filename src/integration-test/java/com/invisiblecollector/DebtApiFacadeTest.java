@@ -2,9 +2,14 @@ package com.invisiblecollector;
 
 import com.invisiblecollector.connection.RequestType;
 import com.invisiblecollector.model.Debt;
+import com.invisiblecollector.model.FindDebtsBuilder;
 import com.invisiblecollector.model.builder.DebtBuilder;
+import com.invisiblecollector.model.builder.FindDebtsBuilderBuilder;
+import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.RecordedRequest;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
 
 public class DebtApiFacadeTest extends IcFacadeTestBase {
 
@@ -17,7 +22,7 @@ public class DebtApiFacadeTest extends IcFacadeTestBase {
 
     this.assertCorrectModelReturned(debtBuilder, (Debt debt) -> icFacade.registerNewDebt(debt));
     RecordedRequest request = this.mockServer.getRequest();
-    this.assertSentCorrectHeaders(request, DEBTS_ENDPOINT,
+    this.assertSentCorrectCoreHeaders(request, DEBTS_ENDPOINT,
         this.mockServer.getBaseUri(), RequestType.POST);
     assertSentCorrectJson(request, debtBuilder.buildSendableJson(false));
   }
@@ -31,19 +36,26 @@ public class DebtApiFacadeTest extends IcFacadeTestBase {
     this.assertCorrectModelReturned(debtBuilder,
         (Debt unused) -> icFacade.requestDebtInfo(debtBuilder.getId()));
     RecordedRequest request = this.mockServer.getRequest();
-    this.assertSentCorrectHeaders(request, endpoint, this.mockServer.getBaseUri(),
+    this.assertSentCorrectCoreHeaders(request, endpoint, this.mockServer.getBaseUri(),
         RequestType.GET);
   }
 
   @Test
-  public void findDebts_success() {
-//    DebtBuilder debtBuilder = DebtBuilder.buildTestDebtBuilder();
-//    IcApiFacade icFacade = initJsonResponseMock(debtBuilder);
-//
-//    this.assertCorrectModelReturned(debtBuilder, (Debt debt) -> icFacade.registerNewDebt(debt));
-//    RecordedRequest request = this.mockServer.getRequest();
-//    this.assertSentCorrectHeaders(request, DEBTS_ENDPOINT,
-//            this.mockServer.getBaseUri(), RequestType.POST);
-//    assertSentCorrectJson(request, debtBuilder.buildSendableJson(false));
+  public void findDebts_success() throws Exception {
+    Pair<List<Debt>, String> pair = DebtBuilder.buildTestDebtList();
+    String json = pair.second;
+    List<Debt> debts = pair.first;
+
+    MockResponse mockResponse = buildBodiedMockResponse(json);
+    IcApiFacade icFacade = initMockServer(mockResponse);
+
+    FindDebtsBuilder builder = FindDebtsBuilderBuilder.buildTestBuilder().buildModel();
+
+    List<Debt> returnedDebts = icFacade.findDebts(builder);
+
+    assertObjectsEquals(debts, returnedDebts);
+    RecordedRequest request = this.mockServer.getRequest();
+    String endpoint = "debts/find";
+//    this.assertSentCorrectCoreHeaders(request, endpoint, this.mockServer.getBaseUri(), RequestType.GET);
   }
 }

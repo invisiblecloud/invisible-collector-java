@@ -40,16 +40,7 @@ public class IcFacadeTestBase {
     assertObjectsEquals(expectedMap, actualMap);
   }
 
-  private void assertSentCorrectBodiedHeaders(
-      RecordedRequest request, String endpoint, URI baseUri, String requestType) throws Exception {
-    MockServerFacade.assertApiEndpointHit(request, endpoint);
-    this.assertSentCorrectHeadersCommon(request, endpoint, baseUri, requestType);
-    MockServerFacade.assertHeaderContainsValue(request, "Content-Type", "application/json");
-    MockServerFacade.assertHeaderContainsValue(request, "Content-Type", "utf-8");
-    MockServerFacade.assertHasHeader(request, "Content-Length");
-  }
-
-  protected void assertSentCorrectHeaders(
+  protected void assertSentCorrectCoreHeaders(
       RecordedRequest request, String endpoint, URI baseUrl, RequestType requestType)
       throws Exception {
     switch (requestType) {
@@ -71,18 +62,6 @@ public class IcFacadeTestBase {
       RecordedRequest request, String endpoint, URI baseUrl, RequestType requestType)
       throws Exception {
     this.assertSentCorrectHeadersCommon(request, endpoint, baseUrl, requestType.toString());
-  }
-
-  private void assertSentCorrectHeadersCommon(
-      RecordedRequest request, String endpoint, URI baseUrl, String requestType)
-      throws InterruptedException {
-    MockServerFacade.assertApiEndpointHit(request, endpoint);
-    MockServerFacade.assertHeaderContainsValue(request, "Authorization", TEST_API_TOKEN);
-    MockServerFacade.assertHeaderContainsValue(request, "Authorization", "Bearer");
-    MockServerFacade.assertHeaderContainsValue(request, "Accept", "application/json");
-    MockServerFacade.assertHeaderContainsValue(request, "Host", baseUrl.getHost());
-    MockServerFacade.assertHasHeader(request, "Date");
-    MockServerFacade.assertRequestLineContains(request, requestType);
   }
 
   protected void assertSentCorrectJson(RecordedRequest request, String expectedJson) {
@@ -111,11 +90,6 @@ public class IcFacadeTestBase {
     return initMockServer(mockResponse);
   }
 
-  @AfterEach
-  private void closeServer() throws IOException {
-    mockServer.close();
-  }
-
   protected IcApiFacade initMockServer(MockResponse response) throws Exception {
     this.mockServer.addMockResponse(response);
 
@@ -126,6 +100,32 @@ public class IcFacadeTestBase {
 
   protected String joinUriPaths(String... paths) {
     return String.join("/", paths);
+  }
+
+  private void assertSentCorrectBodiedHeaders(
+          RecordedRequest request, String endpoint, URI baseUri, String requestType) throws Exception {
+    MockServerFacade.assertApiEndpointHit(request, endpoint);
+    this.assertSentCorrectHeadersCommon(request, endpoint, baseUri, requestType);
+    MockServerFacade.assertHeaderContainsValue(request, "Content-Type", "application/json");
+    MockServerFacade.assertHeaderContainsValue(request, "Content-Type", "utf-8");
+    MockServerFacade.assertHasHeader(request, "Content-Length");
+  }
+
+  private void assertSentCorrectHeadersCommon(
+          RecordedRequest request, String endpoint, URI baseUrl, String requestType)
+          throws InterruptedException {
+    MockServerFacade.assertApiEndpointHit(request, endpoint);
+    MockServerFacade.assertHeaderContainsValue(request, "Authorization", TEST_API_TOKEN);
+    MockServerFacade.assertHeaderContainsValue(request, "Authorization", "Bearer");
+    MockServerFacade.assertHeaderContainsValue(request, "Accept", "application/json");
+    MockServerFacade.assertHeaderContainsValue(request, "Host", baseUrl.getHost());
+    MockServerFacade.assertHasHeader(request, "Date");
+    MockServerFacade.assertRequestLineContains(request, requestType);
+  }
+
+  @AfterEach
+  private void closeServer() throws IOException {
+    mockServer.close();
   }
 
   @BeforeEach
