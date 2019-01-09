@@ -36,6 +36,7 @@ public class IcFacadeManualTest {
     FindDebtsBuilder builder = new FindDebtsBuilder();
     builder.withFromDate(new Date(110, 0, 1));
     builder.withToDate(new Date(114, 9, 1));
+    builder.withShowDebits(null);
     System.out.println(facade.findDebts(builder));
 
   }

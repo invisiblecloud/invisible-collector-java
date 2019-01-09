@@ -41,6 +41,11 @@ public class FindDebtsBuilder extends Model {
     return getDate("to_duedate");
   }
 
+  public FindDebtsBuilder withShowDebits(Boolean showDebits) {
+    fields.put("show_debits", showDebits);
+    return this;
+  }
+
   public Date getFromDueDate() {
     return getDate("from_duedate");
   }
@@ -57,4 +62,24 @@ public class FindDebtsBuilder extends Model {
     return getString("number");
   }
 
+  public Boolean getShowDebits() {
+    return getBoolean("show_debits");
+  }
+
+  @Override
+  public int hashCode() {
+    pmdWorkaround();
+    return super.hashCode();
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (!(obj instanceof FindDebtsBuilder)) {
+      return false;
+    } else if (this == obj) {
+      return true;
+    } else {
+      return super.equals(obj);
+    }
+  }
 }
