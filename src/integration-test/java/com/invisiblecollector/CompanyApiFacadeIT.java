@@ -24,7 +24,7 @@ class CompanyApiFacadeIT extends IcFacadeTestBase {
   @Test
   public void requestCompanyInfo_successNormalConditions() throws Exception {
     CompanyBuilder companyBuilder = CompanyBuilder.buildTestCompanyBuilder();
-    IcApiFacade companyApiFacade = buildIcApiResponseAndAddServerReply(companyBuilder);
+    IcApiFacade companyApiFacade = initJsonResponseMock(companyBuilder);
 
     this.assertCorrectModelReturned(
         companyBuilder, (unused) -> companyApiFacade.requestCompanyInfo());
@@ -137,7 +137,7 @@ class CompanyApiFacadeIT extends IcFacadeTestBase {
     CompanyBuilder companyBuilder = CompanyBuilder.buildTestCompanyBuilder();
     companyBuilder.setAddress(newAddress);
     companyBuilder.setCity(newCity);
-    IcApiFacade companyApiFacade = buildIcApiResponseAndAddServerReply(companyBuilder);
+    IcApiFacade companyApiFacade = initJsonResponseMock(companyBuilder);
 
     this.assertCorrectModelReturned(
         companyBuilder, (Company company) -> companyApiFacade.updateCompanyInfo(company));
@@ -152,7 +152,7 @@ class CompanyApiFacadeIT extends IcFacadeTestBase {
   public void setCompanyNotifications_enable() throws Exception {
     CompanyBuilder companyBuilder = CompanyBuilder.buildTestCompanyBuilder();
     companyBuilder.setNotificationsEnabled(true);
-    IcApiFacade companyApiFacade = buildIcApiResponseAndAddServerReply(companyBuilder);
+    IcApiFacade companyApiFacade = initJsonResponseMock(companyBuilder);
 
     this.assertCorrectModelReturned(
         companyBuilder, (unused) -> companyApiFacade.setCompanyNotifications(true));
@@ -166,7 +166,7 @@ class CompanyApiFacadeIT extends IcFacadeTestBase {
   public void setCompanyNotifications_disable() throws Exception {
     CompanyBuilder companyBuilder = CompanyBuilder.buildTestCompanyBuilder();
     companyBuilder.setNotificationsEnabled(false);
-    IcApiFacade companyApiFacade = buildIcApiResponseAndAddServerReply(companyBuilder);
+    IcApiFacade companyApiFacade = initJsonResponseMock(companyBuilder);
 
     this.assertCorrectModelReturned(
         companyBuilder, (unused) -> companyApiFacade.setCompanyNotifications(false));

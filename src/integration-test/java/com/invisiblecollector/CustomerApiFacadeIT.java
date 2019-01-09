@@ -47,7 +47,7 @@ public class CustomerApiFacadeIT extends IcFacadeTestBase {
   @Test
   public void registerNewCustomer_success() throws Exception {
     CustomerBuilder customerBuilder = CustomerBuilder.buildTestCustomerBuilder();
-    IcApiFacade icFacade = buildIcApiResponseAndAddServerReply(customerBuilder);
+    IcApiFacade icFacade = initJsonResponseMock(customerBuilder);
 
     this.assertCorrectModelReturned(
         customerBuilder, (Customer customer) -> icFacade.registerNewCustomer(customer));
@@ -60,7 +60,7 @@ public class CustomerApiFacadeIT extends IcFacadeTestBase {
   @Test
   public void registerNewCustomer_failMissingMandatoryField() throws Exception {
     CustomerBuilder customerBuilder = new CustomerBuilder().setGid("1232132");
-    IcApiFacade icFacade = buildIcApiResponseAndAddServerReply(customerBuilder);
+    IcApiFacade icFacade = initJsonResponseMock(customerBuilder);
 
     Customer correctCustomer = customerBuilder.buildModel(true);
     IllegalArgumentException ex =
@@ -78,7 +78,7 @@ public class CustomerApiFacadeIT extends IcFacadeTestBase {
             .setVatNumber("1234")
             .setCountry("PT")
             .setCity(null);
-    IcApiFacade icFacade = buildIcApiResponseAndAddServerReply(customerBuilder);
+    IcApiFacade icFacade = initJsonResponseMock(customerBuilder);
     Customer customer = customerBuilder.buildModel(true);
     icFacade.registerNewCustomer(customer);
     RecordedRequest request = this.mockServer.getRequest();
@@ -107,7 +107,7 @@ public class CustomerApiFacadeIT extends IcFacadeTestBase {
             .setName("Brand new new Name");
     String id = customerBuilder.getExternalId();
     String endpoint = joinUriPaths(CUSTOMERS_ENDPOINT, id);
-    IcApiFacade icFacade = buildIcApiResponseAndAddServerReply(customerBuilder);
+    IcApiFacade icFacade = initJsonResponseMock(customerBuilder);
 
     Customer sentCustomer =
             customerBuilder.buildModel();
@@ -133,7 +133,7 @@ public class CustomerApiFacadeIT extends IcFacadeTestBase {
             .setName("Brand new new Name")
             .setGid("")
             .setExternalId("");
-    IcApiFacade icFacade = buildIcApiResponseAndAddServerReply(customerBuilder);
+    IcApiFacade icFacade = initJsonResponseMock(customerBuilder);
     Customer correctCustomer = customerBuilder.buildModel();
 
     IllegalArgumentException ex =
@@ -146,7 +146,7 @@ public class CustomerApiFacadeIT extends IcFacadeTestBase {
   @Test
   public void requestCustomerInfo_success() throws Exception {
     CustomerBuilder customerBuilder = CustomerBuilder.buildTestCustomerBuilder();
-    IcApiFacade icFacade = buildIcApiResponseAndAddServerReply(customerBuilder);
+    IcApiFacade icFacade = initJsonResponseMock(customerBuilder);
     String id = customerBuilder.getExternalId();
     String endpoint = joinUriPaths(CUSTOMERS_ENDPOINT, id);
     this.assertCorrectModelReturned(

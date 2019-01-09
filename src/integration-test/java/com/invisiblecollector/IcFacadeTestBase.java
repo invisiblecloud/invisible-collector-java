@@ -104,7 +104,7 @@ public class IcFacadeTestBase {
     return String.format("{\"code\": %d, \"message\": \"%s\"}", statusCode, JSON_ERROR_MESSAGE);
   }
 
-  protected IcApiFacade buildIcApiResponseAndAddServerReply(BuilderBase modelBuilder)
+  protected IcApiFacade initJsonResponseMock(BuilderBase modelBuilder)
       throws Exception {
     String json = modelBuilder.buildJson();
     MockResponse mockResponse = buildBodiedMockResponse(json);
