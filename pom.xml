@@ -350,15 +350,16 @@
                         <artifactId>maven-javadoc-plugin</artifactId>
                         <version>${javadoc-plugin.version}</version>
                         <configuration>
+                            <reportOutputDirectory>${project.basedir}</reportOutputDirectory>
+                            <destDir>docs</destDir>
+                            <excludePackageNames>com.invisiblecollector.connection:com.invisiblecollector.model.json</excludePackageNames>
                         </configuration>
                         <executions>
                             <execution>
                                 <id>javadoc</id>
                                 <phase>compile</phase>
                                 <goals>
-                                    <goal>
-                                        javadoc
-                                    </goal>
+                                    <goal>javadoc</goal>
                                 </goals>
                             </execution>
                         </executions>
