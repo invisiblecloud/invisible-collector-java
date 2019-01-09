@@ -40,36 +40,13 @@ public class IcFacadeTestBase {
     assertObjectsEquals(expectedMap, actualMap);
   }
 
-  protected void assertSentCorrectCoreHeaders(
-      RecordedRequest request, String endpoint, URI baseUrl, RequestType requestType)
-      throws Exception {
-    switch (requestType) {
-      case GET:
-        this.assertSentCorrectHeadersCommon(request, endpoint, baseUrl, "GET");
-        break;
-      case POST:
-        assertSentCorrectBodiedHeaders(request, endpoint, baseUrl, "POST");
-        break;
-      case PUT:
-        assertSentCorrectBodiedHeaders(request, endpoint, baseUrl, "PUT");
-        break;
-      default:
-        throw new IllegalArgumentException("Invalid request Type");
-    }
-  }
-
-  protected void assertSentCorrectBodylessHeaders(
-      RecordedRequest request, String endpoint, URI baseUrl, RequestType requestType)
-      throws Exception {
-    this.assertSentCorrectHeadersCommon(request, endpoint, baseUrl, requestType.toString());
-  }
-
-  protected void assertSentCorrectJson(RecordedRequest request, String expectedJson) {
+  protected void assertSentCorrectJson(RecordedRequest request, String endpoint, URI baseUri, RequestType requestType, String expectedJson) {
     String returnedJson = request.getBody().readUtf8();
     JsonTestUtils.assertJsonEquals(expectedJson, returnedJson);
+    assertSentCorrectJsonHeaders(request, endpoint, baseUri, requestType);
   }
 
-  protected MockResponse buildBodiedMockResponse(String bodyJson) {
+  protected MockResponse buildBodiedJsonMockResponse(String bodyJson) {
     return new MockResponse().setHeader("Content-Type", "application/json").setBody(bodyJson);
   }
 
@@ -83,10 +60,9 @@ public class IcFacadeTestBase {
     return String.format("{\"code\": %d, \"message\": \"%s\"}", statusCode, JSON_ERROR_MESSAGE);
   }
 
-  protected IcApiFacade initJsonResponseMock(BuilderBase modelBuilder)
-      throws Exception {
+  protected IcApiFacade initJsonResponseMock(BuilderBase modelBuilder) throws Exception {
     String json = modelBuilder.buildJson();
-    MockResponse mockResponse = buildBodiedMockResponse(json);
+    MockResponse mockResponse = buildBodiedJsonMockResponse(json);
     return initMockServer(mockResponse);
   }
 
@@ -98,29 +74,24 @@ public class IcFacadeTestBase {
     return new IcApiFacade(TEST_API_TOKEN, baseUri);
   }
 
-  protected String joinUriPaths(String... paths) {
-    return String.join("/", paths);
-  }
+    protected void assertSentCorrectCoreHeaders(
+            RecordedRequest request, String endpoint, URI baseUrl, RequestType requestType) {
+        MockServerFacade.assertApiEndpointHit(request, endpoint);
+        MockServerFacade.assertHeaderContainsValue(request, "Authorization", TEST_API_TOKEN);
+        MockServerFacade.assertHeaderContainsValue(request, "Authorization", "Bearer");
+        MockServerFacade.assertHeaderContainsValue(request, "Accept", "application/json");
+        MockServerFacade.assertHeaderContainsValue(request, "Host", baseUrl.getHost());
+        MockServerFacade.assertHasHeader(request, "Date");
+        MockServerFacade.assertRequestLineContains(request, requestType.toString());
+    }
 
-  private void assertSentCorrectBodiedHeaders(
-          RecordedRequest request, String endpoint, URI baseUri, String requestType) throws Exception {
+  private void assertSentCorrectJsonHeaders(
+      RecordedRequest request, String endpoint, URI baseUri, RequestType requestType) {
     MockServerFacade.assertApiEndpointHit(request, endpoint);
-    this.assertSentCorrectHeadersCommon(request, endpoint, baseUri, requestType);
+    this.assertSentCorrectCoreHeaders(request, endpoint, baseUri, requestType);
     MockServerFacade.assertHeaderContainsValue(request, "Content-Type", "application/json");
     MockServerFacade.assertHeaderContainsValue(request, "Content-Type", "utf-8");
     MockServerFacade.assertHasHeader(request, "Content-Length");
-  }
-
-  private void assertSentCorrectHeadersCommon(
-          RecordedRequest request, String endpoint, URI baseUrl, String requestType)
-          throws InterruptedException {
-    MockServerFacade.assertApiEndpointHit(request, endpoint);
-    MockServerFacade.assertHeaderContainsValue(request, "Authorization", TEST_API_TOKEN);
-    MockServerFacade.assertHeaderContainsValue(request, "Authorization", "Bearer");
-    MockServerFacade.assertHeaderContainsValue(request, "Accept", "application/json");
-    MockServerFacade.assertHeaderContainsValue(request, "Host", baseUrl.getHost());
-    MockServerFacade.assertHasHeader(request, "Date");
-    MockServerFacade.assertRequestLineContains(request, requestType);
   }
 
   @AfterEach

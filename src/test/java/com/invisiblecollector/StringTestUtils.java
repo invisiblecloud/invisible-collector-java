@@ -20,4 +20,8 @@ public final class StringTestUtils {
         .reduce((p1, p2) -> p1 + "&" + p2)
         .orElse("");
   }
+
+  protected static String joinUriPaths(String... paths) {
+    return String.join("/", paths);
+  }
 }

@@ -22,9 +22,14 @@ public class DebtApiFacadeTest extends IcFacadeTestBase {
 
     this.assertCorrectModelReturned(debtBuilder, (Debt debt) -> icFacade.registerNewDebt(debt));
     RecordedRequest request = this.mockServer.getRequest();
-    this.assertSentCorrectCoreHeaders(request, DEBTS_ENDPOINT,
-        this.mockServer.getBaseUri(), RequestType.POST);
-    assertSentCorrectJson(request, debtBuilder.buildSendableJson(false));
+    this.assertSentCorrectCoreHeaders(
+        request, DEBTS_ENDPOINT, this.mockServer.getBaseUri(), RequestType.POST);
+    assertSentCorrectJson(
+        request,
+        DEBTS_ENDPOINT,
+        this.mockServer.getBaseUri(),
+        RequestType.POST,
+        debtBuilder.buildSendableJson(false));
   }
 
   @Test
@@ -33,11 +38,11 @@ public class DebtApiFacadeTest extends IcFacadeTestBase {
     IcApiFacade icFacade = initJsonResponseMock(debtBuilder);
     String endpoint = DEBTS_ENDPOINT + "/" + debtBuilder.getId();
 
-    this.assertCorrectModelReturned(debtBuilder,
-        (Debt unused) -> icFacade.requestDebtInfo(debtBuilder.getId()));
+    this.assertCorrectModelReturned(
+        debtBuilder, (Debt unused) -> icFacade.requestDebtInfo(debtBuilder.getId()));
     RecordedRequest request = this.mockServer.getRequest();
-    this.assertSentCorrectCoreHeaders(request, endpoint, this.mockServer.getBaseUri(),
-        RequestType.GET);
+    this.assertSentCorrectCoreHeaders(
+        request, endpoint, this.mockServer.getBaseUri(), RequestType.GET);
   }
 
   @Test
@@ -46,7 +51,7 @@ public class DebtApiFacadeTest extends IcFacadeTestBase {
     String json = pair.second;
     List<Debt> debts = pair.first;
 
-    MockResponse mockResponse = buildBodiedMockResponse(json);
+    MockResponse mockResponse = buildBodiedJsonMockResponse(json);
     IcApiFacade icFacade = initMockServer(mockResponse);
 
     FindDebtsBuilderBuilder builderBuilder = FindDebtsBuilderBuilder.buildTestBuilder();
@@ -57,6 +62,7 @@ public class DebtApiFacadeTest extends IcFacadeTestBase {
     assertObjectsEquals(debts, returnedDebts);
     RecordedRequest request = this.mockServer.getRequest();
     String endpoint = String.format("debts/find?%s", builderBuilder.buildSendableUrlQuery());
-    this.assertSentCorrectCoreHeaders(request, endpoint, this.mockServer.getBaseUri(), RequestType.GET);
+    this.assertSentCorrectCoreHeaders(
+        request, endpoint, this.mockServer.getBaseUri(), RequestType.GET);
   }
 }
