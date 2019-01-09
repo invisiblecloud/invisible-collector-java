@@ -39,6 +39,7 @@ public class CustomerApiFacadeIT extends IcFacadeTestBase {
     String id = "123";
     String endpoint = StringTestUtils.joinUriPaths(CUSTOMERS_ENDPOINT, id, ATTRIBUTES_PATH);
     Map<String, String> returnedMap = method.build(facade, id);
+
     Assertions.assertEquals(TEST_MAP, returnedMap);
     return endpoint;
   }
