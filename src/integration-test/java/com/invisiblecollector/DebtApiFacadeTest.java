@@ -49,13 +49,14 @@ public class DebtApiFacadeTest extends IcFacadeTestBase {
     MockResponse mockResponse = buildBodiedMockResponse(json);
     IcApiFacade icFacade = initMockServer(mockResponse);
 
-    FindDebtsBuilder builder = FindDebtsBuilderBuilder.buildTestBuilder().buildModel();
+    FindDebtsBuilderBuilder builderBuilder = FindDebtsBuilderBuilder.buildTestBuilder();
+    FindDebtsBuilder builder = builderBuilder.buildModel();
 
     List<Debt> returnedDebts = icFacade.findDebts(builder);
 
     assertObjectsEquals(debts, returnedDebts);
     RecordedRequest request = this.mockServer.getRequest();
-    String endpoint = "debts/find";
-//    this.assertSentCorrectCoreHeaders(request, endpoint, this.mockServer.getBaseUri(), RequestType.GET);
+    String endpoint = String.format("debts/find?%s", builderBuilder.buildSendableUrlQuery());
+    this.assertSentCorrectCoreHeaders(request, endpoint, this.mockServer.getBaseUri(), RequestType.GET);
   }
 }

@@ -1,5 +1,6 @@
 package com.invisiblecollector.model.builder;
 
+import com.invisiblecollector.StringTestUtils;
 import com.invisiblecollector.model.FindDebtsBuilder;
 import com.invisiblecollector.model.Model;
 
@@ -29,6 +30,10 @@ public class FindDebtsBuilderBuilder extends BuilderBase {
     fields.put("number", "123");
 
     return new FindDebtsBuilderBuilder(fields);
+  }
+
+  public String buildSendableUrlQuery() {
+    return StringTestUtils.mapToUrlQuery(fields);
   }
 
   @Override
