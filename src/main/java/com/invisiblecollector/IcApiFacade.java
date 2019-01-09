@@ -78,8 +78,8 @@ public class IcApiFacade {
    *
    * <p>Preferably use {@link #IcApiFacade(String)} or {@link #IcApiFacade(String, URI)}
    *
-   * @param apiFacade
-   * @param jsonFacade
+   * @param apiFacade the api facade
+   * @param jsonFacade teh json facade
    */
   public IcApiFacade(ApiRequestFacade apiFacade, JsonModelFacade jsonFacade) {
     this.apiFacade = apiFacade;
