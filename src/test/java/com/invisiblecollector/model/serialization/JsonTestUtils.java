@@ -1,4 +1,4 @@
-package com.invisiblecollector.model.json;
+package com.invisiblecollector.model.serialization;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

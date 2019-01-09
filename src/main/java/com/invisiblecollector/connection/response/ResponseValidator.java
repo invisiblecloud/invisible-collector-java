@@ -2,7 +2,7 @@ package com.invisiblecollector.connection.response;
 
 import com.invisiblecollector.exceptions.IcConflictingException;
 import com.invisiblecollector.exceptions.IcException;
-import com.invisiblecollector.model.json.JsonModelFacade;
+import com.invisiblecollector.model.serialization.JsonModelFacade;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -16,7 +16,7 @@ public class ResponseValidator {
     this.jsonFacade = jsonFacade;
   }
 
-  public void validate(Response response) throws IcException {
+  public void assertApiJsonResponse(Response response) throws IcException {
     assertJsonResponse(response);
 
     if (isValidStatusCode(response)) {
