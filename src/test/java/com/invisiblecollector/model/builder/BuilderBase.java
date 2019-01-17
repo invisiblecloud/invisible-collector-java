@@ -2,7 +2,7 @@ package com.invisiblecollector.model.builder;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.invisiblecollector.model.Model;
-import com.invisiblecollector.model.json.JsonSingleton;
+import com.invisiblecollector.model.serialization.JsonSingleton;
 
 import java.util.Map;
 

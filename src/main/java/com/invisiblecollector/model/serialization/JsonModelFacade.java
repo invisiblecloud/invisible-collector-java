@@ -1,6 +1,5 @@
-package com.invisiblecollector.model.json;
+package com.invisiblecollector.model.serialization;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.invisiblecollector.exceptions.IcException;
 import com.invisiblecollector.model.Debt;
@@ -34,26 +33,17 @@ public class JsonModelFacade {
     return parseStringStreamAsCollection(inputStream, valueTypeRef);
   }
 
-  public List<Debt> parseStringStreamAsDebtList(InputStream inputStream)
-          throws IcException {
+  public List<Debt> parseStringStreamAsDebtList(InputStream inputStream) throws IcException {
     TypeReference<List<Debt>> typeReference = new TypeReference<List<Debt>>() {};
     return parseStringStreamAsCollection(inputStream, typeReference);
   }
 
-  private <T> T parseStringStreamAsCollection(InputStream inputStream, TypeReference<T> valueTypeRef)
-      throws IcException {
+  private <T> T parseStringStreamAsCollection(
+      InputStream inputStream, TypeReference<T> valueTypeRef) throws IcException {
     try {
       return JsonSingleton.getInstance().readValue(inputStream, valueTypeRef);
     } catch (IOException e) {
       throw new IcException(PARSING_ERROR_MSG, e);
-    }
-  }
-
-  public String toJson(Object obj) {
-    try {
-      return JsonSingleton.getInstance().writeValueAsString(obj);
-    } catch (JsonProcessingException e) {
-      throw new IllegalArgumentException(e);
     }
   }
 }
