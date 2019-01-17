@@ -66,6 +66,7 @@ public class Item extends Model implements Cloneable {
    * Set the quantity.
    *
    * @param quantity The amount of items of this type included in the transaction. Default value is 0.0. Must be positive
+   * @throws IllegalArgumentException if quantity negative
    */
   public void setQuantity(Double quantity) {
     if (quantity < 0) {

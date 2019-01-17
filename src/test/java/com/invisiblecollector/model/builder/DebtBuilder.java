@@ -1,8 +1,9 @@
 package com.invisiblecollector.model.builder;
 
-import com.invisiblecollector.StringTestUtils;
+import com.invisiblecollector.Pair;
 import com.invisiblecollector.model.Debt;
 import com.invisiblecollector.model.Item;
+import com.invisiblecollector.model.serialization.StringUtils;
 
 import java.util.*;
 
@@ -37,6 +38,18 @@ public class DebtBuilder extends BuilderBase {
     calendarNow.add(Calendar.YEAR, yearOffset);
 
     return calendarNow.getTime();
+  }
+
+  public static Pair<List<Debt>, String> buildTestDebtList() {
+    DebtBuilder builder1 = DebtBuilder.buildMinimalTestBuilder();
+    DebtBuilder builder2 = DebtBuilder.buildTestDebtBuilder();
+
+    String json = "[" + builder1.buildJson() + "," + builder2.buildJson() + "]";
+    List<Debt> debts = new ArrayList<>();
+    debts.add(builder1.buildModel());
+    debts.add(builder2.buildModel());
+
+    return Pair.of(debts, json);
   }
 
   public static DebtBuilder buildMinimalTestBuilder() {
@@ -79,6 +92,7 @@ public class DebtBuilder extends BuilderBase {
     Map<String, Object> jsonObject = buildSendableObject();
 
     jsonObject.put("id", id);
+    convertDateStrings(jsonObject);
 
     return jsonObject;
   }
@@ -233,12 +247,12 @@ public class DebtBuilder extends BuilderBase {
   private Map<String, Object> convertDateStrings(Map<String, Object> obj) {
     Date date = getDate();
     if (date != null) {
-      obj.put("date", StringTestUtils.dateToString(date));
+      obj.put("date", StringUtils.dateToString(date));
     }
 
     Date dueDate = getDueDate();
     if (dueDate != null) {
-      obj.put("dueDate", StringTestUtils.dateToString(dueDate));
+      obj.put("dueDate", StringUtils.dateToString(dueDate));
     }
 
     return obj;

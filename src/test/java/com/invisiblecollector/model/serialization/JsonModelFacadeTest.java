@@ -1,4 +1,4 @@
-package com.invisiblecollector.model.json;
+package com.invisiblecollector.model.serialization;
 
 import com.invisiblecollector.exceptions.IcException;
 import com.invisiblecollector.model.Company;
@@ -62,25 +62,4 @@ public class JsonModelFacadeTest {
     Map<String, String> map = new JsonModelFacade().parseStringStreamAsStringMap(inputStream);
     Assertions.assertEquals(CORRECT_MAP, map);
   }
-
-  @Test
-  public void toJson_stringMap_correctness() {
-    String returnedJson = new JsonModelFacade().toJson(CORRECT_MAP);
-    JsonTestUtils.assertJsonEquals(CORRECT_MAP_JSON, returnedJson);
-  }
-
-  @Test
-  public void toJson_DateSuccess() {
-    Date time = new GregorianCalendar(2013, 2, 19).getTime();
-    String json = new JsonModelFacade().toJson(time);
-    Assertions.assertEquals(TEST_JSON_DATE, json);
-  }
-
-  @Test
-  public void toJson_DateNoExtraFields() {
-    Date date = new GregorianCalendar(2013, 2, 19, 3, 1, 3).getTime();
-    String json = new JsonModelFacade().toJson(date);
-    Assertions.assertEquals(TEST_JSON_DATE, json);
-  }
-
 }
