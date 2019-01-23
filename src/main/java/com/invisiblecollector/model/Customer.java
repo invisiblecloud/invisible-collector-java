@@ -41,12 +41,16 @@ public class Customer extends Model implements IRoutable {
     return getString("email");
   }
 
-  /** See {@link #setExternalId(String)} for more details. */
+  /** See {@link #setExternalId(String)} for more details.
+   * @return the external id
+   */
   public String getExternalId() {
     return getString("externalId");
   }
 
-  /** See {@link #setGid(String)} for more details. */
+  /** See {@link #setGid(String)} for more details.
+   * @return the id
+   */
   public String getId() {
     return getString("gid");
   }
