@@ -72,11 +72,6 @@ public class FindDebtsBuilder extends Model {
     return this;
   }
 
-  public FindDebtsBuilder withShowDebits(Boolean showDebits) {
-    fields.put("show_debits", showDebits);
-    return this;
-  }
-
   public Date getToDueDate() {
     return getDate("to_duedate");
   }
@@ -95,10 +90,6 @@ public class FindDebtsBuilder extends Model {
 
   public String getNumber() {
     return getString("number");
-  }
-
-  public Boolean getShowDebits() {
-    return getBoolean("show_debits");
   }
 
   @Override
