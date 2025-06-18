@@ -21,7 +21,7 @@
         <junit.platform.version>1.1.0</junit.platform.version>
         <easymock.version>3.6</easymock.version>
         <mockwebserver.version>3.10.0</mockwebserver.version>
-        <jacoco-plugin.version>0.8.8</jacoco-plugin.version>
+        <jacoco-plugin.version>0.8.10</jacoco-plugin.version>
         <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
         <failsafe-plugin.version>2.22.2</failsafe-plugin.version>
         <pmd-plugin.version>3.10.0</pmd-plugin.version>
@@ -122,12 +122,13 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven-surefire-plugin.version}</version>
+                <configuration>
+                    <includes>
+                        <include>**/*Test.java</include>
+                    </includes>
+                    <argLine>${argLine} -Djdk.attach.allowAttachSelf=true</argLine>
+                </configuration>
                 <dependencies>
-                    <dependency>
-                        <groupId>org.junit.platform</groupId>
-                        <artifactId>junit-platform-surefire-provider</artifactId>
-                        <version>${junit.platform.version}</version>
-                    </dependency>
                     <dependency>
                         <groupId>org.junit.jupiter</groupId>
                         <artifactId>junit-jupiter-engine</artifactId>
@@ -144,6 +145,12 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <version>${failsafe-plugin.version}</version>
+                <configuration>
+                    <includes>
+                        <include>**/*IT.java</include>
+                    </includes>
+                    <argLine>-Djdk.attach.allowAttachSelf=true</argLine>
+                </configuration>
                 <executions>
                     <execution>
                         <goals>
@@ -198,6 +205,16 @@
 			<groupId>org.glassfish.jersey.media</groupId>
 			<artifactId>jersey-media-json-jackson</artifactId>
 			<version>${jersey-client.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.xml.bind</groupId>
+			<artifactId>jaxb-api</artifactId>
+			<version>2.3.1</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.activation</groupId>
+			<artifactId>activation</artifactId>
+			<version>1.1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
